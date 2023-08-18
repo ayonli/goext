@@ -128,3 +128,45 @@ func Truncate(str string, length int) string {
 		return str[0:length] + "..."
 	}
 }
+
+// Executes a search for a match between a regular expression and the string, returning the index of
+// the first match in the string.
+func Search(str string, pattern string) int {
+	regex, err := regexp.Compile(pattern)
+
+	if err != nil {
+		return -1
+	}
+
+	loc := regex.FindStringIndex(str)
+
+	if loc == nil {
+		return -1
+	}
+
+	return loc[0]
+}
+
+// Retrieves the first result of matching the string against a regular expression.
+// If no match, this function returns an empty string.
+func Match(str string, patten string) string {
+	regex, err := regexp.Compile(patten)
+
+	if err != nil {
+		return ""
+	}
+
+	return regex.FindString(str)
+}
+
+// Retrieves all results of matching the string against a regular expression.
+// If no match, this function returns `[]string(nil)`.
+func MatchAll(str string, pattern string) []string {
+	regexp, err := regexp.Compile(pattern)
+
+	if err != nil {
+		return nil
+	}
+
+	return regexp.FindAllString(str, -1)
+}

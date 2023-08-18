@@ -95,3 +95,30 @@ func TestTruncate(t *testing.T) {
 	assert.Equal(t, "Hello, ...", str4)
 	assert.Equal(t, "", str5)
 }
+
+func TestSearch(t *testing.T) {
+	str := "Hello, World!"
+	idx1 := Search(str, "l{2,}")
+	idx2 := Search(str, "o{2,}")
+
+	assert.Equal(t, 2, idx1)
+	assert.Equal(t, -1, idx2)
+}
+
+func TestMatch(t *testing.T) {
+	str := "Hello, World!"
+	match1 := Match(str, "l{2,}")
+	match2 := Match(str, "o{2,}")
+
+	assert.Equal(t, "ll", match1)
+	assert.Equal(t, "", match2)
+}
+
+func TestMatchAll(t *testing.T) {
+	str := "Hello, World!"
+	match1 := MatchAll(str, "l{2,}")
+	match2 := MatchAll(str, "o{2,}")
+
+	assert.Equal(t, []string{"ll"}, match1)
+	assert.Equal(t, []string(nil), match2)
+}
