@@ -27,6 +27,15 @@ func (self *String) Length() int {
 	return mbstring.Length(string(*self))
 }
 
+func (self *String) Clone() *String {
+	str := String(strings.Clone(string(*self)))
+	return &str
+}
+
+func (self *String) Compare(str String) int {
+	return strings.Compare(string(*self), string(str))
+}
+
 func (self *String) Contains(sub string) bool {
 	return strings.Contains(string(*self), sub)
 }
@@ -64,12 +73,12 @@ func (self *String) Trim(chars string) *String {
 	return &str
 }
 
-func (self *String) TrimStart(chars string) *String {
+func (self *String) TrimLeft(chars string) *String {
 	str := String(strings.TrimLeft(string(*self), chars))
 	return &str
 }
 
-func (self *String) TrimEnd(chars string) *String {
+func (self *String) TrimRight(chars string) *String {
 	str := String(strings.TrimRight(string(*self), chars))
 	return &str
 }
@@ -85,6 +94,16 @@ func (self *String) Slice(start int, end int) *String {
 
 func (self *String) Repeat(count int) *String {
 	str := String(strings.Repeat(string(*self), count))
+	return &str
+}
+
+func (self *String) Replace(old string, rep string) *String {
+	str := String(strings.Replace(string(*self), old, rep, 1))
+	return &str
+}
+
+func (self *String) ReplaceAll(old string, rep string) *String {
+	str := String(strings.ReplaceAll(string(*self), old, rep))
 	return &str
 }
 

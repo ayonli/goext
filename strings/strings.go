@@ -11,13 +11,17 @@ var spaceRegex = regexp.MustCompile("\\s+")
 var spaceSepRegex = regexp.MustCompile("\\S\\s+\\S")
 
 // Checks if the given string starts with the specified sub string.
+//
+// This function is the same as `strings.HasPrefix()`.
 func StartsWith(str string, sub string) bool {
-	return str[0:len(sub)] == sub
+	return len(str) >= len(sub) && str[0:len(sub)] == sub
 }
 
 // Checks if the given string ends with the specified sub string.
+//
+// This function is the same as `strings.HasSuffix()`.
 func EndsWith(str string, sub string) bool {
-	return str[len(str)-len(sub):] == sub
+	return len(str) >= len(sub) && str[len(str)-len(sub):] == sub
 }
 
 // Pads the given string with another string (multiple times, if needed) until the resulting string
