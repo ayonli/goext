@@ -6,4 +6,5 @@ use (
 	./slices
 	./strings
 	./strings/mbstring
+    ./oop
 )
