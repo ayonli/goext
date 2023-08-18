@@ -1,0 +1,9 @@
+go 1.21.0
+
+use (
+	./maps
+	./math
+	./slices
+	./strings
+	./strings/mbstring
+)
