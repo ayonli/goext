@@ -1,11 +1,11 @@
 package slices
 
 import (
-	gMath "math"
+	"math"
 	"math/rand"
-	gSlices "slices"
+	"slices"
 
-	hMath "github.com/ayonli/goext/math"
+	mathExt "github.com/ayonli/goext/math"
 )
 
 // Returns the item from the slice according to the given index.
@@ -67,7 +67,7 @@ func Count[S ~[]T, T comparable](s S, item T) int {
 func Concat[S ~[]T, T any](sources ...S) S {
 	sources = Filter(sources, func(item S, _ int) bool { return item != nil })
 	lengths := Map(sources, func(item S, _ int) float64 { return float64(len(item)) })
-	length := hMath.Sum(lengths...)
+	length := mathExt.Sum(lengths...)
 	newSlice := make(S, int(length))
 	idx := 0
 
@@ -90,7 +90,7 @@ func Uniq[S ~[]E, E comparable](original S) S {
 	items := make(S, 0)
 
 	for _, item := range original {
-		if !gSlices.Contains(items, item) {
+		if !slices.Contains(items, item) {
 			items = append(items, item)
 		}
 	}
@@ -119,7 +119,7 @@ func UniqBy[S ~[]M, M ~map[K]V, K comparable, V comparable](original S, key K) S
 			continue
 		}
 
-		if !gSlices.Contains(ids, id) {
+		if !slices.Contains(ids, id) {
 			ids = append(ids, id)
 			items = append(items, item)
 		}
@@ -131,7 +131,7 @@ func UniqBy[S ~[]M, M ~map[K]V, K comparable, V comparable](original S, key K) S
 // Creates a new slice with all sub-slice items concatenated into it.
 func Flat[S ~[]T, T any](original []S) S {
 	original = Filter(original, func(item S, _ int) bool { return item != nil })
-	length := hMath.Sum(Map(original, func(item S, _ int) float64 {
+	length := mathExt.Sum(Map(original, func(item S, _ int) float64 {
 		return float64(len(item))
 	})...)
 	newOne := make(S, int(length))
@@ -188,7 +188,7 @@ func Slice[S ~[]T, T any](original S, start int, end int) S {
 // Breaks the original slice into smaller chunks according to the given length.
 func Chunk[S ~[]T, T any](original S, length int) []S {
 	limit := len(original)
-	size := int(gMath.Ceil(float64(limit) / float64(length)))
+	size := int(math.Ceil(float64(limit) / float64(length)))
 	chunks := make([]S, size)
 	offset := 0
 	idx := 0
@@ -273,7 +273,7 @@ func Filter[S ~[]T, T any](original S, fn func(item T, idx int) bool) S {
 		}
 	}
 
-	return gSlices.Delete(newOne, i, len(newOne))
+	return slices.Delete(newOne, i, len(newOne))
 }
 
 // Creates a new slice populated with the results of calling a provided function on every item in
@@ -356,8 +356,8 @@ func OrderBy[S ~[]T, T ~map[K]V, K comparable, V any](original S, key K, order s
 		return original
 	}
 
-	items := gSlices.Clone(original)
-	gSlices.SortStableFunc(items, func(a T, b T) int {
+	items := slices.Clone(original)
+	slices.SortStableFunc(items, func(a T, b T) int {
 		_, aOk := a[key]
 		_, bOk := b[key]
 
@@ -450,7 +450,7 @@ func Diff[S ~[]T, T comparable](first S, others ...S) S {
 	items := S{}
 
 	for _, item := range first {
-		if !gSlices.Contains(flatted, item) {
+		if !slices.Contains(flatted, item) {
 			items = append(items, item)
 		}
 	}
@@ -469,7 +469,7 @@ func Xor[S ~[]T, T comparable](sources ...S) S {
 		}
 
 		for _, item := range source {
-			if !gSlices.Contains(intersection, item) {
+			if !slices.Contains(intersection, item) {
 				items = append(items, item)
 			}
 		}
@@ -489,7 +489,7 @@ func Union[S ~[]T, T comparable](sources ...S) S {
 		}
 
 		for _, item := range source {
-			if !gSlices.Contains(items, item) {
+			if !slices.Contains(items, item) {
 				items = append(items, item)
 			}
 		}
@@ -505,7 +505,7 @@ func Intersect[S ~[]T, T comparable](sources ...S) S {
 	union := Union(sources...)
 
 	for _, item := range union {
-		if Every(sources, func(source S, idx int) bool { return gSlices.Contains(source, item) }) {
+		if Every(sources, func(source S, idx int) bool { return slices.Contains(source, item) }) {
 			items = append(items, item)
 		}
 	}

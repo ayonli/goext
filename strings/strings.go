@@ -3,7 +3,7 @@ package strings
 import (
 	"math"
 	"regexp"
-	gStrings "strings"
+	"strings"
 )
 
 var wordRegex = regexp.MustCompile("\\w+")
@@ -65,7 +65,7 @@ func PadEnd(str string, finalLength int, padStr string) string {
 func Capitalize(str string, all bool) string {
 	if all {
 		return wordRegex.ReplaceAllStringFunc(str, func(s string) string {
-			return gStrings.ToUpper(s[:1]) + gStrings.ToLower(s[1:])
+			return strings.ToUpper(s[:1]) + strings.ToLower(s[1:])
 		})
 	} else {
 		loc := wordRegex.FindStringIndex(str)
@@ -75,7 +75,7 @@ func Capitalize(str string, all bool) string {
 		}
 
 		idx := loc[0]
-		return str[0:idx] + gStrings.ToUpper(str[idx:idx+1]) + str[idx+1:]
+		return str[0:idx] + strings.ToUpper(str[idx:idx+1]) + str[idx+1:]
 	}
 }
 

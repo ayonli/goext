@@ -2,11 +2,11 @@ package slices
 
 import (
 	"fmt"
-	gSlices "slices"
+	"slices"
 	"strings"
 	"testing"
 
-	hStrings "github.com/ayonli/goext/strings"
+	stringExt "github.com/ayonli/goext/strings"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -301,10 +301,10 @@ func TestFindLast(t *testing.T) {
 	t.Run("[]string", func(t *testing.T) {
 		list := []string{"Hello", "World", "Hi", "A-yon"}
 		value1, ok1 := FindLast(list, func(item string, _ int) bool {
-			return hStrings.StartsWith(item, "H")
+			return stringExt.StartsWith(item, "H")
 		})
 		value2, ok2 := FindLast(list, func(item string, _ int) bool {
-			return hStrings.StartsWith(item, "o")
+			return stringExt.StartsWith(item, "o")
 		})
 
 		assert.Equal(t, "Hi", value1)
@@ -324,7 +324,7 @@ func TestFilter(t *testing.T) {
 
 	t.Run("[]string", func(t *testing.T) {
 		list1 := []string{"Hello", "World", "Hi", "A-yon"}
-		list2 := Filter(list1, func(item string, _ int) bool { return hStrings.StartsWith(item, "H") })
+		list2 := Filter(list1, func(item string, _ int) bool { return stringExt.StartsWith(item, "H") })
 
 		assert.Equal(t, []string{"Hello", "Hi"}, list2)
 	})
@@ -467,8 +467,8 @@ func TestUnshift(t *testing.T) {
 func TestShuffle(t *testing.T) {
 	t.Run("[]int", func(t *testing.T) {
 		list1 := []int{0, 12, 3, 4, 5, 6, 7, 8, 9}
-		list2 := gSlices.Clone(list1)
-		list3 := gSlices.Clone(list1)
+		list2 := slices.Clone(list1)
+		list3 := slices.Clone(list1)
 
 		Shuffle(list2)
 		Shuffle(list3)
@@ -480,8 +480,8 @@ func TestShuffle(t *testing.T) {
 
 	t.Run("[]string", func(t *testing.T) {
 		list1 := []string{"Hello", "World", "Hi", "A-yon"}
-		list2 := gSlices.Clone(list1)
-		list3 := gSlices.Clone(list1)
+		list2 := slices.Clone(list1)
+		list3 := slices.Clone(list1)
 
 		Shuffle(list2)
 		Shuffle(list3)

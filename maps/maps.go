@@ -1,7 +1,7 @@
 package maps
 
 import (
-	gMaps "maps"
+	"maps"
 	"sort"
 
 	"github.com/ayonli/goext/slices"
@@ -14,7 +14,7 @@ import (
 func Assign[M ~map[K]V, K comparable, V any](target M, sources ...M) M {
 	for _, source := range sources {
 		if source != nil {
-			gMaps.Copy(target, source)
+			maps.Copy(target, source)
 		}
 	}
 
