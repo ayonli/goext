@@ -12,10 +12,10 @@ import (
 //
 // If `i < 0`, it returns the character counting from the end of the string.
 //
-// If the given index doesn't contain a value (boundary exceeded), an empty string and `false` will
-// be returned.
-func At(str string, i int) (string, bool) {
-	return slices.At(strings.Split(str, ""), i)
+// If the given index doesn't contain a value (boundary exceeded), an empty string will be returned.
+func At(str string, i int) string {
+	char, _ := slices.At(strings.Split(str, ""), i)
+	return char
 }
 
 // Returns the index at which a given sub string can be found in the string, or -1 if it is not

@@ -10,15 +10,15 @@ func TestAt(t *testing.T) {
 	str1 := "Hello, World!"
 	str2 := "你好，世界！"
 	str3 := "Hello, 世界！"
-	char1, _ := At(str1, 7)
-	char2, _ := At(str2, 3)
-	char3, _ := At(str3, 7)
-	_, ok := At(str3, 10)
+	char1 := At(str1, 7)
+	char2 := At(str2, 3)
+	char3 := At(str3, 7)
+	char4 := At(str3, 10)
 
 	assert.Equal(t, "W", char1)
 	assert.Equal(t, "世", char2)
 	assert.Equal(t, "世", char3)
-	assert.Equal(t, false, ok)
+	assert.Equal(t, "", char4)
 }
 
 func TestIndex(t *testing.T) {
