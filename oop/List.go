@@ -8,7 +8,7 @@ import (
 
 type List[T comparable] []T
 
-func NewList[T comparable](records []T) *List[T] {
+func From[T comparable](records []T) *List[T] {
 	list := List[T](records)
 	return &list
 }
