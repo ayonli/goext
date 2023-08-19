@@ -6,6 +6,7 @@ import (
 	sliceExt "github.com/ayonli/goext/slices"
 )
 
+// List is an objected-oriented abstract that works around the slice.
 type List[T comparable] []T
 
 func (self *List[T]) At(i int) (T, bool) {
@@ -24,17 +25,21 @@ func (self *List[T]) Length() int {
 	return len(*self)
 }
 
+func (self *List[T]) Values() []T {
+	return []T(*self)
+}
+
 func (self *List[T]) Clone() *List[T] {
 	list := slices.Clone(*self)
 	return &list
 }
 
-func (self *List[T]) Contains(item T) bool {
-	return slices.Contains(*self, item)
-}
-
 func (self *List[T]) Equal(another List[T]) bool {
 	return slices.Equal(*self, another)
+}
+
+func (self *List[T]) Contains(item T) bool {
+	return slices.Contains(*self, item)
 }
 
 func (self *List[T]) Count(item T) int {
@@ -63,13 +68,7 @@ func (self *List[T]) Chunk(length int) []List[T] {
 }
 
 func (self *List[T]) Join(sep string) string {
-	if items, ok := any(*self).([]string); ok {
-		return sliceExt.Join(items, sep)
-	} else if items, ok := any(*self).([]int); ok {
-		return sliceExt.Join(items, sep)
-	} else {
-		return ""
-	}
+	return sliceExt.Join(*self, sep)
 }
 
 func (self *List[T]) Replace(start int, end int, values ...T) *List[T] {
@@ -112,28 +111,11 @@ func (self *List[T]) FindLast(fn func(item T, idx int) bool) (T, bool) {
 }
 
 func (self *List[T]) FindIndex(fn func(item T, idx int) bool) int {
-	for idx, item := range *self {
-		ok := fn(item, idx)
-
-		if ok {
-			return idx
-		}
-	}
-
-	return -1
+	return sliceExt.FindIndex(*self, fn)
 }
 
 func (self *List[T]) FindLastIndex(fn func(item T, idx int) bool) int {
-	for idx := len(*self) - 1; idx >= 0; idx-- {
-		item := (*self)[idx]
-		ok := fn(item, idx)
-
-		if ok {
-			return idx
-		}
-	}
-
-	return -1
+	return sliceExt.FindLastIndex(*self, fn)
 }
 
 func (self *List[T]) Filter(fn func(item T, idx int) bool) *List[T] {
@@ -186,8 +168,4 @@ func (self *List[T]) Intersect(others ...List[T]) *List[T] {
 	sources = append(sources, others...)
 	list := sliceExt.Intersect(sources...)
 	return &list
-}
-
-func (self *List[T]) Values() []T {
-	return []T(*self)
 }

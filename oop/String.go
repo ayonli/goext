@@ -8,6 +8,7 @@ import (
 	"github.com/ayonli/goext/strings/mbstring"
 )
 
+// String is an object-oriented abstract that works around the multi-byte string.
 type String string
 
 func (self *String) At(i int) *String {
@@ -87,13 +88,23 @@ func (self *String) ToLower() *String {
 	return &str
 }
 
-func (self *String) Repeat(count int) *String {
-	str := String(strings.Repeat(string(*self), count))
+func (self *String) Capitalize(all bool) *String {
+	str := String(stringExt.Capitalize(string(*self), all))
+	return &str
+}
+
+func (self *String) Hyphenate() *String {
+	str := String(stringExt.Hyphenate(string(*self)))
 	return &str
 }
 
 func (self *String) Slice(start int, end int) *String {
 	str := String(mbstring.Slice(string(*self), start, end))
+	return &str
+}
+
+func (self *String) Substring(start int, end int) *String {
+	str := String(mbstring.Substring(string(*self), start, end))
 	return &str
 }
 
@@ -111,6 +122,11 @@ func (self *String) Chunk(length int) []String {
 
 func (self *String) Truncate(length int) *String {
 	str := String(mbstring.Truncate(string(*self), length))
+	return &str
+}
+
+func (self *String) Repeat(count int) *String {
+	str := String(strings.Repeat(string(*self), count))
 	return &str
 }
 
