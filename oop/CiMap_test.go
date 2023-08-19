@@ -87,6 +87,16 @@ func TestCiMap(suit *testing.T) {
 		assert.Equal(t, []string{"Hello", "World"}, m.Values())
 	})
 
+	suit.Run("ToMap", func(t *testing.T) {
+		m := NewMap[string, string]()
+		m.Set("foo", "Hello").Set("bar", "World")
+
+		assert.Equal(t, map[string]string{
+			"foo": "Hello",
+			"bar": "World",
+		}, m.ToMap())
+	})
+
 	suit.Run("ForEach", func(t *testing.T) {
 		m := NewCiMap[string, string]()
 		m.Set("foo", "Hello").Set("Bar", "World")

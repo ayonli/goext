@@ -155,6 +155,19 @@ func (self *BiMap[K, V]) Values() []V {
 	return items
 }
 
+// Creates a builtin `map` based on this map.
+func (self *BiMap[K, V]) ToMap() map[K]V {
+	items := map[K]V{}
+
+	for _, record := range self.records {
+		if !record.Deleted {
+			items[record.Key] = record.Value
+		}
+	}
+
+	return items
+}
+
 // Loop through all the key-value pairs in the map and invoke the given function against them.
 func (self *BiMap[K, V]) ForEach(fn func(value V, key K)) {
 	for _, record := range self.records {
