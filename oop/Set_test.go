@@ -55,7 +55,7 @@ func TestSet(suit *testing.T) {
 		assert.Equal(t, false, ok2)
 		assert.Equal(t, 1, s.size)
 		assert.Equal(t, []MapRecordItem[int, string]{
-			{Key: 0, Value: *new(string), Deleted: true},
+			{Key: 0, Value: "", Deleted: true},
 			{Key: 1, Value: "World", Deleted: false},
 		}, s.records)
 	})
@@ -90,7 +90,7 @@ func TestSet(suit *testing.T) {
 		assert.Equal(t, 1, s.Size())
 		assert.Equal(t, 1, len(s.Values()))
 		assert.Equal(t, []MapRecordItem[int, string]{
-			{Key: 0, Value: *new(string), Deleted: true},
+			{Key: 0, Value: "", Deleted: true},
 			{Key: 1, Value: "World", Deleted: false},
 		}, s.records)
 	})

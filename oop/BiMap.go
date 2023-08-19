@@ -3,158 +3,121 @@ package oop
 import "slices"
 
 type BiMap[K comparable, V comparable] struct {
-	keys         []K
-	values       []V
-	size         int
-	kPlaceholder *K
-	vPlaceholder *V
+	records []MapRecordItem[K, V]
+	size    int
 }
 
-func NewBiMap[K comparable, V comparable](entries [][]any) *BiMap[K, V] {
+func NewBiMap[K comparable, V comparable]() *BiMap[K, V] {
 	self := BiMap[K, V]{
-		keys:         []K{},
-		values:       []V{},
-		kPlaceholder: new(K),
-		vPlaceholder: new(V),
+		records: []MapRecordItem[K, V]{},
+		size:    0,
 	}
-
-	for _, item := range entries {
-		key, kOk := item[0].(K)
-		value, vOk := item[1].(V)
-
-		if !kOk || !vOk {
-			continue
-		} else {
-			idx := slices.Index(self.keys, key)
-
-			if idx == -1 {
-				idx = slices.Index(self.values, value)
-
-				if idx == -1 {
-					self.keys = append(self.keys, key)
-					self.values = append(self.values, value)
-				} else {
-					self.keys[idx] = key
-				}
-			} else {
-				self.values[idx] = value
-			}
-		}
-	}
-
-	self.size = len(self.keys)
-
 	return &self
 }
 
+func (self *BiMap[K, V]) findIndex(key K) int {
+	return slices.IndexFunc(self.records, func(record MapRecordItem[K, V]) bool {
+		return record.Key == key && !record.Deleted
+	})
+}
+
+func (self BiMap[K, V]) findIndexByValue(value V) int {
+	return slices.IndexFunc(self.records, func(record MapRecordItem[K, V]) bool {
+		return record.Value == value && !record.Deleted
+	})
+}
+
 func (self *BiMap[K, V]) Set(key K, value V) *BiMap[K, V] {
-	idx := slices.Index(self.keys, key)
+	idx := self.findIndex(key)
 
 	if idx == -1 {
-		idx = slices.Index(self.values, value)
+		idx = self.findIndexByValue(value)
+	}
 
-		if idx == -1 {
-			self.keys = append(self.keys, key)
-			self.values = append(self.values, value)
-			self.size++
-		} else {
-			self.keys[idx] = key
-		}
+	if idx == -1 {
+		self.records = append(self.records, MapRecordItem[K, V]{
+			Key:     key,
+			Value:   value,
+			Deleted: false,
+		})
+		self.size++
 	} else {
-		self.values[idx] = value
+		record := &self.records[idx]
+		record.Key = key     // update both the key
+		record.Value = value // and the value
 	}
 
 	return self
 }
 
 func (self *BiMap[K, V]) Get(key K) (V, bool) {
-	idx := slices.Index(self.keys, key)
+	idx := self.findIndex(key)
 
 	if idx == -1 {
-		return *self.vPlaceholder, false
+		return *new(V), false
 	}
 
-	return self.values[idx], true
+	record := self.records[idx]
+	return record.Value, true
 }
 
 func (self *BiMap[K, V]) GetKey(value V) (K, bool) {
-	idx := slices.Index(self.values, value)
+	idx := self.findIndexByValue(value)
 
 	if idx == -1 {
-		return *self.kPlaceholder, false
+		return *new(K), false
 	}
 
-	return self.keys[idx], true
-}
-
-func (self *BiMap[K, V]) Delete(key K) bool {
-	idx := slices.Index(self.keys, key)
-
-	if idx == -1 {
-		return false
-	}
-
-	self.keys[idx] = *self.kPlaceholder
-	self.values[idx] = *self.vPlaceholder
-	self.size--
-	return true
-}
-
-func (self *BiMap[K, V]) DeleteValue(value V) bool {
-	idx := slices.Index(self.values, value)
-
-	if idx == -1 {
-		return false
-	}
-
-	self.keys[idx] = *self.kPlaceholder
-	self.values[idx] = *self.vPlaceholder
-	self.size--
-	return true
-}
-
-func (self *BiMap[K, V]) Clear() {
-	self.keys = []K{}
-	self.values = []V{}
-	self.size = 0
-}
-
-func (self *BiMap[K, V]) ForEach(fn func(value V, key K)) {
-	for idx, key := range self.keys {
-		if &key != self.kPlaceholder {
-			value := self.values[idx]
-			fn(value, key)
-		}
-	}
+	record := self.records[idx]
+	return record.Key, true
 }
 
 func (self *BiMap[K, V]) Has(key K) bool {
-	for _, ele := range self.keys {
-		if &ele == &key {
-			return true
-		}
-	}
-
-	return false
+	idx := self.findIndex(key)
+	return idx != -1
 }
 
 func (self *BiMap[K, V]) HasValue(value V) bool {
-	for _, ele := range self.values {
-		if &ele == &value {
-			return true
-		}
+	idx := self.findIndexByValue(value)
+	return idx != -1
+}
+
+func (self *BiMap[K, V]) deleteAt(idx int) bool {
+	if idx == -1 {
+		return false
 	}
 
-	return false
+	record := &self.records[idx]
+	record.Key = *new(K)
+	record.Value = *new(V)
+	record.Deleted = true
+	self.size--
+
+	return true
+}
+
+func (self *BiMap[K, V]) Delete(key K) bool {
+	idx := self.findIndex(key)
+	return self.deleteAt(idx)
+}
+
+func (self *BiMap[K, V]) DeleteValue(value V) bool {
+	idx := self.findIndexByValue(value)
+	return self.deleteAt(idx)
+}
+
+func (self *BiMap[K, V]) Clear() {
+	self.records = []MapRecordItem[K, V]{}
+	self.size = 0
 }
 
 func (self *BiMap[K, V]) Keys() []K {
 	items := make([]K, self.size)
 	idx := 0
 
-	for _, item := range self.keys {
-		if &item != self.kPlaceholder {
-			items[idx] = item
+	for _, record := range self.records {
+		if !record.Deleted {
+			items[idx] = record.Key
 			idx++
 		}
 	}
@@ -166,9 +129,9 @@ func (self *BiMap[K, V]) Values() []V {
 	items := make([]V, self.size)
 	idx := 0
 
-	for _, item := range self.values {
-		if &item != self.vPlaceholder {
-			items[idx] = item
+	for _, record := range self.records {
+		if !record.Deleted {
+			items[idx] = record.Value
 			idx++
 		}
 	}
@@ -176,20 +139,12 @@ func (self *BiMap[K, V]) Values() []V {
 	return items
 }
 
-func (self *BiMap[K, V]) Entries() [][]any {
-	entries := make([][]any, self.size)
-	idx := 0
-
-	for i, key := range self.keys {
-		if &key != self.kPlaceholder {
-			value := self.values[i]
-
-			entries[idx] = []any{key, value}
-			idx++
+func (self *BiMap[K, V]) ForEach(fn func(value V, key K)) {
+	for _, record := range self.records {
+		if !record.Deleted {
+			fn(record.Value, record.Key)
 		}
 	}
-
-	return entries
 }
 
 func (self *BiMap[K, V]) Size() int {

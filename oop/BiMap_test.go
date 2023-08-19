@@ -6,16 +6,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMap(suit *testing.T) {
-	suit.Run("NewMap", func(t *testing.T) {
-		m := NewMap[string, string]()
+func TestBiMap(suit *testing.T) {
+	suit.Run("NewBiMap", func(t *testing.T) {
+		m := NewBiMap[string, string]()
 
 		assert.Equal(t, []MapRecordItem[string, string]{}, m.records)
 		assert.Equal(t, 0, m.size)
 	})
 
 	suit.Run("Set", func(t *testing.T) {
-		m := NewMap[string, string]()
+		m := NewBiMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
 
 		assert.Equal(t, []MapRecordItem[string, string]{
@@ -24,15 +24,15 @@ func TestMap(suit *testing.T) {
 		}, m.records)
 		assert.Equal(t, 2, m.size)
 
-		m.Set("foo", "Hi")
+		m.Set("foo1", "Hello")
 		assert.Equal(t, []MapRecordItem[string, string]{
-			{Key: "foo", Value: "Hi", Deleted: false},
+			{Key: "foo1", Value: "Hello", Deleted: false},
 			{Key: "bar", Value: "World", Deleted: false},
 		}, m.records)
 	})
 
 	suit.Run("Get", func(t *testing.T) {
-		m := NewMap[string, string]()
+		m := NewBiMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
 
 		v1, ok1 := m.Get("foo")
@@ -44,16 +44,37 @@ func TestMap(suit *testing.T) {
 		assert.Equal(t, false, ok2)
 	})
 
+	suit.Run("GetKey", func(t *testing.T) {
+		m := NewBiMap[string, string]()
+		m.Set("foo", "Hello").Set("bar", "World")
+
+		v1, ok1 := m.GetKey("Hello")
+		v2, ok2 := m.GetKey("World1")
+
+		assert.Equal(t, "foo", v1)
+		assert.Equal(t, true, ok1)
+		assert.Equal(t, "", v2)
+		assert.Equal(t, false, ok2)
+	})
+
 	suit.Run("Has", func(t *testing.T) {
-		m := NewMap[string, string]()
+		m := NewBiMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
 
 		assert.Equal(t, true, m.Has("foo"))
 		assert.Equal(t, false, m.Has("bar1"))
 	})
 
+	suit.Run("HasValue", func(t *testing.T) {
+		m := NewBiMap[string, string]()
+		m.Set("foo", "Hello").Set("bar", "World")
+
+		assert.Equal(t, true, m.HasValue("Hello"))
+		assert.Equal(t, false, m.HasValue("World1"))
+	})
+
 	suit.Run("Delete", func(t *testing.T) {
-		m := NewMap[string, string]()
+		m := NewBiMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
 		ok1 := m.Delete("foo")
 		ok2 := m.Delete("bar1")
@@ -67,22 +88,37 @@ func TestMap(suit *testing.T) {
 		}, m.records)
 	})
 
+	suit.Run("DeleteValue", func(t *testing.T) {
+		m := NewBiMap[string, string]()
+		m.Set("foo", "Hello").Set("bar", "World")
+		ok1 := m.DeleteValue("Hello")
+		ok2 := m.DeleteValue("World1")
+
+		assert.Equal(t, true, ok1)
+		assert.Equal(t, false, ok2)
+		assert.Equal(t, 1, m.size)
+		assert.Equal(t, []MapRecordItem[string, string]{
+			{Key: "", Value: "", Deleted: true},
+			{Key: "bar", Value: "World", Deleted: false},
+		}, m.records)
+	})
+
 	suit.Run("Keys", func(t *testing.T) {
-		m := NewMap[string, string]()
+		m := NewBiMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
 
 		assert.Equal(t, []string{"foo", "bar"}, m.Keys())
 	})
 
 	suit.Run("Values", func(t *testing.T) {
-		m := NewMap[string, string]()
+		m := NewBiMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
 
 		assert.Equal(t, []string{"Hello", "World"}, m.Values())
 	})
 
 	suit.Run("ForEach", func(t *testing.T) {
-		m := NewMap[string, string]()
+		m := NewBiMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
 		entries := List[*[]string]{}
 
@@ -97,19 +133,20 @@ func TestMap(suit *testing.T) {
 	})
 
 	suit.Run("Size", func(t *testing.T) {
-		m := NewMap[string, string]()
+		m := NewBiMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
 
 		assert.Equal(t, 2, m.Size())
 
 		m.Delete("foo")
+		m.DeleteValue("World")
 
-		assert.Equal(t, 1, m.Size())
-		assert.Equal(t, 1, len(m.Keys()))
-		assert.Equal(t, 1, len(m.Values()))
+		assert.Equal(t, 0, m.Size())
+		assert.Equal(t, 0, len(m.Keys()))
+		assert.Equal(t, 0, len(m.Values()))
 		assert.Equal(t, []MapRecordItem[string, string]{
 			{Key: "", Value: "", Deleted: true},
-			{Key: "bar", Value: "World", Deleted: false},
+			{Key: "", Value: "", Deleted: true},
 		}, m.records)
 	})
 }
