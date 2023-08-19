@@ -1,6 +1,7 @@
 package slices
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 	"slices"
@@ -204,7 +205,9 @@ func Chunk[S ~[]T, T any](original S, length int) []S {
 	return chunks
 }
 
-func Join[S ~[]T, T string | int](s S, sep string) string {
+// Creates and returns a string by concatenating all of the items in the slice, separated by the
+// specified separator string.
+func Join[S ~[]T, T any](s S, sep string) string {
 	if s == nil {
 		return ""
 	}
@@ -213,9 +216,9 @@ func Join[S ~[]T, T string | int](s S, sep string) string {
 		if value, ok := any(item).(int); ok {
 			return strconv.Itoa(value)
 		} else if value, ok := any(item).(string); ok {
-			return string(value)
+			return value
 		} else {
-			return ""
+			return fmt.Sprint(item)
 		}
 	}), sep)
 }
@@ -276,6 +279,37 @@ func FindLast[S ~[]T, T any](s S, fn func(item T, idx int) bool) (T, bool) {
 
 	var empty T
 	return empty, false
+}
+
+// Returns the index of the first item in the slice that satisfies the provided testing function.
+// If no item satisfies the testing function, -1 is returned.
+//
+// This function is similar to the `slices.IndexFunc()` from the standard library.
+func FindIndex[S ~[]T, T any](s S, fn func(item T, idx int) bool) int {
+	for idx, item := range s {
+		ok := fn(item, idx)
+
+		if ok {
+			return idx
+		}
+	}
+
+	return -1
+}
+
+// Iterates the slice in reverse order and returns the index of the first item that satisfies the
+// provided testing function. If no item satisfies the testing function, -1 is returned.
+func FindLastIndex[S ~[]T, T any](s S, fn func(item T, idx int) bool) int {
+	for idx := len(s) - 1; idx >= 0; idx-- {
+		item := s[idx]
+		ok := fn(item, idx)
+
+		if ok {
+			return idx
+		}
+	}
+
+	return -1
 }
 
 // Creates a shallow copy of a portion of a given slice, filtered down to just the items from the

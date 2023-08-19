@@ -334,6 +334,46 @@ func TestFindLast(t *testing.T) {
 	})
 }
 
+func TestFindIndex(t *testing.T) {
+	t.Run("[]int", func(t *testing.T) {
+		list := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+		idx1 := FindIndex(list, func(item int, _ int) bool { return item >= 5 })
+		idx2 := FindIndex(list, func(item int, _ int) bool { return item >= 10 })
+
+		assert.Equal(t, 5, idx1)
+		assert.Equal(t, -1, idx2)
+	})
+
+	t.Run("[]string", func(t *testing.T) {
+		list := []string{"Hello", "World", "Hi", "A-yon"}
+		idx1 := FindIndex(list, func(item string, idx int) bool { return item == "Hi" })
+		idx2 := FindIndex(list, func(item string, idx int) bool { return item == "Haha" })
+
+		assert.Equal(t, 2, idx1)
+		assert.Equal(t, -1, idx2)
+	})
+}
+
+func TestFindLastIndex(t *testing.T) {
+	t.Run("[]int", func(t *testing.T) {
+		list := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+		idx1 := FindLastIndex(list, func(item int, _ int) bool { return item >= 5 })
+		idx2 := FindLastIndex(list, func(item int, _ int) bool { return item >= 10 })
+
+		assert.Equal(t, 9, idx1)
+		assert.Equal(t, -1, idx2)
+	})
+
+	t.Run("[]string", func(t *testing.T) {
+		list := []string{"Hello", "World", "Hello", "A-yon"}
+		idx1 := FindLastIndex(list, func(item string, idx int) bool { return item == "Hello" })
+		idx2 := FindLastIndex(list, func(item string, idx int) bool { return item == "Haha" })
+
+		assert.Equal(t, 2, idx1)
+		assert.Equal(t, -1, idx2)
+	})
+}
+
 func TestFilter(t *testing.T) {
 	t.Run("[]int", func(t *testing.T) {
 		list1 := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
