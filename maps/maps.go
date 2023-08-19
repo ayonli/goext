@@ -2,9 +2,9 @@ package maps
 
 import (
 	"maps"
-	"sort"
+	"slices"
 
-	"github.com/ayonli/goext/slices"
+	sliceExt "github.com/ayonli/goext/slices"
 )
 
 // Copies one or more items from the source maps to the target map. The later key-value pairs
@@ -43,23 +43,16 @@ func Patch[M ~map[K]V, K comparable, V any](target M, sources ...M) M {
 //
 // Keys are sorted in ascending order if they are strings or integers.
 func Keys[M ~map[K]V, K comparable, V any](m M) []K {
-	keys := []K{}
+	size := len(m)
+	keys := make([]K, size)
+	idx := 0
 
 	for k := range m {
-		keys = append(keys, k)
+		keys[idx] = k
+		idx++
 	}
 
-	switch any(keys).(type) {
-	case []string:
-		_keys := any(keys).([]string)
-		sort.Strings(_keys)
-		return any(_keys).([]K)
-	case []int:
-		_keys := any(keys).([]int)
-		sort.Ints(_keys)
-		return any(_keys).([]K)
-	}
-
+	slices.SortStableFunc(keys, sliceExt.CompareFunc)
 	return keys
 }
 
@@ -104,7 +97,7 @@ func Omit[M ~map[K]V, K comparable, V any](original M, keys []K) M {
 
 	newMap := M{}
 	allKeys := Keys(original)
-	keptKeys := slices.Diff(allKeys, keys)
+	keptKeys := sliceExt.Diff(allKeys, keys)
 
 	for _, key := range keptKeys {
 		value, ok := original[key]
