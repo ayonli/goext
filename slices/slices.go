@@ -4,6 +4,8 @@ import (
 	"math"
 	"math/rand"
 	"slices"
+	"strconv"
+	"strings"
 
 	mathExt "github.com/ayonli/goext/math"
 )
@@ -200,6 +202,22 @@ func Chunk[S ~[]T, T any](original S, length int) []S {
 	}
 
 	return chunks
+}
+
+func Join[S ~[]T, T string | int](s S, sep string) string {
+	if s == nil {
+		return ""
+	}
+
+	return strings.Join(Map(s, func(item T, _ int) string {
+		if value, ok := any(item).(int); ok {
+			return strconv.Itoa(value)
+		} else if value, ok := any(item).(string); ok {
+			return string(value)
+		} else {
+			return ""
+		}
+	}), sep)
 }
 
 // Tests whether all items in the slice pass the test implemented by the provided function.

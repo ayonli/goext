@@ -222,6 +222,26 @@ func TestChunk(t *testing.T) {
 	})
 }
 
+func TestJoin(t *testing.T) {
+	t.Run("[]int->string", func(t *testing.T) {
+		list := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+		str1 := Join(list, ",")
+		str2 := Join(list, " ")
+
+		assert.Equal(t, "0,1,2,3,4,5,6,7,8,9", str1)
+		assert.Equal(t, "0 1 2 3 4 5 6 7 8 9", str2)
+	})
+
+	t.Run("[]string->string", func(t *testing.T) {
+		list := []string{"Hello", "World", "Hi", "A-yon"}
+		str1 := Join(list, ", ")
+		str2 := Join(list, " | ")
+
+		assert.Equal(t, "Hello, World, Hi, A-yon", str1)
+		assert.Equal(t, "Hello | World | Hi | A-yon", str2)
+	})
+}
+
 func TestEvery(t *testing.T) {
 	t.Run("[]int", func(t *testing.T) {
 		list := []int{0, 1, 2}

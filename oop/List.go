@@ -62,6 +62,16 @@ func (self *List[T]) Chunk(length int) []List[T] {
 	return sliceExt.Chunk(*self, length)
 }
 
+func (self *List[T]) Join(sep string) string {
+	if items, ok := any(*self).([]string); ok {
+		return sliceExt.Join(items, sep)
+	} else if items, ok := any(*self).([]int); ok {
+		return sliceExt.Join(items, sep)
+	} else {
+		return ""
+	}
+}
+
 func (self *List[T]) Replace(start int, end int, values ...T) *List[T] {
 	list := slices.Replace(*self, start, end, values...)
 	return &list
@@ -151,4 +161,8 @@ func (self *List[T]) Intersect(others ...List[T]) *List[T] {
 	sources = append(sources, others...)
 	list := sliceExt.Intersect(sources...)
 	return &list
+}
+
+func (self *List[T]) Values() []T {
+	return []T(*self)
 }
