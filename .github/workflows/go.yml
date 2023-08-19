@@ -31,3 +31,5 @@ jobs:
       run: go test -v ./strings
     - name: Test mbstring
       run: go test -v ./strings/mbstring
+    - name: Test oop
+      run: go test -v ./oop

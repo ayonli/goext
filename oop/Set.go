@@ -2,81 +2,91 @@ package oop
 
 import (
 	"slices"
-
-	sliceExt "github.com/ayonli/goext/slices"
 )
 
 type Set[T comparable] struct {
-	items       []T
-	size        int
-	placeholder *T
+	records []MapRecordItem[int, T]
+	size    int
 }
 
-func NewSet[T comparable](items []T) *Set[T] {
-	self := Set[T]{}
-	self.items = sliceExt.Uniq(items)
-	self.size = len(self.items)
-	self.placeholder = new(T)
+func NewSet[T comparable](base []T) *Set[T] {
+	self := Set[T]{
+		records: []MapRecordItem[int, T]{},
+		size:    0,
+	}
+
+	for _, item := range base {
+		self.Add(item)
+	}
 
 	return &self
 }
 
+func (self *Set[T]) findIndex(item T) int {
+	return slices.IndexFunc(self.records, func(record MapRecordItem[int, T]) bool {
+		return record.Value == item && !record.Deleted
+	})
+}
+
 func (self *Set[T]) Add(item T) *Set[T] {
-	if !slices.Contains(self.items, item) {
-		self.items = append(self.items, item)
+	if !self.Has(item) {
+		self.records = append(self.records, MapRecordItem[int, T]{
+			Key:     self.size,
+			Value:   item,
+			Deleted: false,
+		})
 		self.size++
 	}
 
 	return self
 }
 
+func (self *Set[T]) Has(item T) bool {
+	idx := self.findIndex(item)
+	return idx != -1
+}
+
 func (self *Set[T]) Delete(item T) bool {
-	idx := slices.Index(self.items, item)
+	idx := self.findIndex(item)
 
 	if idx == -1 {
 		return false
 	}
 
-	self.items[idx] = *self.placeholder
+	record := &self.records[idx]
+	record.Key = 0
+	record.Value = *new(T)
+	record.Deleted = true
 	self.size--
+
 	return true
 }
 
 func (self *Set[T]) Clear() {
-	self.items = []T{}
+	self.records = []MapRecordItem[int, T]{}
 	self.size = 0
-}
-
-func (self *Set[T]) ForEach(fn func(item T)) {
-	for _, item := range self.items {
-		if &item != self.placeholder {
-			fn(item)
-		}
-	}
-}
-
-func (self *Set[T]) Has(item T) bool {
-	for _, ele := range self.items {
-		if &ele == &item {
-			return true
-		}
-	}
-
-	return false
 }
 
 func (self *Set[T]) Values() []T {
 	items := make([]T, self.size)
 	idx := 0
 
-	for _, item := range self.items {
-		if &item != self.placeholder {
-			items[idx] = item
+	for _, record := range self.records {
+		if !record.Deleted {
+			items[idx] = record.Value
 			idx++
 		}
 	}
 
 	return items
+}
+
+func (self *Set[T]) ForEach(fn func(item T)) {
+	for _, record := range self.records {
+		if !record.Deleted {
+			fn(record.Value)
+		}
+	}
 }
 
 func (self *Set[T]) Size() int {
