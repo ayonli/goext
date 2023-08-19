@@ -78,3 +78,122 @@ Especially for JavaScript developers, this project should make us feel at home.
     - `Values()`
     - `Pick()`
     - `Omit()`
+- **oop** Object-oriented abstract wrappers for basic data structures.
+    - `String` is an object-oriented abstract that works around multi-byte strings.
+        - `At()`
+        - `Index()`
+        - `LastIndex()`
+        - `Length()`
+        - `String()`
+        - `Clone()`
+        - `Compare()`
+        - `Contains()`
+        - `StartsWith()`
+        - `EndsWith()`
+        - `PadStart()`
+        - `PadEnd()`
+        - `Trim()`
+        - `TrimLeft()`
+        - `TrimRight()`
+        - `ToUpper()`
+        - `ToLower()`
+        - `Capitalize()`
+        - `Hyphenate()`
+        - `Slice()`
+        - `Substring()`
+        - `Split()`
+        - `Chunk()`
+        - `Truncate()`
+        - `Repeat()`
+        - `Replace()`
+        - `ReplaceAll()`
+        - `Search()`
+        - `Match()`
+        - `MatchAll()`
+    - `List` is an objected-oriented abstract that works around the slice.
+        - `At()`
+        - `Index()`
+        - `LastIndex()`
+        - `Length()`
+        - `Values()`
+        - `Clone()`
+        - `Equal()`
+        - `Contains()`
+        - `Count()`
+        - `Concat()`
+        - `Uniq()`
+        - `Slice()`
+        - `Chunk()`
+        - `Join()`
+        - `Replace()`
+        - `Reverse()`
+        - `ToReversed()`
+        - `Sort()`
+        - `ToSorted()`
+        - `Every()`
+        - `Some()`
+        - `Find()`
+        - `FindLast()`
+        - `FindIndex()`
+        - `FindLastIndex()`
+        - `Filter()`
+        - `Pop()`
+        - `Push()`
+        - `Shift()`
+        - `Unshift()`
+        - `Shuffle()`
+        - `Diff()`
+        - `Xor()`
+        - `Union()`
+        - `Intersect()`
+
+        Sadly, due to the limitation of Golang's generics, methods like `Map()`, `Reduce()` and
+        `GroupBy()` cannot be implemented in List, we'll have to use them from the `slices` package.
+    - `Set` is an object-oriented collection that stores unique items.
+        - `NewSet()`
+        - `Add()`
+        - `Has()`
+        - `Delete()`
+        - `Clear()`
+        - `Values()`
+        - `ForEach()`
+        - `Size()`
+    - `Map` is an object-oriented collection of map with ordered keys.
+        - `NewMap()`
+        - `Set()`
+        - `Get()`
+        - `Has()`
+        - `Delete()`
+        - `Clear()`
+        - `Keys()`
+        - `Values()`
+        - `ToMap()`
+        - `ForEach()`
+        - `Size()`
+    - `CiMap` Case-insensitive map, keys are case-insensitive.
+        - `NewMap()`
+        - `Set()`
+        - `Get()`
+        - `Has()`
+        - `Delete()`
+        - `Clear()`
+        - `Keys()`
+        - `Values()`
+        - `ToMap()`
+        - `ForEach()`
+        - `Size()`
+    - `BiMap` Bi-directional map, keys and values are unique and map to each other.
+        - `NewMap()`
+        - `Set()`
+        - `Get()`
+        - `GetKey()`
+        - `Has()`
+        - `HasValue()`
+        - `Delete()`
+        - `DeleteValue()`
+        - `Clear()`
+        - `Keys()`
+        - `Values()`
+        - `ToMap()`
+        - `ForEach()`
+        - `Size()`

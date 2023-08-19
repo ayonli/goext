@@ -4,7 +4,7 @@ import (
 	"slices"
 )
 
-// The Set structure stores unique items.
+// Set is an object-oriented collection that stores unique items.
 type Set[T comparable] struct {
 	records []MapRecordItem[int, T]
 	size    int

@@ -8,7 +8,7 @@ import (
 	"github.com/ayonli/goext/strings/mbstring"
 )
 
-// String is an object-oriented abstract that works around the multi-byte string.
+// String is an object-oriented abstract that works around multi-byte strings.
 type String string
 
 func (self *String) At(i int) *String {

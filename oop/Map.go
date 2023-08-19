@@ -10,6 +10,8 @@ type MapRecordItem[K comparable, V any] struct {
 	Deleted bool
 }
 
+// Map is an object-oriented collection of map with ordered keys.
+//
 // Unlike the builtin `map` type, this Map stores data in a underlying list, which provides ordered
 // keys sequence. However, the op time is O(n), which might be insufficient for large amount of data.
 // Use with caution.
