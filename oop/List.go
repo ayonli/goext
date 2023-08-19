@@ -111,6 +111,31 @@ func (self *List[T]) FindLast(fn func(item T, idx int) bool) (T, bool) {
 	return sliceExt.FindLast(*self, fn)
 }
 
+func (self *List[T]) FindIndex(fn func(item T, idx int) bool) int {
+	for idx, item := range *self {
+		ok := fn(item, idx)
+
+		if ok {
+			return idx
+		}
+	}
+
+	return -1
+}
+
+func (self *List[T]) FindLastIndex(fn func(item T, idx int) bool) int {
+	for idx := len(*self) - 1; idx >= 0; idx-- {
+		item := (*self)[idx]
+		ok := fn(item, idx)
+
+		if ok {
+			return idx
+		}
+	}
+
+	return -1
+}
+
 func (self *List[T]) Filter(fn func(item T, idx int) bool) *List[T] {
 	list := sliceExt.Filter(*self, fn)
 	return &list
