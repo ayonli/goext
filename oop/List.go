@@ -63,24 +63,6 @@ func (self *List[T]) Chunk(length int) []List[T] {
 }
 
 func (self *List[T]) Replace(start int, end int, values ...T) *List[T] {
-	limit := self.Length()
-
-	if start < 0 {
-		start = limit + start
-	}
-
-	if end < 0 {
-		end = limit + end
-	}
-
-	if end > limit {
-		end = limit
-	}
-
-	if start >= end || start >= limit {
-		return self // nothing can be changed, return self
-	}
-
 	list := slices.Replace(*self, start, end, values...)
 	return &list
 }
@@ -92,6 +74,15 @@ func (self *List[T]) Reverse() *List[T] {
 
 func (self *List[T]) ToReversed() *List[T] {
 	return self.Clone().Reverse()
+}
+
+func (self *List[T]) Sort() *List[T] {
+	slices.SortStableFunc(*self, sliceExt.CompareFunc)
+	return self
+}
+
+func (self *List[T]) ToSorted() *List[T] {
+	return self.Clone().Sort()
 }
 
 func (self *List[T]) Every(fn func(item T, idx int) bool) bool {
@@ -134,4 +125,30 @@ func (self *List[T]) Unshift(items ...T) int {
 func (self *List[T]) Shuffle() *List[T] {
 	sliceExt.Shuffle(*self)
 	return self
+}
+
+func (self *List[T]) Diff(others ...List[T]) *List[T] {
+	list := sliceExt.Diff(*self, others...)
+	return &list
+}
+
+func (self *List[T]) Xor(others ...List[T]) *List[T] {
+	sources := append([]List[T]{}, *self)
+	sources = append(sources, others...)
+	list := sliceExt.Xor(sources...)
+	return &list
+}
+
+func (self *List[T]) Union(others ...List[T]) *List[T] {
+	sources := append([]List[T]{}, *self)
+	sources = append(sources, others...)
+	list := sliceExt.Union(sources...)
+	return &list
+}
+
+func (self *List[T]) Intersect(others ...List[T]) *List[T] {
+	sources := append([]List[T]{}, *self)
+	sources = append(sources, others...)
+	list := sliceExt.Intersect(sources...)
+	return &list
 }

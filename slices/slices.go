@@ -346,6 +346,68 @@ func Shuffle[S ~[]T, T any](s S) {
 	})
 }
 
+// This function is used as the compare function for sorting functions.
+func CompareFunc[T any](a, b T) int {
+	switch _a := any(a).(type) {
+	case int:
+		_b := any(b).(int)
+		return _a - _b
+	case int16:
+		_b := any(b).(int16)
+		return int(_a - _b)
+	case int32:
+		_b := any(b).(int32)
+		return int(_a - _b)
+	case int64:
+		_b := any(b).(int64)
+		return int(_a - _b)
+	case uint:
+		_b := any(b).(uint)
+		return int(_a) - int(_b)
+	case uint16:
+		_b := any(b).(uint16)
+		return int(_a) - int(_b)
+	case uint32:
+		_b := any(b).(uint32)
+		return int(_a) - int(_b)
+	case uint64:
+		_b := any(b).(uint64)
+		return int(_a) - int(_b)
+	case uintptr:
+		_b := any(b).(uintptr)
+		return int(_a) - int(_b)
+	case float32:
+		_b := any(b).(float32)
+		if _a < _b {
+			return -1
+		} else if _a == _b {
+			return 0
+		} else {
+			return 1
+		}
+	case float64:
+		_b := any(b).(float64)
+		if _a < _b {
+			return -1
+		} else if _a == _b {
+			return 0
+		} else {
+			return 1
+		}
+	case string:
+		_b := any(b).(string)
+		if _a < _b {
+			return -1
+		} else if _a == _b {
+			return 0
+		} else {
+			return 1
+		}
+	default:
+		return -1 // When used in sorting functions, return -1 means remaining the original order.
+	}
+}
+
 // Orders the items of the given slice according to the specified comparable `key` (whose value must
 // either be of type int or string). `order` can be either `asc` or `desc`.
 //
@@ -357,64 +419,20 @@ func OrderBy[S ~[]T, T ~map[K]V, K comparable, V any](original S, key K, order s
 	}
 
 	items := slices.Clone(original)
-	slices.SortStableFunc(items, func(a T, b T) int {
-		_, aOk := a[key]
-		_, bOk := b[key]
+	slices.SortStableFunc(items, func(a, b T) int {
+		_a, aOk := a[key]
+		_b, bOk := b[key]
 
 		if !aOk || !bOk {
-			return 0
+			return -1 // remain the original order
 		}
 
-		aKey, aOk := any(a[key]).(int)
-
-		if !aOk {
-			aKey, aOk := any(a[key]).(string)
-
-			if !aOk {
-				return 0
-			}
-
-			bKey, bOk := any(b[key]).(string)
-
-			if !bOk {
-				return 0
-			}
-
-			if aKey < bKey {
-				if order == "desc" {
-					return 1
-				} else {
-					return -1
-				}
-			} else {
-				if order == "desc" {
-					return -1
-				} else {
-					return 1
-				}
-			}
-		}
-
-		bKey, bOk := any(b[key]).(int)
-
-		if !bOk {
-			return 0
-		}
-
-		if aKey < bKey {
-			if order == "desc" {
-				return 1
-			} else {
-				return -1
-			}
-		} else {
-			if order == "desc" {
-				return -1
-			} else {
-				return 1
-			}
-		}
+		return CompareFunc(_a, _b)
 	})
+
+	if order == "desc" {
+		slices.Reverse(items)
+	}
 
 	return items
 }
