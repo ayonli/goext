@@ -23,6 +23,12 @@ func TestMap(suit *testing.T) {
 			{Key: "bar", Value: "World", Deleted: false},
 		}, m.records)
 		assert.Equal(t, 2, m.size)
+
+		m.Set("foo", "Hi")
+		assert.Equal(t, []MapRecordItem[string, string]{
+			{Key: "foo", Value: "Hi", Deleted: false},
+			{Key: "bar", Value: "World", Deleted: false},
+		}, m.records)
 	})
 
 	suit.Run("Get", func(t *testing.T) {

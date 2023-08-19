@@ -5,46 +5,48 @@ import (
 	"strings"
 )
 
-type CiMap[K ~string, V any] struct {
-	keys        []K
-	values      []V
-	ids         []string
-	size        int
-	placeholder *V
+type CiMapRecordItem[K comparable, V any] struct {
+	Id      string
+	Key     K
+	Value   V
+	Deleted bool
 }
 
-func NewCiMap[K ~string, V any](initial map[K]V) *CiMap[K, V] {
+type CiMap[K ~string, V any] struct {
+	records []CiMapRecordItem[K, V]
+	size    int
+}
+
+func NewCiMap[K ~string, V any]() *CiMap[K, V] {
 	self := CiMap[K, V]{
-		keys:        []K{},
-		values:      []V{},
-		ids:         []string{},
-		placeholder: new(V),
+		records: []CiMapRecordItem[K, V]{},
+		size:    0,
 	}
-
-	for key, value := range initial {
-		id := strings.ToLower(string(key))
-		self.keys = append(self.keys, key)
-		self.values = append(self.values, value)
-		self.ids = append(self.ids, id)
-	}
-
-	self.size = len(self.ids)
-
 	return &self
+}
+
+func (self *CiMap[K, V]) findIndex(id string) int {
+	return slices.IndexFunc(self.records, func(record CiMapRecordItem[K, V]) bool {
+		return record.Id == id && !record.Deleted
+	})
 }
 
 func (self *CiMap[K, V]) Set(key K, value V) *CiMap[K, V] {
 	id := strings.ToLower(string(key))
-	idx := slices.Index(self.ids, id)
+	idx := self.findIndex(id)
 
 	if idx == -1 {
-		self.keys = append(self.keys, key)
-		self.values = append(self.values, value)
-		self.ids = append(self.ids, id)
+		self.records = append(self.records, CiMapRecordItem[K, V]{
+			Id:      id,
+			Key:     key,
+			Value:   value,
+			Deleted: false,
+		})
 		self.size++
 	} else {
-		self.keys[idx] = key // also update the key
-		self.values[idx] = value
+		record := &self.records[idx]
+		record.Key = key // also update the key
+		record.Value = value
 	}
 
 	return self
@@ -52,73 +54,52 @@ func (self *CiMap[K, V]) Set(key K, value V) *CiMap[K, V] {
 
 func (self *CiMap[K, V]) Get(key K) (V, bool) {
 	id := strings.ToLower(string(key))
-	idx := slices.Index(self.ids, id)
+	idx := self.findIndex(id)
 
 	if idx == -1 {
-		return *self.placeholder, false
+		return *new(V), false
 	}
 
-	return self.values[idx], true
+	record := self.records[idx]
+	return record.Value, true
+}
+
+func (self *CiMap[K, V]) Has(key K) bool {
+	id := strings.ToLower(string(key))
+	idx := self.findIndex(id)
+	return idx != -1
 }
 
 func (self *CiMap[K, V]) Delete(key K) bool {
 	id := strings.ToLower(string(key))
-	idx := slices.Index(self.ids, id)
+	idx := self.findIndex(id)
 
 	if idx == -1 {
 		return false
 	}
 
-	self.keys[idx] = ""
-	self.values[idx] = *self.placeholder
+	record := &self.records[idx]
+	record.Id = ""
+	record.Key = *new(K)
+	record.Value = *new(V)
+	record.Deleted = true
 	self.size--
 
 	return true
 }
 
 func (self *CiMap[K, V]) Clear() {
-	self.keys = []K{}
-	self.values = []V{}
-	self.ids = []string{}
+	self.records = []CiMapRecordItem[K, V]{}
 	self.size = 0
-}
-
-func (self *CiMap[K, V]) ForEach(fn func(value V, key K)) {
-	for idx := range self.ids {
-		value := self.values[idx]
-
-		if &value != self.placeholder {
-			key := self.keys[idx]
-			fn(value, key)
-		}
-	}
-}
-
-func (self *CiMap[K, V]) Has(key K) bool {
-	id := strings.ToLower(string(key))
-	idx := slices.Index(self.ids, id)
-
-	if idx == -1 {
-		return false
-	}
-
-	value := self.values[idx]
-
-	if &value == self.placeholder {
-		return false
-	}
-
-	return true
 }
 
 func (self *CiMap[K, V]) Keys() []K {
 	items := make([]K, self.size)
 	idx := 0
 
-	for i, value := range self.values {
-		if &value != self.placeholder {
-			key := self.keys[i]
-			items[idx] = key
+	for _, record := range self.records {
+		if !record.Deleted {
+			items[idx] = record.Key
 			idx++
 		}
 	}
@@ -130,9 +111,9 @@ func (self *CiMap[K, V]) Values() []V {
 	items := make([]V, self.size)
 	idx := 0
 
-	for _, value := range self.values {
-		if &value != self.placeholder {
-			items[idx] = value
+	for _, record := range self.records {
+		if !record.Deleted {
+			items[idx] = record.Value
 			idx++
 		}
 	}
@@ -140,19 +121,12 @@ func (self *CiMap[K, V]) Values() []V {
 	return items
 }
 
-func (self *CiMap[K, V]) Entries() [][]any {
-	entries := make([][]any, self.size)
-	idx := 0
-
-	for i, value := range self.values {
-		if &value != self.placeholder {
-			key := self.keys[i]
-			entries[idx] = []any{key, value}
-			idx++
+func (self *CiMap[K, V]) ForEach(fn func(value V, key K)) {
+	for _, record := range self.records {
+		if !record.Deleted {
+			fn(record.Value, record.Key)
 		}
 	}
-
-	return entries
 }
 
 func (self *CiMap[K, V]) Size() int {
