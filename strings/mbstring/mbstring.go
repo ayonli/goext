@@ -113,6 +113,24 @@ func Slice(str string, start int, end int) string {
 	return strings.Join(slices.Slice(chars, start, end), "")
 }
 
+// Returns a section of the string selected from `start` to `end` (excluded).
+//
+// This function is similar to the `Slice()`, except it doesn't accept negative positions.
+func Substring(str string, start int, end int) string {
+	limit := len(str)
+
+	if end >= limit {
+		end = limit
+	}
+
+	if start >= end || start >= limit {
+		return "" // return an empty string directly
+	}
+
+	chars := strings.Split(str, "")
+	return strings.Join(chars[start:end], "")
+}
+
 // Breaks the string into smaller chunks according to the given length.
 func Chunk(str string, length int) []string {
 	chars := strings.Split(str, "")

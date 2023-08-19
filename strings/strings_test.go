@@ -76,6 +76,15 @@ func TestSlice(t *testing.T) {
 	assert.Equal(t, "Hello, Worl", str3)
 }
 
+func TestS(t *testing.T) {
+	str1 := "Hello, World!"
+	str2 := Substring(str1, 0, 2)
+	str3 := Substring(str1, 5, 3)
+
+	assert.Equal(t, "He", str2)
+	assert.Equal(t, "", str3)
+}
+
 func TestWords(t *testing.T) {
 	str := "Hello, World!"
 	words := Words(str)

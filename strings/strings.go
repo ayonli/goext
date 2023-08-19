@@ -111,7 +111,24 @@ func Slice(str string, start int, end int) string {
 	}
 
 	if start >= end || start >= limit {
-		return "" // return an string slice directly
+		return "" // return an empty string directly
+	}
+
+	return str[start:end]
+}
+
+// Returns a section of the string selected from `start` to `end` (excluded).
+//
+// This function is similar to the `Slice()`, except it doesn't accept negative positions.
+func Substring(str string, start int, end int) string {
+	limit := len(str)
+
+	if end >= limit {
+		end = limit
+	}
+
+	if start >= end || start >= limit {
+		return "" // return an empty string directly
 	}
 
 	return str[start:end]

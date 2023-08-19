@@ -103,6 +103,16 @@ func TestSlice(t *testing.T) {
 	assert.Equal(t, "", str8)
 }
 
+func TestSubstring(t *testing.T) {
+	str1 := "Hello, World!"
+	str2 := "Hello, 世界！"
+	str3 := Substring(str1, 0, 5)
+	str4 := Slice(str2, 5, 3)
+
+	assert.Equal(t, "Hello", str3)
+	assert.Equal(t, "", str4)
+}
+
 func TestChunk(t *testing.T) {
 	str1 := "foobar"
 	str2 := "你好世界"
