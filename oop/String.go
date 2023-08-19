@@ -27,6 +27,10 @@ func (self *String) Length() int {
 	return mbstring.Length(string(*self))
 }
 
+func (self *String) String() string {
+	return string(*self)
+}
+
 func (self *String) Clone() *String {
 	str := String(strings.Clone(string(*self)))
 	return &str
@@ -49,22 +53,12 @@ func (self *String) EndsWith(sub string) bool {
 }
 
 func (self *String) PadStart(finalLength int, padStr string) *String {
-	str := String(stringExt.PadStart(string(*self), finalLength, padStr))
+	str := String(mbstring.PadStart(string(*self), finalLength, padStr))
 	return &str
 }
 
 func (self *String) PadEnd(finalLength int, padStr string) *String {
-	str := String(stringExt.PadEnd(string(*self), finalLength, padStr))
-	return &str
-}
-
-func (self *String) ToUpper() *String {
-	str := String(strings.ToUpper(string(*self)))
-	return &str
-}
-
-func (self *String) ToLower() *String {
-	str := String(strings.ToLower(string(*self)))
+	str := String(mbstring.PadEnd(string(*self), finalLength, padStr))
 	return &str
 }
 
@@ -83,8 +77,19 @@ func (self *String) TrimRight(chars string) *String {
 	return &str
 }
 
-func (self *String) String() string {
-	return string(*self)
+func (self *String) ToUpper() *String {
+	str := String(strings.ToUpper(string(*self)))
+	return &str
+}
+
+func (self *String) ToLower() *String {
+	str := String(strings.ToLower(string(*self)))
+	return &str
+}
+
+func (self *String) Repeat(count int) *String {
+	str := String(strings.Repeat(string(*self), count))
+	return &str
 }
 
 func (self *String) Slice(start int, end int) *String {
@@ -92,8 +97,20 @@ func (self *String) Slice(start int, end int) *String {
 	return &str
 }
 
-func (self *String) Repeat(count int) *String {
-	str := String(strings.Repeat(string(*self), count))
+func (self *String) Split(sep string) []String {
+	return sliceExt.Map(strings.Split(string(*self), sep), func(str string, _ int) String {
+		return String(str)
+	})
+}
+
+func (self *String) Chunk(length int) []String {
+	return sliceExt.Map(mbstring.Chunk(string(*self), length), func(str string, _ int) String {
+		return String(str)
+	})
+}
+
+func (self *String) Truncate(length int) *String {
+	str := String(mbstring.Truncate(string(*self), length))
 	return &str
 }
 
@@ -107,14 +124,8 @@ func (self *String) ReplaceAll(old string, rep string) *String {
 	return &str
 }
 
-func (self *String) Split(sep string) []String {
-	return sliceExt.Map(strings.Split(string(*self), sep), func(str string, _ int) String {
-		return String(str)
-	})
-}
-
 func (self *String) Search(pattern string) int {
-	return stringExt.Search(string(*self), pattern)
+	return mbstring.Search(string(*self), pattern)
 }
 
 func (self *String) Match(pattern string) *String {

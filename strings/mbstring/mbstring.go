@@ -6,6 +6,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/ayonli/goext/slices"
+	stringExt "github.com/ayonli/goext/strings"
 )
 
 // Returns the character from the string according to the given index.
@@ -62,6 +63,46 @@ func Length(str string) int {
 	return utf8.RuneCountInString(str)
 }
 
+// Pads the given string with another string (multiple times, if needed) until the resulting string
+// reaches the final length. The padding is applied from the start of the string.
+func PadStart(str string, finalLength int, padStr string) string {
+	leftLength := finalLength - Length(str)
+
+	if leftLength <= 0 {
+		return str
+	}
+
+	if Length(padStr) > leftLength {
+		padStr = Slice(padStr, 0, leftLength)
+	}
+
+	for Length(str) < finalLength {
+		str = padStr + str
+	}
+
+	return str
+}
+
+// Pads the given string with another string (multiple times, if needed) until the resulting string
+// reaches the final length. The padding is applied from the end of the string.
+func PadEnd(str string, finalLength int, padStr string) string {
+	leftLength := finalLength - Length(str)
+
+	if leftLength <= 0 {
+		return str
+	}
+
+	if Length(padStr) > leftLength {
+		padStr = Slice(padStr, 0, leftLength)
+	}
+
+	for Length(str) < finalLength {
+		str += padStr
+	}
+
+	return str
+}
+
 // Returns a section of the string selected from `start` to `end` (excluded).
 //
 // If `start < 0`, it will be calculated as `Length(str) + start`.
@@ -110,4 +151,16 @@ func Truncate(str string, length int) string {
 
 		return strings.Join(chars[0:length], "") + "..."
 	}
+}
+
+// Executes a search for a match between a regular expression and the string, returning the index of
+// the first match in the string.
+func Search(str string, pattern string) int {
+	match := stringExt.Match(str, pattern)
+
+	if match != "" {
+		return Index(str, match)
+	}
+
+	return -1
 }

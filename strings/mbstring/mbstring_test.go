@@ -60,6 +60,32 @@ func TestLength(t *testing.T) {
 	assert.Equal(t, 10, len3)
 }
 
+func TestPadStart(t *testing.T) {
+	str1 := "你好，世界！"
+	str2 := PadStart(str1, 8, " ")
+	str3 := PadStart(str1, 8, "*")
+	str4 := PadStart(str1, 8, "Hi")
+	str5 := PadStart(str1, 8, "Hola")
+
+	assert.Equal(t, "  你好，世界！", str2)
+	assert.Equal(t, "**你好，世界！", str3)
+	assert.Equal(t, "Hi你好，世界！", str4)
+	assert.Equal(t, "Ho你好，世界！", str5)
+}
+
+func TestPadEnd(t *testing.T) {
+	str1 := "你好，世界！"
+	str2 := PadEnd(str1, 8, " ")
+	str3 := PadEnd(str1, 8, "*")
+	str4 := PadEnd(str1, 8, "Hi")
+	str5 := PadEnd(str1, 8, "Hola")
+
+	assert.Equal(t, "你好，世界！  ", str2)
+	assert.Equal(t, "你好，世界！**", str3)
+	assert.Equal(t, "你好，世界！Hi", str4)
+	assert.Equal(t, "你好，世界！Ho", str5)
+}
+
 func TestSlice(t *testing.T) {
 	str1 := "Hello, World!"
 	str2 := "你好，世界！"
@@ -113,4 +139,13 @@ func TestTruncate(t *testing.T) {
 	assert.Equal(t, "你好，世界！Hal...", str8)
 	assert.Equal(t, "你好，世界！H...", str9)
 	assert.Equal(t, "", str10)
+}
+
+func TestSearch(t *testing.T) {
+	str := "你好，世界！"
+	idx1 := Search(str, "，\\S+")
+	idx2 := Search(str, "，\\s+")
+
+	assert.Equal(t, 2, idx1)
+	assert.Equal(t, -1, idx2)
 }

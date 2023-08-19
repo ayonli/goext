@@ -90,6 +90,33 @@ func Hyphenate(str string) string {
 	})
 }
 
+// Returns a section of the string selected from `start` to `end` (excluded).
+//
+// If `start < 0`, it will be calculated as `Length(str) + start`.
+//
+// If `end < 0`, it will be calculated as `Length(str) + end`.
+func Slice(str string, start int, end int) string {
+	limit := len(str)
+
+	if start < 0 {
+		start = limit + start
+	}
+
+	if end < 0 {
+		end = limit + end
+	}
+
+	if end > limit {
+		end = limit
+	}
+
+	if start >= end || start >= limit {
+		return "" // return an string slice directly
+	}
+
+	return str[start:end]
+}
+
 // Extracts words (in latin characters) from the given string.
 func Words(str string) []string {
 	return wordRegex.FindAllString(str, -1)
