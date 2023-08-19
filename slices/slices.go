@@ -1,3 +1,4 @@
+// Additional functions for playing with slices and reduce mistakes.
 package slices
 
 import (
@@ -17,7 +18,7 @@ import (
 //
 // If the given index doesn't contain a value (boundary exceeded), the zero-value of the given type
 // and `false` will be returned.
-func At[T any](s []T, i int) (T, bool) {
+func At[S ~[]T, T any](s S, i int) (T, bool) {
 	if s == nil {
 		var empty T
 		return empty, false

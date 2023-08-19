@@ -1,3 +1,4 @@
+// Additional functions for string processing that are missing in the standard library.
 package strings
 
 import (

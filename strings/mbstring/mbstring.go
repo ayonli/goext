@@ -1,3 +1,4 @@
+// Additional functions for processing strings in multi-byte sequence.
 package mbstring
 
 import (

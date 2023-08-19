@@ -1,3 +1,4 @@
+// Additional functions for math calculation that are missing in the standard library.
 package math
 
 // Returns the maximal value from the given values.

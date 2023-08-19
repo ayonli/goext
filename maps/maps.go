@@ -1,3 +1,4 @@
+// Additional function for dealing with maps.
 package maps
 
 import (
