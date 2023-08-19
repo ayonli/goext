@@ -107,10 +107,9 @@ func (self *String) ReplaceAll(old string, rep string) *String {
 	return &str
 }
 
-func (self *String) Split(sep string) []*String {
-	return sliceExt.Map(strings.Split(string(*self), sep), func(str string, _ int) *String {
-		newStr := String(str)
-		return &newStr
+func (self *String) Split(sep string) []String {
+	return sliceExt.Map(strings.Split(string(*self), sep), func(str string, _ int) String {
+		return String(str)
 	})
 }
 
@@ -123,9 +122,8 @@ func (self *String) Match(pattern string) *String {
 	return &str
 }
 
-func (self *String) MatchAll(pattern string) []*String {
-	return sliceExt.Map(stringExt.MatchAll(string(*self), pattern), func(str string, _ int) *String {
-		newStr := String(str)
-		return &newStr
+func (self *String) MatchAll(pattern string) []String {
+	return sliceExt.Map(stringExt.MatchAll(string(*self), pattern), func(str string, _ int) String {
+		return String(str)
 	})
 }
