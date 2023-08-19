@@ -4,11 +4,13 @@ import (
 	"slices"
 )
 
+// The Set structure stores unique items.
 type Set[T comparable] struct {
 	records []MapRecordItem[int, T]
 	size    int
 }
 
+// Creates a new instance of the Set.
 func NewSet[T comparable](base []T) *Set[T] {
 	self := Set[T]{
 		records: []MapRecordItem[int, T]{},
@@ -28,6 +30,7 @@ func (self *Set[T]) findIndex(item T) int {
 	})
 }
 
+// Adds an item to the set. If the item already exists, the set remains untouched.
 func (self *Set[T]) Add(item T) *Set[T] {
 	if !self.Has(item) {
 		self.records = append(self.records, MapRecordItem[int, T]{
@@ -41,11 +44,13 @@ func (self *Set[T]) Add(item T) *Set[T] {
 	return self
 }
 
+// Checks if the given item exists in the set.
 func (self *Set[T]) Has(item T) bool {
 	idx := self.findIndex(item)
 	return idx != -1
 }
 
+// Removes the item from the set.
 func (self *Set[T]) Delete(item T) bool {
 	idx := self.findIndex(item)
 
@@ -62,11 +67,13 @@ func (self *Set[T]) Delete(item T) bool {
 	return true
 }
 
+// Empties the set and reset its size.
 func (self *Set[T]) Clear() {
 	self.records = []MapRecordItem[int, T]{}
 	self.size = 0
 }
 
+// Retrieves all the values in the set.
 func (self *Set[T]) Values() []T {
 	items := make([]T, self.size)
 	idx := 0
@@ -81,6 +88,7 @@ func (self *Set[T]) Values() []T {
 	return items
 }
 
+// Loop through all the items in the set and invoke the given function against them.
 func (self *Set[T]) ForEach(fn func(item T)) {
 	for _, record := range self.records {
 		if !record.Deleted {
@@ -89,6 +97,7 @@ func (self *Set[T]) ForEach(fn func(item T)) {
 	}
 }
 
+// Returns the size of the set.
 func (self *Set[T]) Size() int {
 	return self.size
 }
