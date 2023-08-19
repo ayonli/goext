@@ -8,11 +8,6 @@ import (
 
 type List[T comparable] []T
 
-func NewList[T comparable](records []T) *List[T] {
-	list := List[T](records)
-	return &list
-}
-
 func (self *List[T]) At(i int) (T, bool) {
 	return sliceExt.At(*self, i)
 }
@@ -26,7 +21,7 @@ func (self *List[T]) LastIndex(item T) int {
 }
 
 func (self *List[T]) Length() int {
-	return len([]T(*self))
+	return len(*self)
 }
 
 func (self *List[T]) Clone() *List[T] {
