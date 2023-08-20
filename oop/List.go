@@ -3,14 +3,14 @@ package oop
 import (
 	"slices"
 
-	sliceExt "github.com/ayonli/goext/slices"
+	"github.com/ayonli/goext/slicex"
 )
 
 // List is an objected-oriented abstract that works around the slice.
 type List[T comparable] []T
 
 func (self *List[T]) At(i int) (T, bool) {
-	return sliceExt.At(*self, i)
+	return slicex.At(*self, i)
 }
 
 func (self *List[T]) Index(item T) int {
@@ -18,7 +18,7 @@ func (self *List[T]) Index(item T) int {
 }
 
 func (self *List[T]) LastIndex(item T) int {
-	return sliceExt.LastIndex(*self, item)
+	return slicex.LastIndex(*self, item)
 }
 
 func (self *List[T]) Length() int {
@@ -43,32 +43,32 @@ func (self *List[T]) Contains(item T) bool {
 }
 
 func (self *List[T]) Count(item T) int {
-	return sliceExt.Count(*self, item)
+	return slicex.Count(*self, item)
 }
 
 func (self *List[T]) Concat(others ...List[T]) *List[T] {
 	sources := append([]List[T]{}, *self)
 	sources = append(sources, others...)
-	list := sliceExt.Concat(sources...)
+	list := slicex.Concat(sources...)
 	return &list
 }
 
 func (self *List[T]) Uniq() *List[T] {
-	list := sliceExt.Uniq(*self)
+	list := slicex.Uniq(*self)
 	return &list
 }
 
 func (self *List[T]) Slice(start int, end int) *List[T] {
-	list := sliceExt.Slice(*self, start, end)
+	list := slicex.Slice(*self, start, end)
 	return &list
 }
 
 func (self *List[T]) Chunk(length int) []List[T] {
-	return sliceExt.Chunk(*self, length)
+	return slicex.Chunk(*self, length)
 }
 
 func (self *List[T]) Join(sep string) string {
-	return sliceExt.Join(*self, sep)
+	return slicex.Join(*self, sep)
 }
 
 func (self *List[T]) Replace(start int, end int, values ...T) *List[T] {
@@ -86,7 +86,7 @@ func (self *List[T]) ToReversed() *List[T] {
 }
 
 func (self *List[T]) Sort() *List[T] {
-	slices.SortStableFunc(*self, sliceExt.CompareFunc)
+	slices.SortStableFunc(*self, slicex.CompareFunc)
 	return self
 }
 
@@ -95,77 +95,77 @@ func (self *List[T]) ToSorted() *List[T] {
 }
 
 func (self *List[T]) Every(fn func(item T, idx int) bool) bool {
-	return sliceExt.Every(*self, fn)
+	return slicex.Every(*self, fn)
 }
 
 func (self *List[T]) Some(fn func(item T, idx int) bool) bool {
-	return sliceExt.Some(*self, fn)
+	return slicex.Some(*self, fn)
 }
 
 func (self *List[T]) Find(fn func(item T, idx int) bool) (T, bool) {
-	return sliceExt.Find(*self, fn)
+	return slicex.Find(*self, fn)
 }
 
 func (self *List[T]) FindLast(fn func(item T, idx int) bool) (T, bool) {
-	return sliceExt.FindLast(*self, fn)
+	return slicex.FindLast(*self, fn)
 }
 
 func (self *List[T]) FindIndex(fn func(item T, idx int) bool) int {
-	return sliceExt.FindIndex(*self, fn)
+	return slicex.FindIndex(*self, fn)
 }
 
 func (self *List[T]) FindLastIndex(fn func(item T, idx int) bool) int {
-	return sliceExt.FindLastIndex(*self, fn)
+	return slicex.FindLastIndex(*self, fn)
 }
 
 func (self *List[T]) Filter(fn func(item T, idx int) bool) *List[T] {
-	list := sliceExt.Filter(*self, fn)
+	list := slicex.Filter(*self, fn)
 	return &list
 }
 
 func (self *List[T]) Pop() T {
-	return sliceExt.Pop(self)
+	return slicex.Pop(self)
 }
 
 func (self *List[T]) Push(items ...T) int {
-	return sliceExt.Push(self, items...)
+	return slicex.Push(self, items...)
 }
 
 func (self *List[T]) Shift() T {
-	return sliceExt.Shift(self)
+	return slicex.Shift(self)
 }
 
 func (self *List[T]) Unshift(items ...T) int {
-	return sliceExt.Unshift(self, items...)
+	return slicex.Unshift(self, items...)
 }
 
 func (self *List[T]) Shuffle() *List[T] {
-	sliceExt.Shuffle(*self)
+	slicex.Shuffle(*self)
 	return self
 }
 
 func (self *List[T]) Diff(others ...List[T]) *List[T] {
-	list := sliceExt.Diff(*self, others...)
+	list := slicex.Diff(*self, others...)
 	return &list
 }
 
 func (self *List[T]) Xor(others ...List[T]) *List[T] {
 	sources := append([]List[T]{}, *self)
 	sources = append(sources, others...)
-	list := sliceExt.Xor(sources...)
+	list := slicex.Xor(sources...)
 	return &list
 }
 
 func (self *List[T]) Union(others ...List[T]) *List[T] {
 	sources := append([]List[T]{}, *self)
 	sources = append(sources, others...)
-	list := sliceExt.Union(sources...)
+	list := slicex.Union(sources...)
 	return &list
 }
 
 func (self *List[T]) Intersect(others ...List[T]) *List[T] {
 	sources := append([]List[T]{}, *self)
 	sources = append(sources, others...)
-	list := sliceExt.Intersect(sources...)
+	list := slicex.Intersect(sources...)
 	return &list
 }

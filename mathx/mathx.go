@@ -1,5 +1,5 @@
 // Additional functions for math calculation that are missing in the standard library.
-package math
+package mathx
 
 // Returns the maximal value from the given values.
 func Max(first float64, rest ...float64) float64 {

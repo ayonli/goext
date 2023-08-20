@@ -3,16 +3,18 @@
 Extended functionalities that are missing in the Go standard library but frequently used in other
 languages.
 
-Especially for JavaScript developers, this project should make us feel at home.
+Especially for JavaScript developers, these packages should make us feel right at home.
 
-## Table of Contents
+## Packages
 
-- **math** Additional functions for math calculation that are missing in the standard library.
+- **[mathx](https://pkg.go.dev/github.com/ayonli/goext/mathx)**
+    Additional functions for math calculation that are missing in the standard library.
     - `Max()`
     - `Min()`
     - `Sum()`
     - `Product()`
-- **strings** Additional functions for string processing that are missing in the standard library.
+- **[stringx](https://pkg.go.dev/github.com/ayonli/goext/stringx)**
+    Additional functions for string processing that are missing in the standard library.
     - `StartsWith()`
     - `EndsWith()`
     - `PadStart()`
@@ -27,7 +29,8 @@ Especially for JavaScript developers, this project should make us feel at home.
     - `Search()`
     - `Match()`
     - `MatchAll()`
-    - **mbstring** Additional functions for processing strings in multi-byte sequence.
+    - **[mbstring](https://pkg.go.dev/github.com/ayonli/goext/stringx/mbstring)**
+        Additional functions for processing strings in multi-byte sequence.
         - `At()`
         - `Index()`
         - `LastIndex()`
@@ -39,7 +42,8 @@ Especially for JavaScript developers, this project should make us feel at home.
         - `Chunk()`
         - `Truncate()`
         - `Search()`
-- **slices** Additional functions for playing with slices and reduce mistakes.
+- **[slicex](https://pkg.go.dev/github.com/ayonli/goext/slicex)**
+    Additional functions for playing with slices and reduce mistakes.
     - `At()`
     - `LastIndex()`
     - `Count()`
@@ -71,14 +75,14 @@ Especially for JavaScript developers, this project should make us feel at home.
     - `Xor()`
     - `Union()`
     - `Intersect()`
-- **maps** Additional function for dealing with maps.
+- **[mapx](https://pkg.go.dev/github.com/ayonli/goext/mapx)** Additional functions for dealing with maps.
     - `Assign()`
     - `Patch()`
     - `Keys()`
     - `Values()`
     - `Pick()`
     - `Omit()`
-- **oop** Object-oriented abstract wrappers for basic data structures.
+- **[oop](https://pkg.go.dev/github.com/ayonli/goext/oop)** Object-oriented abstract wrappers for basic data structures.
     - `String` is an object-oriented abstract that works around multi-byte strings.
         - `At()`
         - `Index()`

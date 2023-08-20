@@ -6,8 +6,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/ayonli/goext/slices"
-	stringExt "github.com/ayonli/goext/strings"
+	"github.com/ayonli/goext/slicex"
+	"github.com/ayonli/goext/stringx"
 )
 
 // Returns the character from the string according to the given index.
@@ -16,7 +16,7 @@ import (
 //
 // If the given index doesn't contain a value (boundary exceeded), an empty string will be returned.
 func At(str string, i int) string {
-	char, _ := slices.At(strings.Split(str, ""), i)
+	char, _ := slicex.At(strings.Split(str, ""), i)
 	return char
 }
 
@@ -111,7 +111,7 @@ func PadEnd(str string, finalLength int, padStr string) string {
 // If `end < 0`, it will be calculated as `Length(str) + end`.
 func Slice(str string, start int, end int) string {
 	chars := strings.Split(str, "")
-	return strings.Join(slices.Slice(chars, start, end), "")
+	return strings.Join(slicex.Slice(chars, start, end), "")
 }
 
 // Returns a section of the string selected from `start` to `end` (excluded).
@@ -175,7 +175,7 @@ func Truncate(str string, length int) string {
 // Executes a search for a match between a regular expression and the string, returning the index of
 // the first match in the string.
 func Search(str string, pattern string) int {
-	match := stringExt.Match(str, pattern)
+	match := stringx.Match(str, pattern)
 
 	if match != "" {
 		return Index(str, match)

@@ -1,5 +1,11 @@
 // Additional functions for playing with slices and reduce mistakes.
-package slices
+//
+// This package favors immutability over efficiency, when a new slice is created by its functions,
+// unless explicitly stated out, they not only create a slice (which is a view of the underlying
+// array), they also create a new underlying array and copy the data to it, so that when we
+// modifying the new slice, it will not causing side-effect on the old slice (and vice versa), which
+// is typical and troublesome when using the `[:]` syntax to derive new slices.
+package slicex
 
 import (
 	"fmt"
@@ -9,7 +15,7 @@ import (
 	"strconv"
 	"strings"
 
-	mathExt "github.com/ayonli/goext/math"
+	"github.com/ayonli/goext/mathx"
 )
 
 // Returns the item from the slice according to the given index.
@@ -19,11 +25,6 @@ import (
 // If the given index doesn't contain a value (boundary exceeded), the zero-value of the given type
 // and `false` will be returned.
 func At[S ~[]T, T any](s S, i int) (T, bool) {
-	if s == nil {
-		var empty T
-		return empty, false
-	}
-
 	if i < 0 {
 		i = len(s) + i
 	}
@@ -39,10 +40,6 @@ func At[S ~[]T, T any](s S, i int) (T, bool) {
 // Returns the last index at which a given item can be found in the slice, or -1 if it is not
 // present. The slice is searched backwards.
 func LastIndex[S ~[]T, T comparable](s S, item T) int {
-	if s == nil {
-		return -1
-	}
-
 	for i := len(s) - 1; i >= 0; i-- {
 		if s[i] == item {
 			return i
@@ -71,7 +68,7 @@ func Count[S ~[]T, T comparable](s S, item T) int {
 func Concat[S ~[]T, T any](sources ...S) S {
 	sources = Filter(sources, func(item S, _ int) bool { return item != nil })
 	lengths := Map(sources, func(item S, _ int) float64 { return float64(len(item)) })
-	length := mathExt.Sum(lengths...)
+	length := mathx.Sum(lengths...)
 	newSlice := make(S, int(length))
 	idx := 0
 
@@ -87,10 +84,6 @@ func Concat[S ~[]T, T any](sources ...S) S {
 
 // Creates a new slice based on the original slice and removes all the duplicated items.
 func Uniq[S ~[]E, E comparable](original S) S {
-	if original == nil {
-		return nil
-	}
-
 	items := make(S, 0)
 
 	for _, item := range original {
@@ -105,10 +98,6 @@ func Uniq[S ~[]E, E comparable](original S) S {
 // Creates a new slice based on the original slice and remove all the duplicated items identified
 // by the given key.
 func UniqBy[S ~[]M, M ~map[K]V, K comparable, V comparable](original S, key K) S {
-	if original == nil {
-		return nil
-	}
-
 	ids := []V{}
 	items := S{}
 
@@ -135,7 +124,7 @@ func UniqBy[S ~[]M, M ~map[K]V, K comparable, V comparable](original S, key K) S
 // Creates a new slice with all sub-slice items concatenated into it.
 func Flat[S ~[]T, T any](original []S) S {
 	original = Filter(original, func(item S, _ int) bool { return item != nil })
-	length := mathExt.Sum(Map(original, func(item S, _ int) float64 {
+	length := mathx.Sum(Map(original, func(item S, _ int) float64 {
 		return float64(len(item))
 	})...)
 	newOne := make(S, int(length))
@@ -209,10 +198,6 @@ func Chunk[S ~[]T, T any](original S, length int) []S {
 // Creates and returns a string by concatenating all of the items in the slice, separated by the
 // specified separator string.
 func Join[S ~[]T, T any](s S, sep string) string {
-	if s == nil {
-		return ""
-	}
-
 	return strings.Join(Map(s, func(item T, _ int) string {
 		if value, ok := any(item).(int); ok {
 			return strconv.Itoa(value)
@@ -532,13 +517,10 @@ func Diff[S ~[]T, T comparable](first S, others ...S) S {
 // Creates a slice of unique values that is the symmetric difference of the given sources.
 func Xor[S ~[]T, T comparable](sources ...S) S {
 	items := S{}
+	sources = Filter(sources, func(item S, _ int) bool { return item != nil })
 	intersection := Intersect(sources...)
 
 	for _, source := range sources {
-		if source == nil {
-			continue
-		}
-
 		for _, item := range source {
 			if !slices.Contains(intersection, item) {
 				items = append(items, item)

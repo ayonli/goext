@@ -1,11 +1,11 @@
-// Additional function for dealing with maps.
-package maps
+// Additional functions for dealing with maps.
+package mapx
 
 import (
 	"maps"
 	"slices"
 
-	sliceExt "github.com/ayonli/goext/slices"
+	"github.com/ayonli/goext/slicex"
 )
 
 // Copies one or more items from the source maps to the target map. The later key-value pairs
@@ -53,7 +53,7 @@ func Keys[M ~map[K]V, K comparable, V any](m M) []K {
 		idx++
 	}
 
-	slices.SortStableFunc(keys, sliceExt.CompareFunc)
+	slices.SortStableFunc(keys, slicex.CompareFunc)
 	return keys
 }
 
@@ -75,10 +75,6 @@ func Values[M ~map[K]V, K comparable, V any](m M) []V {
 func Pick[M ~map[K]V, K comparable, V any](original M, keys []K) M {
 	newMap := M{}
 
-	if keys == nil {
-		return newMap
-	}
-
 	for _, key := range keys {
 		value, ok := original[key]
 
@@ -92,13 +88,9 @@ func Pick[M ~map[K]V, K comparable, V any](original M, keys []K) M {
 
 // Creates a new map based on the original map but without the specified keys.
 func Omit[M ~map[K]V, K comparable, V any](original M, keys []K) M {
-	if keys == nil {
-		return original
-	}
-
 	newMap := M{}
 	allKeys := Keys(original)
-	keptKeys := sliceExt.Diff(allKeys, keys)
+	keptKeys := slicex.Diff(allKeys, keys)
 
 	for _, key := range keptKeys {
 		value, ok := original[key]

@@ -3,9 +3,9 @@ package oop
 import (
 	"strings"
 
-	sliceExt "github.com/ayonli/goext/slices"
-	stringExt "github.com/ayonli/goext/strings"
-	"github.com/ayonli/goext/strings/mbstring"
+	"github.com/ayonli/goext/slicex"
+	"github.com/ayonli/goext/stringx"
+	"github.com/ayonli/goext/stringx/mbstring"
 )
 
 // String is an object-oriented abstract that works around multi-byte strings.
@@ -37,8 +37,8 @@ func (self *String) Clone() *String {
 	return &str
 }
 
-func (self *String) Compare(str String) int {
-	return strings.Compare(string(*self), string(str))
+func (self *String) Compare(another String) int {
+	return strings.Compare(string(*self), string(another))
 }
 
 func (self *String) Contains(sub string) bool {
@@ -46,11 +46,11 @@ func (self *String) Contains(sub string) bool {
 }
 
 func (self *String) StartsWith(sub string) bool {
-	return stringExt.StartsWith(string(*self), sub)
+	return stringx.StartsWith(string(*self), sub)
 }
 
 func (self *String) EndsWith(sub string) bool {
-	return stringExt.EndsWith(string(*self), sub)
+	return stringx.EndsWith(string(*self), sub)
 }
 
 func (self *String) PadStart(finalLength int, padStr string) *String {
@@ -89,12 +89,12 @@ func (self *String) ToLower() *String {
 }
 
 func (self *String) Capitalize(all bool) *String {
-	str := String(stringExt.Capitalize(string(*self), all))
+	str := String(stringx.Capitalize(string(*self), all))
 	return &str
 }
 
 func (self *String) Hyphenate() *String {
-	str := String(stringExt.Hyphenate(string(*self)))
+	str := String(stringx.Hyphenate(string(*self)))
 	return &str
 }
 
@@ -109,13 +109,13 @@ func (self *String) Substring(start int, end int) *String {
 }
 
 func (self *String) Split(sep string) []String {
-	return sliceExt.Map(strings.Split(string(*self), sep), func(str string, _ int) String {
+	return slicex.Map(strings.Split(string(*self), sep), func(str string, _ int) String {
 		return String(str)
 	})
 }
 
 func (self *String) Chunk(length int) []String {
-	return sliceExt.Map(mbstring.Chunk(string(*self), length), func(str string, _ int) String {
+	return slicex.Map(mbstring.Chunk(string(*self), length), func(str string, _ int) String {
 		return String(str)
 	})
 }
@@ -145,12 +145,12 @@ func (self *String) Search(pattern string) int {
 }
 
 func (self *String) Match(pattern string) *String {
-	str := String(stringExt.Match(string(*self), pattern))
+	str := String(stringx.Match(string(*self), pattern))
 	return &str
 }
 
 func (self *String) MatchAll(pattern string) []String {
-	return sliceExt.Map(stringExt.MatchAll(string(*self), pattern), func(str string, _ int) String {
+	return slicex.Map(stringx.MatchAll(string(*self), pattern), func(str string, _ int) String {
 		return String(str)
 	})
 }

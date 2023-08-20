@@ -1,5 +1,5 @@
 // Additional functions for string processing that are missing in the standard library.
-package strings
+package stringx
 
 import (
 	"math"
@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-var wordRegex = regexp.MustCompile("\\w+")
-var spaceRegex = regexp.MustCompile("\\s+")
-var spaceSepRegex = regexp.MustCompile("\\S\\s+\\S")
+var wordRegex = regexp.MustCompile(`\w+`)
+var spaceRegex = regexp.MustCompile(`\s+`)
+var spaceSepRegex = regexp.MustCompile(`\S\s+\S`)
 
 // Checks if the given string starts with the specified sub string.
 //
