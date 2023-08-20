@@ -3,6 +3,7 @@ package mbstring
 
 import (
 	"math"
+	"slices"
 	"strings"
 	"unicode/utf8"
 
@@ -16,6 +17,10 @@ import (
 //
 // If the given index doesn't contain a value (boundary exceeded), an empty string will be returned.
 func At(str string, i int) string {
+	if str == "" {
+		return ""
+	}
+
 	char, _ := slicex.At(strings.Split(str, ""), i)
 	return char
 }
@@ -23,12 +28,25 @@ func At(str string, i int) string {
 // Returns the index at which a given sub string can be found in the string, or -1 if it is not
 // present.
 func Index(str string, sub string) int {
+	if str == "" {
+		if sub == "" {
+			return 0
+		} else {
+			return -1
+		}
+	}
+
 	chars := strings.Split(str, "")
 	subChars := strings.Split(sub, "")
 	length := len(subChars)
+	limit := len(chars)
 
 	for i := range chars {
-		if strings.Join(chars[i:i+length], "") == sub {
+		end := i + length
+
+		if end > limit {
+			break
+		} else if strings.Join(chars[i:i+length], "") == sub {
 			return i
 		}
 	}
@@ -39,19 +57,23 @@ func Index(str string, sub string) int {
 // Returns the last index at which a given sub string can be found in the string, or -1 if it is not
 // present. The string is searched backwards.
 func LastIndex(str string, sub string) int {
+	if str == "" {
+		if sub == "" {
+			return 0
+		} else {
+			return -1
+		}
+	}
+
 	chars := strings.Split(str, "")
 	subChars := strings.Split(sub, "")
 	length := len(subChars)
 	limit := len(chars)
 
-	for i := len(chars) - 1; i >= 0; i-- {
+	for i := limit - length; i >= 0; i-- {
 		end := i + length
 
-		if end > limit {
-			end = limit
-		}
-
-		if strings.Join(chars[i:end], "") == sub {
+		if slices.Equal(chars[i:end], subChars) {
 			return i
 		}
 	}
@@ -118,7 +140,15 @@ func Slice(str string, start int, end int) string {
 //
 // This function is similar to the `Slice()`, except it doesn't accept negative positions.
 func Substring(str string, start int, end int) string {
-	limit := len(str)
+	limit := Length(str)
+
+	if start < 0 {
+		start = 0
+	}
+
+	if end < 0 {
+		end = 0
+	}
 
 	if end >= limit {
 		end = limit
