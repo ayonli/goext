@@ -66,13 +66,10 @@ func ExampleString_Clone() {
 
 func ExampleString_Compare() {
 	str1 := oop.String("你好，世界！")
-	str2 := oop.String("你好，世界！")
-	str3 := oop.String("Hello，世界！")
-	str4 := oop.String("你好，祖国！")
 
-	fmt.Println(str1.Compare(str2))
-	fmt.Println(str1.Compare(str3))
-	fmt.Println(str1.Compare(str4))
+	fmt.Println(str1.Compare("你好，世界！"))
+	fmt.Println(str1.Compare("Hello，世界！"))
+	fmt.Println(str1.Compare("你好，祖国！"))
 	// Output:
 	// 0
 	// 1
@@ -128,7 +125,7 @@ func ExampleString_PadEnd() {
 func ExampleString_Trim() {
 	str := oop.String("  你好，世界！  ")
 
-	fmt.Println(strconv.Quote(string(*str.Trim(" "))))
+	fmt.Println(strconv.Quote(string(str.Trim(" "))))
 	// Output:
 	// "你好，世界！"
 }
@@ -136,7 +133,7 @@ func ExampleString_Trim() {
 func ExampleString_TrimLeft() {
 	str := oop.String("  你好，世界！  ")
 
-	fmt.Println(strconv.Quote(string(*str.TrimLeft(" "))))
+	fmt.Println(strconv.Quote(string(str.TrimLeft(" "))))
 	// Output:
 	// "你好，世界！  "
 }
@@ -144,7 +141,7 @@ func ExampleString_TrimLeft() {
 func ExampleString_TrimRight() {
 	str := oop.String("  你好，世界！  ")
 
-	fmt.Println(strconv.Quote(string(*str.TrimRight(" "))))
+	fmt.Println(strconv.Quote(string(str.TrimRight(" "))))
 	// Output:
 	// "  你好，世界！"
 }
