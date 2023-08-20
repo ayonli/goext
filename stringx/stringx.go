@@ -124,6 +124,14 @@ func Slice(str string, start int, end int) string {
 func Substring(str string, start int, end int) string {
 	limit := len(str)
 
+	if start < 0 {
+		start = 0
+	}
+
+	if end < 0 {
+		end = 0
+	}
+
 	if end >= limit {
 		end = limit
 	}
@@ -214,7 +222,7 @@ func MatchAll(str string, pattern string) []string {
 	regexp, err := regexp.Compile(pattern)
 
 	if err != nil {
-		return nil
+		return []string{}
 	}
 
 	return regexp.FindAllString(str, -1)
