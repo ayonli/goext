@@ -1,6 +1,7 @@
 package oop
 
 import (
+	"fmt"
 	"slices"
 )
 
@@ -151,4 +152,22 @@ func (self *Map[K, V]) ForEach(fn func(value V, key K)) {
 // Returns the size of the map.
 func (self *Map[K, V]) Size() int {
 	return self.size
+}
+
+func (self *Map[K, V]) String() string {
+	str := "Map["
+	started := false
+
+	self.ForEach(func(value V, key K) {
+		if started {
+			str += " "
+		} else {
+			started = true
+		}
+
+		str += fmt.Sprint(key) + ":" + fmt.Sprint(value)
+	})
+
+	str += "]"
+	return str
 }

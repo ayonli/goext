@@ -1,6 +1,7 @@
 package oop
 
 import (
+	"fmt"
 	"slices"
 )
 
@@ -100,4 +101,8 @@ func (self *Set[T]) ForEach(fn func(item T)) {
 // Returns the size of the set.
 func (self *Set[T]) Size() int {
 	return self.size
+}
+
+func (self *Set[T]) String() string {
+	return "Set" + fmt.Sprint(self.Values())
 }

@@ -67,6 +67,15 @@ func TestMap(suit *testing.T) {
 		}, m.records)
 	})
 
+	suit.Run("Clear", func(t *testing.T) {
+		m := NewMap[string, string]()
+		m.Set("foo", "Hello").Set("bar", "World")
+		m.Clear()
+
+		assert.Equal(t, 0, m.size)
+		assert.Equal(t, []MapRecordItem[string, string]{}, m.records)
+	})
+
 	suit.Run("Keys", func(t *testing.T) {
 		m := NewMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")

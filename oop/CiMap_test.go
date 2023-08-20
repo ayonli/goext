@@ -73,6 +73,15 @@ func TestCiMap(suit *testing.T) {
 		}, m.records)
 	})
 
+	suit.Run("Clear", func(t *testing.T) {
+		m := NewCiMap[string, string]()
+		m.Set("foo", "Hello").Set("bar", "World")
+		m.Clear()
+
+		assert.Equal(t, 0, m.size)
+		assert.Equal(t, []CiMapRecordItem[string, string]{}, m.records)
+	})
+
 	suit.Run("Keys", func(t *testing.T) {
 		m := NewCiMap[string, string]()
 		m.Set("Foo", "Hello").Set("Bar", "World")
@@ -88,7 +97,7 @@ func TestCiMap(suit *testing.T) {
 	})
 
 	suit.Run("ToMap", func(t *testing.T) {
-		m := NewMap[string, string]()
+		m := NewCiMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
 
 		assert.Equal(t, map[string]string{

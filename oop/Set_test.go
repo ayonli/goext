@@ -60,6 +60,15 @@ func TestSet(suit *testing.T) {
 		}, s.records)
 	})
 
+	suit.Run("Clear", func(t *testing.T) {
+		s := NewSet[string]([]string{})
+		s.Add("Hello").Add("World")
+		s.Clear()
+
+		assert.Equal(t, 0, s.size)
+		assert.Equal(t, []MapRecordItem[int, string]{}, s.records)
+	})
+
 	suit.Run("Values", func(t *testing.T) {
 		s := NewSet[string]([]string{})
 		s.Add("Hello").Add("World")
