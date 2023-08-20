@@ -27,7 +27,7 @@ func TestSet(suit *testing.T) {
 	})
 
 	suit.Run("Add", func(t *testing.T) {
-		s := NewSet[string]([]string{})
+		s := NewSet([]string{})
 		s.Add("Hello").Add("World").Add("Hello")
 
 		assert.Equal(t, []MapRecordItem[int, string]{
@@ -38,7 +38,7 @@ func TestSet(suit *testing.T) {
 	})
 
 	suit.Run("Has", func(t *testing.T) {
-		s := NewSet[string]([]string{})
+		s := NewSet([]string{})
 		s.Add("Hello").Add("World")
 
 		assert.Equal(t, true, s.Has("Hello"))
@@ -46,7 +46,7 @@ func TestSet(suit *testing.T) {
 	})
 
 	suit.Run("Delete", func(t *testing.T) {
-		s := NewSet[string]([]string{})
+		s := NewSet([]string{})
 		s.Add("Hello").Add("World")
 		ok1 := s.Delete("Hello")
 		ok2 := s.Delete("Hola")
@@ -58,10 +58,23 @@ func TestSet(suit *testing.T) {
 			{Key: 0, Value: "", Deleted: true},
 			{Key: 1, Value: "World", Deleted: false},
 		}, s.records)
+
+		m2 := NewSet([]int{})
+
+		for i := 0; i < 100; i++ {
+			m2.Add(i)
+		}
+
+		for i := 0; i < 100; i++ {
+			m2.Delete(i)
+		}
+
+		assert.Equal(t, 0, m2.Size())
+		assert.Equal(t, 33, len(m2.records))
 	})
 
 	suit.Run("Clear", func(t *testing.T) {
-		s := NewSet[string]([]string{})
+		s := NewSet([]string{})
 		s.Add("Hello").Add("World")
 		s.Clear()
 
@@ -70,14 +83,14 @@ func TestSet(suit *testing.T) {
 	})
 
 	suit.Run("Values", func(t *testing.T) {
-		s := NewSet[string]([]string{})
+		s := NewSet([]string{})
 		s.Add("Hello").Add("World")
 
 		assert.Equal(t, []string{"Hello", "World"}, s.Values())
 	})
 
 	suit.Run("ForEach", func(t *testing.T) {
-		s := NewSet[string]([]string{})
+		s := NewSet([]string{})
 		s.Add("Hello").Add("World")
 		entries := List[string]{}
 
@@ -89,7 +102,7 @@ func TestSet(suit *testing.T) {
 	})
 
 	suit.Run("Size", func(t *testing.T) {
-		s := NewSet[string]([]string{})
+		s := NewSet([]string{})
 		s.Add("Hello").Add("World")
 
 		assert.Equal(t, 2, s.Size())

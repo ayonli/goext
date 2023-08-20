@@ -23,7 +23,7 @@ func ExampleNewSet() {
 }
 
 func ExampleSet_Add() {
-	s := oop.NewSet[string]([]string{})
+	s := oop.NewSet([]string{})
 
 	s.Add("Hello").Add("World") // Add() method can be chained
 	s.Add("Hello")              // duplicate adding values will not effect
@@ -34,7 +34,7 @@ func ExampleSet_Add() {
 }
 
 func ExampleSet_Has() {
-	s := oop.NewSet[string]([]string{})
+	s := oop.NewSet([]string{})
 	s.Add("Hello")
 
 	fmt.Println(s.Has("Hello"))
@@ -45,7 +45,7 @@ func ExampleSet_Has() {
 }
 
 func ExampleSet_Delete() {
-	s := oop.NewSet[string]([]string{})
+	s := oop.NewSet([]string{})
 	s.Add("Hello").Add("World")
 
 	ok1 := s.Delete("Hello") // succeed
@@ -61,7 +61,7 @@ func ExampleSet_Delete() {
 }
 
 func ExampleSet_Clear() {
-	s := oop.NewSet[string]([]string{})
+	s := oop.NewSet([]string{})
 	s.Add("Hello").Add("World")
 
 	s.Clear()
@@ -72,7 +72,7 @@ func ExampleSet_Clear() {
 }
 
 func ExampleSet_Values() {
-	s := oop.NewSet[string]([]string{})
+	s := oop.NewSet([]string{})
 	s.Add("Hello").Add("World")
 
 	fmt.Println(s.Values())
@@ -81,7 +81,7 @@ func ExampleSet_Values() {
 }
 
 func ExampleSet_ForEach() {
-	s := oop.NewSet[string]([]string{})
+	s := oop.NewSet([]string{})
 	s.Add("Hello").Add("World")
 
 	s.ForEach(func(item string) {
@@ -93,7 +93,7 @@ func ExampleSet_ForEach() {
 }
 
 func ExampleSet_Size() {
-	s := oop.NewSet[string]([]string{})
+	s := oop.NewSet([]string{})
 	s.Add("Hello").Add("World")
 
 	fmt.Println(s.Size())

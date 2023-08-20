@@ -1,6 +1,7 @@
 package oop
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -65,6 +66,19 @@ func TestMap(suit *testing.T) {
 			{Key: "", Value: "", Deleted: true},
 			{Key: "bar", Value: "World", Deleted: false},
 		}, m.records)
+
+		m2 := NewMap[int, string]()
+
+		for i := 0; i < 100; i++ {
+			m2.Set(i, strconv.Itoa(i))
+		}
+
+		for i := 0; i < 100; i++ {
+			m2.Delete(i)
+		}
+
+		assert.Equal(t, 0, m2.Size())
+		assert.Equal(t, 33, len(m2.records))
 	})
 
 	suit.Run("Clear", func(t *testing.T) {

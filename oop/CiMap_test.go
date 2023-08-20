@@ -1,6 +1,7 @@
 package oop
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -71,6 +72,19 @@ func TestCiMap(suit *testing.T) {
 			{Id: "", Key: "", Value: "", Deleted: true},
 			{Id: "", Key: "", Value: "", Deleted: true},
 		}, m.records)
+
+		m2 := NewCiMap[string, string]()
+
+		for i := 0; i < 100; i++ {
+			m2.Set(strconv.Itoa(i), strconv.Itoa(i))
+		}
+
+		for i := 0; i < 100; i++ {
+			m2.Delete(strconv.Itoa(i))
+		}
+
+		assert.Equal(t, 0, m2.Size())
+		assert.Equal(t, 33, len(m2.records))
 	})
 
 	suit.Run("Clear", func(t *testing.T) {

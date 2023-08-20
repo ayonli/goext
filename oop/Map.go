@@ -3,6 +3,8 @@ package oop
 import (
 	"fmt"
 	"slices"
+
+	"github.com/ayonli/goext/slicex"
 )
 
 type MapRecordItem[K comparable, V any] struct {
@@ -87,6 +89,13 @@ func (self *Map[K, V]) Delete(key K) bool {
 	record.Value = *new(V)
 	record.Deleted = true
 	self.size--
+
+	// Optimize memory, when too much records are deleted, re-allocate the internal list.
+	if limit := len(self.records); limit >= 100 && self.size <= int(limit/3) {
+		self.records = slicex.Filter(self.records, func(item MapRecordItem[K, V], idx int) bool {
+			return !item.Deleted
+		})
+	}
 
 	return true
 }

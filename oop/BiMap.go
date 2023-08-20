@@ -1,6 +1,10 @@
 package oop
 
-import "slices"
+import (
+	"slices"
+
+	"github.com/ayonli/goext/slicex"
+)
 
 // Bi-directional map, keys and values are unique and map to each other.
 type BiMap[K comparable, V comparable] struct {
@@ -103,6 +107,13 @@ func (self *BiMap[K, V]) deleteAt(idx int) bool {
 	record.Value = *new(V)
 	record.Deleted = true
 	self.size--
+
+	// Optimize memory, when too much records are deleted, re-allocate the internal list.
+	if limit := len(self.records); limit >= 100 && self.size <= int(limit/3) {
+		self.records = slicex.Filter(self.records, func(item MapRecordItem[K, V], idx int) bool {
+			return !item.Deleted
+		})
+	}
 
 	return true
 }

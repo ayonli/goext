@@ -3,6 +3,8 @@ package oop
 import (
 	"fmt"
 	"slices"
+
+	"github.com/ayonli/goext/slicex"
 )
 
 // Set is an object-oriented collection that stores unique items.
@@ -64,6 +66,13 @@ func (self *Set[T]) Delete(item T) bool {
 	record.Value = *new(T)
 	record.Deleted = true
 	self.size--
+
+	// Optimize memory, when too much records are deleted, re-allocate the internal list.
+	if limit := len(self.records); limit >= 100 && self.size <= int(limit/3) {
+		self.records = slicex.Filter(self.records, func(item MapRecordItem[int, T], idx int) bool {
+			return !item.Deleted
+		})
+	}
 
 	return true
 }
