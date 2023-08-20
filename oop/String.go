@@ -16,11 +16,11 @@ func (self *String) At(i int) *String {
 	return &char
 }
 
-func (self *String) Index(sub string) int {
+func (self *String) IndexOf(sub string) int {
 	return mbstring.Index(string(*self), sub)
 }
 
-func (self *String) LastIndex(sub string) int {
+func (self *String) LastIndexOf(sub string) int {
 	return mbstring.LastIndex(string(*self), sub)
 }
 
@@ -78,12 +78,12 @@ func (self *String) TrimRight(chars string) *String {
 	return &str
 }
 
-func (self *String) ToUpper() *String {
+func (self *String) ToUpperCase() *String {
 	str := String(strings.ToUpper(string(*self)))
 	return &str
 }
 
-func (self *String) ToLower() *String {
+func (self *String) ToLowerCase() *String {
 	str := String(strings.ToLower(string(*self)))
 	return &str
 }
