@@ -1,6 +1,7 @@
 package oop
 
 import (
+	"fmt"
 	"slices"
 
 	"github.com/ayonli/goext/slicex"
@@ -191,4 +192,22 @@ func (self *BiMap[K, V]) ForEach(fn func(value V, key K)) {
 // Returns the size of the map.
 func (self *BiMap[K, V]) Size() int {
 	return self.size
+}
+
+func (self *BiMap[K, V]) String() string {
+	str := "BiMap["
+	started := false
+
+	self.ForEach(func(value V, key K) {
+		if started {
+			str += " "
+		} else {
+			started = true
+		}
+
+		str += fmt.Sprint(key) + ":" + fmt.Sprint(value)
+	})
+
+	str += "]"
+	return str
 }

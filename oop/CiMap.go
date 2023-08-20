@@ -1,6 +1,7 @@
 package oop
 
 import (
+	"fmt"
 	"slices"
 	"strings"
 
@@ -166,4 +167,22 @@ func (self *CiMap[K, V]) ForEach(fn func(value V, key K)) {
 // Returns the size of the map.
 func (self *CiMap[K, V]) Size() int {
 	return self.size
+}
+
+func (self *CiMap[K, V]) String() string {
+	str := "CiMap["
+	started := false
+
+	self.ForEach(func(value V, key K) {
+		if started {
+			str += " "
+		} else {
+			started = true
+		}
+
+		str += fmt.Sprint(key) + ":" + fmt.Sprint(value)
+	})
+
+	str += "]"
+	return str
 }
