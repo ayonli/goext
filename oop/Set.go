@@ -9,14 +9,14 @@ import (
 
 // Set is an object-oriented collection that stores unique items.
 type Set[T comparable] struct {
-	records []MapRecordItem[int, T]
+	records []mapRecordItem[int, T]
 	size    int
 }
 
 // Creates a new instance of the Set.
 func NewSet[T comparable](base []T) *Set[T] {
 	self := Set[T]{
-		records: []MapRecordItem[int, T]{},
+		records: []mapRecordItem[int, T]{},
 		size:    0,
 	}
 
@@ -28,7 +28,7 @@ func NewSet[T comparable](base []T) *Set[T] {
 }
 
 func (self *Set[T]) findIndex(item T) int {
-	return slices.IndexFunc(self.records, func(record MapRecordItem[int, T]) bool {
+	return slices.IndexFunc(self.records, func(record mapRecordItem[int, T]) bool {
 		return record.Value == item && !record.Deleted
 	})
 }
@@ -36,7 +36,7 @@ func (self *Set[T]) findIndex(item T) int {
 // Adds an item to the set. If the item already exists, the set remains untouched.
 func (self *Set[T]) Add(item T) *Set[T] {
 	if !self.Has(item) {
-		self.records = append(self.records, MapRecordItem[int, T]{
+		self.records = append(self.records, mapRecordItem[int, T]{
 			Key:     self.size,
 			Value:   item,
 			Deleted: false,
@@ -69,7 +69,7 @@ func (self *Set[T]) Delete(item T) bool {
 
 	// Optimize memory, when too much records are deleted, re-allocate the internal list.
 	if limit := len(self.records); limit >= 100 && self.size <= int(limit/3) {
-		self.records = slicex.Filter(self.records, func(item MapRecordItem[int, T], idx int) bool {
+		self.records = slicex.Filter(self.records, func(item mapRecordItem[int, T], idx int) bool {
 			return !item.Deleted
 		})
 	}
@@ -79,7 +79,7 @@ func (self *Set[T]) Delete(item T) bool {
 
 // Empties the set and reset its size.
 func (self *Set[T]) Clear() {
-	self.records = []MapRecordItem[int, T]{}
+	self.records = []mapRecordItem[int, T]{}
 	self.size = 0
 }
 

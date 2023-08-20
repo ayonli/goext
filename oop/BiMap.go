@@ -9,27 +9,27 @@ import (
 
 // Bi-directional map, keys and values are unique and map to each other.
 type BiMap[K comparable, V comparable] struct {
-	records []MapRecordItem[K, V]
+	records []mapRecordItem[K, V]
 	size    int
 }
 
 // Creates a new instance of the BiMap.
 func NewBiMap[K comparable, V comparable]() *BiMap[K, V] {
 	self := BiMap[K, V]{
-		records: []MapRecordItem[K, V]{},
+		records: []mapRecordItem[K, V]{},
 		size:    0,
 	}
 	return &self
 }
 
 func (self *BiMap[K, V]) findIndex(key K) int {
-	return slices.IndexFunc(self.records, func(record MapRecordItem[K, V]) bool {
+	return slices.IndexFunc(self.records, func(record mapRecordItem[K, V]) bool {
 		return record.Key == key && !record.Deleted
 	})
 }
 
 func (self BiMap[K, V]) findIndexByValue(value V) int {
-	return slices.IndexFunc(self.records, func(record MapRecordItem[K, V]) bool {
+	return slices.IndexFunc(self.records, func(record mapRecordItem[K, V]) bool {
 		return record.Value == value && !record.Deleted
 	})
 }
@@ -45,7 +45,7 @@ func (self *BiMap[K, V]) Set(key K, value V) *BiMap[K, V] {
 	}
 
 	if idx == -1 {
-		self.records = append(self.records, MapRecordItem[K, V]{
+		self.records = append(self.records, mapRecordItem[K, V]{
 			Key:     key,
 			Value:   value,
 			Deleted: false,
@@ -111,7 +111,7 @@ func (self *BiMap[K, V]) deleteAt(idx int) bool {
 
 	// Optimize memory, when too much records are deleted, re-allocate the internal list.
 	if limit := len(self.records); limit >= 100 && self.size <= int(limit/3) {
-		self.records = slicex.Filter(self.records, func(item MapRecordItem[K, V], idx int) bool {
+		self.records = slicex.Filter(self.records, func(item mapRecordItem[K, V], idx int) bool {
 			return !item.Deleted
 		})
 	}
@@ -133,7 +133,7 @@ func (self *BiMap[K, V]) DeleteValue(value V) bool {
 
 // Empties the map and reset its size.
 func (self *BiMap[K, V]) Clear() {
-	self.records = []MapRecordItem[K, V]{}
+	self.records = []mapRecordItem[K, V]{}
 	self.size = 0
 }
 

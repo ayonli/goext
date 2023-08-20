@@ -11,7 +11,7 @@ func TestCiMap(suit *testing.T) {
 	suit.Run("NewMap", func(t *testing.T) {
 		m := NewCiMap[string, string]()
 
-		assert.Equal(t, []CiMapRecordItem[string, string]{}, m.records)
+		assert.Equal(t, []ciMapRecordItem[string, string]{}, m.records)
 		assert.Equal(t, 0, m.size)
 	})
 
@@ -19,14 +19,14 @@ func TestCiMap(suit *testing.T) {
 		m := NewCiMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
 
-		assert.Equal(t, []CiMapRecordItem[string, string]{
+		assert.Equal(t, []ciMapRecordItem[string, string]{
 			{Id: "foo", Key: "foo", Value: "Hello", Deleted: false},
 			{Id: "bar", Key: "bar", Value: "World", Deleted: false},
 		}, m.records)
 		assert.Equal(t, 2, m.size)
 
 		m.Set("Foo", "Hi")
-		assert.Equal(t, []CiMapRecordItem[string, string]{
+		assert.Equal(t, []ciMapRecordItem[string, string]{
 			{Id: "foo", Key: "Foo", Value: "Hi", Deleted: false},
 			{Id: "bar", Key: "bar", Value: "World", Deleted: false},
 		}, m.records)
@@ -68,7 +68,7 @@ func TestCiMap(suit *testing.T) {
 		assert.Equal(t, true, ok2)
 		assert.Equal(t, false, ok3)
 		assert.Equal(t, 0, m.size)
-		assert.Equal(t, []CiMapRecordItem[string, string]{
+		assert.Equal(t, []ciMapRecordItem[string, string]{
 			{Id: "", Key: "", Value: "", Deleted: true},
 			{Id: "", Key: "", Value: "", Deleted: true},
 		}, m.records)
@@ -93,7 +93,7 @@ func TestCiMap(suit *testing.T) {
 		m.Clear()
 
 		assert.Equal(t, 0, m.size)
-		assert.Equal(t, []CiMapRecordItem[string, string]{}, m.records)
+		assert.Equal(t, []ciMapRecordItem[string, string]{}, m.records)
 	})
 
 	suit.Run("Keys", func(t *testing.T) {
@@ -146,7 +146,7 @@ func TestCiMap(suit *testing.T) {
 		assert.Equal(t, 1, m.Size())
 		assert.Equal(t, 1, len(m.Keys()))
 		assert.Equal(t, 1, len(m.Values()))
-		assert.Equal(t, []CiMapRecordItem[string, string]{
+		assert.Equal(t, []ciMapRecordItem[string, string]{
 			{Id: "", Key: "", Value: "", Deleted: true},
 			{Id: "bar", Key: "Bar", Value: "World", Deleted: false},
 		}, m.records)

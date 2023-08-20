@@ -16,9 +16,9 @@ func TestSet(suit *testing.T) {
 			"A-yon",
 		})
 
-		assert.Equal(t, []MapRecordItem[int, string]{}, s1.records)
+		assert.Equal(t, []mapRecordItem[int, string]{}, s1.records)
 		assert.Equal(t, 0, s1.size)
-		assert.Equal(t, []MapRecordItem[int, string]{
+		assert.Equal(t, []mapRecordItem[int, string]{
 			{Key: 0, Value: "Hello", Deleted: false},
 			{Key: 1, Value: "World", Deleted: false},
 			{Key: 2, Value: "A-yon", Deleted: false},
@@ -30,7 +30,7 @@ func TestSet(suit *testing.T) {
 		s := NewSet([]string{})
 		s.Add("Hello").Add("World").Add("Hello")
 
-		assert.Equal(t, []MapRecordItem[int, string]{
+		assert.Equal(t, []mapRecordItem[int, string]{
 			{Key: 0, Value: "Hello", Deleted: false},
 			{Key: 1, Value: "World", Deleted: false},
 		}, s.records)
@@ -54,7 +54,7 @@ func TestSet(suit *testing.T) {
 		assert.Equal(t, true, ok1)
 		assert.Equal(t, false, ok2)
 		assert.Equal(t, 1, s.size)
-		assert.Equal(t, []MapRecordItem[int, string]{
+		assert.Equal(t, []mapRecordItem[int, string]{
 			{Key: 0, Value: "", Deleted: true},
 			{Key: 1, Value: "World", Deleted: false},
 		}, s.records)
@@ -79,7 +79,7 @@ func TestSet(suit *testing.T) {
 		s.Clear()
 
 		assert.Equal(t, 0, s.size)
-		assert.Equal(t, []MapRecordItem[int, string]{}, s.records)
+		assert.Equal(t, []mapRecordItem[int, string]{}, s.records)
 	})
 
 	suit.Run("Values", func(t *testing.T) {
@@ -111,7 +111,7 @@ func TestSet(suit *testing.T) {
 
 		assert.Equal(t, 1, s.Size())
 		assert.Equal(t, 1, len(s.Values()))
-		assert.Equal(t, []MapRecordItem[int, string]{
+		assert.Equal(t, []mapRecordItem[int, string]{
 			{Key: 0, Value: "", Deleted: true},
 			{Key: 1, Value: "World", Deleted: false},
 		}, s.records)

@@ -11,7 +11,7 @@ func TestBiMap(suit *testing.T) {
 	suit.Run("NewBiMap", func(t *testing.T) {
 		m := NewBiMap[string, string]()
 
-		assert.Equal(t, []MapRecordItem[string, string]{}, m.records)
+		assert.Equal(t, []mapRecordItem[string, string]{}, m.records)
 		assert.Equal(t, 0, m.size)
 	})
 
@@ -19,14 +19,14 @@ func TestBiMap(suit *testing.T) {
 		m := NewBiMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
 
-		assert.Equal(t, []MapRecordItem[string, string]{
+		assert.Equal(t, []mapRecordItem[string, string]{
 			{Key: "foo", Value: "Hello", Deleted: false},
 			{Key: "bar", Value: "World", Deleted: false},
 		}, m.records)
 		assert.Equal(t, 2, m.size)
 
 		m.Set("foo1", "Hello")
-		assert.Equal(t, []MapRecordItem[string, string]{
+		assert.Equal(t, []mapRecordItem[string, string]{
 			{Key: "foo1", Value: "Hello", Deleted: false},
 			{Key: "bar", Value: "World", Deleted: false},
 		}, m.records)
@@ -83,7 +83,7 @@ func TestBiMap(suit *testing.T) {
 		assert.Equal(t, true, ok1)
 		assert.Equal(t, false, ok2)
 		assert.Equal(t, 1, m.size)
-		assert.Equal(t, []MapRecordItem[string, string]{
+		assert.Equal(t, []mapRecordItem[string, string]{
 			{Key: "", Value: "", Deleted: true},
 			{Key: "bar", Value: "World", Deleted: false},
 		}, m.records)
@@ -98,7 +98,7 @@ func TestBiMap(suit *testing.T) {
 		assert.Equal(t, true, ok1)
 		assert.Equal(t, false, ok2)
 		assert.Equal(t, 1, m.size)
-		assert.Equal(t, []MapRecordItem[string, string]{
+		assert.Equal(t, []mapRecordItem[string, string]{
 			{Key: "", Value: "", Deleted: true},
 			{Key: "bar", Value: "World", Deleted: false},
 		}, m.records)
@@ -123,7 +123,7 @@ func TestBiMap(suit *testing.T) {
 		m.Clear()
 
 		assert.Equal(t, 0, m.size)
-		assert.Equal(t, []MapRecordItem[string, string]{}, m.records)
+		assert.Equal(t, []mapRecordItem[string, string]{}, m.records)
 	})
 
 	suit.Run("Keys", func(t *testing.T) {
@@ -177,7 +177,7 @@ func TestBiMap(suit *testing.T) {
 		assert.Equal(t, 0, m.Size())
 		assert.Equal(t, 0, len(m.Keys()))
 		assert.Equal(t, 0, len(m.Values()))
-		assert.Equal(t, []MapRecordItem[string, string]{
+		assert.Equal(t, []mapRecordItem[string, string]{
 			{Key: "", Value: "", Deleted: true},
 			{Key: "", Value: "", Deleted: true},
 		}, m.records)

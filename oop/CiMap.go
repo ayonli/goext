@@ -8,7 +8,7 @@ import (
 	"github.com/ayonli/goext/slicex"
 )
 
-type CiMapRecordItem[K comparable, V any] struct {
+type ciMapRecordItem[K comparable, V any] struct {
 	Id      string
 	Key     K
 	Value   V
@@ -17,21 +17,21 @@ type CiMapRecordItem[K comparable, V any] struct {
 
 // Case-insensitive map, keys are case-insensitive.
 type CiMap[K ~string, V any] struct {
-	records []CiMapRecordItem[K, V]
+	records []ciMapRecordItem[K, V]
 	size    int
 }
 
 // Creates a new instance of the CiMap.
 func NewCiMap[K ~string, V any]() *CiMap[K, V] {
 	self := CiMap[K, V]{
-		records: []CiMapRecordItem[K, V]{},
+		records: []ciMapRecordItem[K, V]{},
 		size:    0,
 	}
 	return &self
 }
 
 func (self *CiMap[K, V]) findIndex(id string) int {
-	return slices.IndexFunc(self.records, func(record CiMapRecordItem[K, V]) bool {
+	return slices.IndexFunc(self.records, func(record ciMapRecordItem[K, V]) bool {
 		return record.Id == id && !record.Deleted
 	})
 }
@@ -43,7 +43,7 @@ func (self *CiMap[K, V]) Set(key K, value V) *CiMap[K, V] {
 	idx := self.findIndex(id)
 
 	if idx == -1 {
-		self.records = append(self.records, CiMapRecordItem[K, V]{
+		self.records = append(self.records, ciMapRecordItem[K, V]{
 			Id:      id,
 			Key:     key,
 			Value:   value,
@@ -98,7 +98,7 @@ func (self *CiMap[K, V]) Delete(key K) bool {
 
 	// Optimize memory, when too much records are deleted, re-allocate the internal list.
 	if limit := len(self.records); limit >= 100 && self.size <= int(limit/3) {
-		self.records = slicex.Filter(self.records, func(item CiMapRecordItem[K, V], idx int) bool {
+		self.records = slicex.Filter(self.records, func(item ciMapRecordItem[K, V], idx int) bool {
 			return !item.Deleted
 		})
 	}
@@ -108,7 +108,7 @@ func (self *CiMap[K, V]) Delete(key K) bool {
 
 // Empties the map and resets its size.
 func (self *CiMap[K, V]) Clear() {
-	self.records = []CiMapRecordItem[K, V]{}
+	self.records = []ciMapRecordItem[K, V]{}
 	self.size = 0
 }
 

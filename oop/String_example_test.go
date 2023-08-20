@@ -55,19 +55,11 @@ func ExampleString_Length() {
 	// 6
 }
 
-func ExampleString_String() {
-	str := oop.String("你好，世界！")
-
-	fmt.Println(str.String())
-	// Output:
-	// 你好，世界！
-}
-
 func ExampleString_Clone() {
 	str1 := oop.String("你好，世界！")
 	str2 := str1.Clone()
 
-	fmt.Println(str2.String())
+	fmt.Println(str2)
 	// Output:
 	// 你好，世界！
 }
