@@ -21,15 +21,5 @@ jobs:
       with:
         go-version: '1.21'
 
-    - name: Test mapx
-      run: go test -v ./mapx
-    - name: Test mathx
-      run: go test -v ./mathx
-    - name: Test slicex
-      run: go test -v ./slicex
-    - name: Test stringx
-      run: go test -v ./stringx
-    - name: Test mbstring
-      run: go test -v ./stringx/mbstring
-    - name: Test oop
-      run: go test -v ./oop
+    - name: Test
+      run: go test -v ./...
