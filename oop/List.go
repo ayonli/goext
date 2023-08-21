@@ -8,6 +8,9 @@ import (
 )
 
 // List is an objected-oriented abstract that works around the slice and acts as a dynamic array.
+//
+// Sadly, due to the limitation of Golang's generics, methods like `Map()`, `Reduce()` and
+// `GroupBy()` cannot be implemented in List, we'll have to use them from the `slicex` package.
 type List[T comparable] []T
 
 func NewList[T comparable](base []T) *List[T] {
