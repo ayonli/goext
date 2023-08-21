@@ -26,11 +26,7 @@ type Map[K comparable, V any] struct {
 
 // Creates a new instance of the Map.
 func NewMap[K comparable, V any]() *Map[K, V] {
-	self := Map[K, V]{
-		records: *new([]mapRecordItem[K, V]),
-		size:    0,
-	}
-	return &self
+	return &Map[K, V]{}
 }
 
 func (self *Map[K, V]) findIndex(key K) int {

@@ -6,8 +6,8 @@ import (
 	"github.com/ayonli/goext/oop"
 )
 
-func ExampleList() {
-	list := &oop.List[string]{"foo", "bar"} // List should be initiated with &
+func ExampleNewList() {
+	list := oop.NewList([]string{"foo", "bar"})
 
 	fmt.Println(list)
 	fmt.Printf("%#v\n", list)
@@ -17,7 +17,7 @@ func ExampleList() {
 }
 
 func ExampleList_At() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 
 	fmt.Println(list.At(0))
 	fmt.Println(list.At(-1)) // negative indexing is supported
@@ -29,7 +29,7 @@ func ExampleList_At() {
 }
 
 func ExampleList_IndexOf() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 
 	fmt.Println(list.IndexOf("foo"))
 	fmt.Println(list.IndexOf("Hello"))
@@ -39,7 +39,7 @@ func ExampleList_IndexOf() {
 }
 
 func ExampleList_LastIndexOf() {
-	list := &oop.List[string]{"foo", "bar", "foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar", "foo", "bar"})
 
 	fmt.Println(list.LastIndexOf("foo"))
 	fmt.Println(list.LastIndexOf("Hello"))
@@ -49,7 +49,7 @@ func ExampleList_LastIndexOf() {
 }
 
 func ExampleList_Length() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 
 	fmt.Println(list.Length())
 	// Output:
@@ -57,7 +57,7 @@ func ExampleList_Length() {
 }
 
 func ExampleList_Values() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 
 	fmt.Println(list.Values())
 	// Output:
@@ -65,7 +65,7 @@ func ExampleList_Values() {
 }
 
 func ExampleList_Clone() {
-	list1 := &oop.List[string]{"foo", "bar"}
+	list1 := oop.NewList([]string{"foo", "bar"})
 	list2 := list1.Clone()
 
 	fmt.Println(list2)
@@ -74,9 +74,9 @@ func ExampleList_Clone() {
 }
 
 func ExampleList_Equal() {
-	list1 := &oop.List[string]{"foo", "bar"}
-	list2 := &oop.List[string]{"foo", "bar"}
-	list3 := &oop.List[string]{"Hello", "World"}
+	list1 := oop.NewList([]string{"foo", "bar"})
+	list2 := oop.NewList([]string{"foo", "bar"})
+	list3 := oop.NewList([]string{"Hello", "World"})
 
 	fmt.Println(list1.Equal(list2))
 	fmt.Println(list1.Equal(list3))
@@ -86,7 +86,7 @@ func ExampleList_Equal() {
 }
 
 func ExampleList_Contains() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 
 	fmt.Println(list.Contains("foo"))
 	fmt.Println(list.Contains("Hello"))
@@ -96,7 +96,7 @@ func ExampleList_Contains() {
 }
 
 func ExampleList_Count() {
-	list := &oop.List[string]{"foo", "bar", "foo"}
+	list := oop.NewList([]string{"foo", "bar", "foo"})
 
 	fmt.Println(list.Count("foo"))
 	fmt.Println(list.Count("bar"))
@@ -108,8 +108,8 @@ func ExampleList_Count() {
 }
 
 func ExampleList_Concat() {
-	list1 := &oop.List[string]{"foo", "bar"}
-	list2 := list1.Concat(&oop.List[string]{"Hello", "World"})
+	list1 := oop.NewList([]string{"foo", "bar"})
+	list2 := list1.Concat(oop.NewList([]string{"Hello", "World"}))
 
 	fmt.Println(list2)
 	// Output:
@@ -117,7 +117,7 @@ func ExampleList_Concat() {
 }
 
 func ExampleList_Uniq() {
-	list := &oop.List[string]{"hello", "world", "hi", "world"}
+	list := oop.NewList([]string{"hello", "world", "hi", "world"})
 
 	fmt.Println(list.Uniq())
 	// Output:
@@ -125,7 +125,7 @@ func ExampleList_Uniq() {
 }
 
 func ExampleList_Slice() {
-	list := &oop.List[string]{"foo", "bar", "hello", "world"}
+	list := oop.NewList([]string{"foo", "bar", "hello", "world"})
 
 	fmt.Println(list.Slice(0, 2))
 	fmt.Println(list.Slice(-2, list.Length())) // negative indexing is supported
@@ -135,7 +135,7 @@ func ExampleList_Slice() {
 }
 
 func ExampleList_Chunk() {
-	list := &oop.List[string]{"foo", "bar", "hello", "world"}
+	list := oop.NewList([]string{"foo", "bar", "hello", "world"})
 	chunks := list.Chunk(2)
 
 	fmt.Println(chunks)
@@ -146,7 +146,7 @@ func ExampleList_Chunk() {
 }
 
 func ExampleList_Join() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 
 	fmt.Println(list.Join(","))
 	// Output:
@@ -154,7 +154,7 @@ func ExampleList_Join() {
 }
 
 func ExampleList_Replace() {
-	list := &oop.List[string]{"foo", "bar", "hello", "world"}
+	list := oop.NewList([]string{"foo", "bar", "hello", "world"})
 
 	list.Replace(2, 4, "hi", "ayon") // Replace() mutates the list and returns itself
 
@@ -164,7 +164,7 @@ func ExampleList_Replace() {
 }
 
 func ExampleList_Reverse() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 
 	list.Reverse() // Reverse() mutates the list and returns itself
 
@@ -174,7 +174,7 @@ func ExampleList_Reverse() {
 }
 
 func ExampleList_ToReversed() {
-	list1 := &oop.List[string]{"foo", "bar"}
+	list1 := oop.NewList([]string{"foo", "bar"})
 	list2 := list1.ToReversed() // ToReversed() returns a copy of the list with all items reversed
 
 	fmt.Println(list1)
@@ -185,7 +185,7 @@ func ExampleList_ToReversed() {
 }
 
 func ExampleList_Sort() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 
 	list.Sort() // Sort() mutates the list and returns itself
 
@@ -195,7 +195,7 @@ func ExampleList_Sort() {
 }
 
 func ExampleList_ToSorted() {
-	list1 := &oop.List[string]{"foo", "bar"}
+	list1 := oop.NewList([]string{"foo", "bar"})
 	list2 := list1.ToSorted() // ToSorted() returns a copy of the list with all items reversed
 
 	fmt.Println(list1)
@@ -206,7 +206,7 @@ func ExampleList_ToSorted() {
 }
 
 func ExampleList_Every() {
-	list1 := &oop.List[string]{"foo", "bar"}
+	list1 := oop.NewList([]string{"foo", "bar"})
 	ok1 := list1.Every(func(item string, idx int) bool { return len(item) > 0 })
 	ok2 := list1.Every(func(item string, idx int) bool { return item[0:1] == "f" })
 
@@ -218,7 +218,7 @@ func ExampleList_Every() {
 }
 
 func ExampleList_Some() {
-	list1 := &oop.List[string]{"foo", "bar"}
+	list1 := oop.NewList([]string{"foo", "bar"})
 	ok1 := list1.Some(func(item string, idx int) bool { return item[0:1] == "f" })
 	ok2 := list1.Some(func(item string, idx int) bool { return len(item) > 3 })
 
@@ -230,7 +230,7 @@ func ExampleList_Some() {
 }
 
 func ExampleList_Find() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 	item1, ok1 := list.Find(func(item string, idx int) bool { return item[0:1] == "f" })
 	item2, ok2 := list.Find(func(item string, idx int) bool { return item[0:1] == "a" })
 
@@ -242,7 +242,7 @@ func ExampleList_Find() {
 }
 
 func ExampleList_FindLast() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 	item1, ok1 := list.FindLast(func(item string, idx int) bool { return len(item) > 0 })
 	item2, ok2 := list.FindLast(func(item string, idx int) bool { return len(item) > 3 })
 
@@ -254,7 +254,7 @@ func ExampleList_FindLast() {
 }
 
 func ExampleList_FindIndex() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 	idx1 := list.FindIndex(func(item string, idx int) bool { return item[0:1] == "f" })
 	idx2 := list.FindIndex(func(item string, idx int) bool { return item[0:1] == "a" })
 
@@ -266,7 +266,7 @@ func ExampleList_FindIndex() {
 }
 
 func ExampleList_FindLastIndex() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 	idx1 := list.FindLastIndex(func(item string, idx int) bool { return item[0:1] == "b" })
 	idx2 := list.FindLastIndex(func(item string, idx int) bool { return item[0:1] == "a" })
 
@@ -278,7 +278,7 @@ func ExampleList_FindLastIndex() {
 }
 
 func ExampleList_Filter() {
-	list1 := &oop.List[string]{"foo", "bar", "hello", "world"}
+	list1 := oop.NewList([]string{"foo", "bar", "hello", "world"})
 	list2 := list1.Filter(func(item string, idx int) bool { return len(item) > 3 })
 
 	fmt.Println(list2)
@@ -287,7 +287,7 @@ func ExampleList_Filter() {
 }
 
 func ExampleList_ForEach() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 
 	list.ForEach(func(item string, idx int) {
 		fmt.Println(idx, "=>", item)
@@ -298,7 +298,7 @@ func ExampleList_ForEach() {
 }
 
 func ExampleList_Pop() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 	item := list.Pop()
 
 	fmt.Println(item)
@@ -309,7 +309,7 @@ func ExampleList_Pop() {
 }
 
 func ExampleList_Push() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 	length := list.Push("hello", "world")
 
 	fmt.Println(length)
@@ -320,7 +320,7 @@ func ExampleList_Push() {
 }
 
 func ExampleList_Shift() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 	item := list.Shift()
 
 	fmt.Println(item)
@@ -331,7 +331,7 @@ func ExampleList_Shift() {
 }
 
 func ExampleList_Unshift() {
-	list := &oop.List[string]{"foo", "bar"}
+	list := oop.NewList([]string{"foo", "bar"})
 	length := list.Unshift("hello", "world")
 
 	fmt.Println(length)
@@ -342,7 +342,7 @@ func ExampleList_Unshift() {
 }
 
 func ExampleList_Shuffle() {
-	list1 := &oop.List[int]{0, 12, 3, 4, 5, 6, 7, 8, 9}
+	list1 := oop.NewList([]int{0, 12, 3, 4, 5, 6, 7, 8, 9})
 	list2 := list1.Clone()
 	list3 := list1.Clone()
 
@@ -359,8 +359,8 @@ func ExampleList_Shuffle() {
 }
 
 func ExampleList_Diff() {
-	list1 := &oop.List[int]{0, 1, 2, 3, 4, 5}
-	list2 := &oop.List[int]{2, 3, 4, 5, 6, 7}
+	list1 := oop.NewList([]int{0, 1, 2, 3, 4, 5})
+	list2 := oop.NewList([]int{2, 3, 4, 5, 6, 7})
 	list3 := list1.Diff(list2)
 	list4 := list1.Diff(list2, nil) // nil will be ignored
 
@@ -372,8 +372,8 @@ func ExampleList_Diff() {
 }
 
 func ExampleList_Xor() {
-	list1 := &oop.List[int]{0, 1, 2, 3, 4, 5}
-	list2 := &oop.List[int]{2, 3, 4, 5, 6, 7}
+	list1 := oop.NewList([]int{0, 1, 2, 3, 4, 5})
+	list2 := oop.NewList([]int{2, 3, 4, 5, 6, 7})
 	list3 := list1.Xor(list2)
 	list4 := list1.Xor(list2, nil) // nil will be ignored
 
@@ -385,8 +385,8 @@ func ExampleList_Xor() {
 }
 
 func ExampleList_Union() {
-	list1 := &oop.List[int]{0, 1, 2, 3, 4, 5}
-	list2 := &oop.List[int]{2, 3, 4, 5, 6, 7}
+	list1 := oop.NewList([]int{0, 1, 2, 3, 4, 5})
+	list2 := oop.NewList([]int{2, 3, 4, 5, 6, 7})
 	list3 := list1.Union(list2)
 	list4 := list1.Union(list2, nil) // nil will be ignored
 
@@ -398,8 +398,8 @@ func ExampleList_Union() {
 }
 
 func ExampleList_Intersect() {
-	list1 := &oop.List[int]{0, 1, 2, 3, 4, 5}
-	list2 := &oop.List[int]{2, 3, 4, 5, 6, 7}
+	list1 := oop.NewList([]int{0, 1, 2, 3, 4, 5})
+	list2 := oop.NewList([]int{2, 3, 4, 5, 6, 7})
 	list3 := list1.Intersect(list2)
 
 	fmt.Println(list3)

@@ -10,6 +10,11 @@ import (
 // List is an objected-oriented abstract that works around the slice.
 type List[T comparable] []T
 
+func NewList[T comparable](base []T) *List[T] {
+	ins := List[T](base)
+	return &ins
+}
+
 func (self *List[T]) At(i int) (T, bool) {
 	return slicex.At(*self, i)
 }

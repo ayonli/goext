@@ -12,8 +12,7 @@ type CiMap[K ~string, V any] struct {
 
 // Creates a new instance of the CiMap.
 func NewCiMap[K ~string, V string]() *CiMap[K, V] {
-	self := CiMap[K, V]{}
-	return &self
+	return &CiMap[K, V]{}
 }
 
 // Sets a pair of key and value in the map. If the key already exists, it changes the corresponding

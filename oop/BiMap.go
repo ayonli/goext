@@ -11,8 +11,7 @@ type BiMap[K comparable, V comparable] struct {
 
 // Creates a new instance of the BiMap.
 func NewBiMap[K comparable, V comparable]() *BiMap[K, V] {
-	self := BiMap[K, V]{}
-	return &self
+	return &BiMap[K, V]{}
 }
 
 func (self BiMap[K, V]) findIndexByValue(value V) int {
