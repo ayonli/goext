@@ -75,14 +75,16 @@ Especially for JavaScript developers, these packages should make us feel right a
     - `Xor()`
     - `Union()`
     - `Intersect()`
-- **[mapx](https://pkg.go.dev/github.com/ayonli/goext/mapx)** Additional functions for dealing with maps.
+- **[mapx](https://pkg.go.dev/github.com/ayonli/goext/mapx)**
+    Additional functions for dealing with maps.
     - `Assign()`
     - `Patch()`
     - `Keys()`
     - `Values()`
     - `Pick()`
     - `Omit()`
-- **[oop](https://pkg.go.dev/github.com/ayonli/goext/oop)** Object-oriented abstract wrappers for basic data structures.
+- **[oop](https://pkg.go.dev/github.com/ayonli/goext/oop)**
+    Object-oriented abstract wrappers for basic data structures.
     - `String` is an object-oriented abstract that works around multi-byte strings.
         - `At()`
         - `Index()`
@@ -114,7 +116,7 @@ Especially for JavaScript developers, these packages should make us feel right a
         - `Search()`
         - `Match()`
         - `MatchAll()`
-    - `List` is an objected-oriented abstract that works around the slice.
+    - `List` is an objected-oriented abstract that works around the slice and acts as a dynamic array.
         - `At()`
         - `Index()`
         - `LastIndex()`
@@ -153,6 +155,8 @@ Especially for JavaScript developers, these packages should make us feel right a
 
         Sadly, due to the limitation of Golang's generics, methods like `Map()`, `Reduce()` and
         `GroupBy()` cannot be implemented in List, we'll have to use them from the `slices` package.
+- **[oop](https://pkg.go.dev/github.com/ayonli/goext/oop)**
+    Object-oriented abstract wrappers for basic types.
     - `Set` is an object-oriented collection that stores unique items.
         - `NewSet()`
         - `Add()`

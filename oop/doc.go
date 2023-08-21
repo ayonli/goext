@@ -1,2 +1,2 @@
-// Object-oriented programming wrappers for basic types.
+// Object-oriented abstract wrappers for basic types.
 package oop
