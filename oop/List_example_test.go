@@ -362,9 +362,12 @@ func ExampleList_Diff() {
 	list1 := &oop.List[int]{0, 1, 2, 3, 4, 5}
 	list2 := &oop.List[int]{2, 3, 4, 5, 6, 7}
 	list3 := list1.Diff(list2)
+	list4 := list1.Diff(list2, nil) // nil will be ignored
 
 	fmt.Println(list3)
+	fmt.Println(list4)
 	// Output:
+	// &[0 1]
 	// &[0 1]
 }
 

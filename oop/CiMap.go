@@ -1,59 +1,40 @@
 package oop
 
 import (
-	"fmt"
-	"slices"
 	"strings"
-
-	"github.com/ayonli/goext/slicex"
 )
-
-type ciMapRecordItem[K comparable, V any] struct {
-	Id      string
-	Key     K
-	Value   V
-	Deleted bool
-}
 
 // Case-insensitive map, keys are case-insensitive.
 type CiMap[K ~string, V any] struct {
-	records []ciMapRecordItem[K, V]
-	size    int
+	Map[K, V]
+	keys []K
 }
 
 // Creates a new instance of the CiMap.
-func NewCiMap[K ~string, V any]() *CiMap[K, V] {
-	self := CiMap[K, V]{
-		records: []ciMapRecordItem[K, V]{},
-		size:    0,
-	}
+func NewCiMap[K ~string, V string]() *CiMap[K, V] {
+	self := CiMap[K, V]{}
 	return &self
-}
-
-func (self *CiMap[K, V]) findIndex(id string) int {
-	return slices.IndexFunc(self.records, func(record ciMapRecordItem[K, V]) bool {
-		return record.Id == id && !record.Deleted
-	})
 }
 
 // Sets a pair of key and value in the map. If the key already exists, it changes the corresponding
 // value; otherwise, it adds the new pair into the map.
 func (self *CiMap[K, V]) Set(key K, value V) *CiMap[K, V] {
 	id := strings.ToLower(string(key))
-	idx := self.findIndex(id)
+	idx := self.findIndex(K(id))
 
 	if idx == -1 {
-		self.records = append(self.records, ciMapRecordItem[K, V]{
-			Id:      id,
-			Key:     key,
+		self.records = append(self.records, mapRecordItem[K, V]{
+			Key:     K(id),
 			Value:   value,
 			Deleted: false,
 		})
+		self.keys = append(self.keys, key)
 		self.size++
 	} else {
 		record := &self.records[idx]
-		record.Key = key // also update the key
+		record.Key = K(id)
 		record.Value = value
+		self.keys[idx] = key // also update the key
 	}
 
 	return self
@@ -62,54 +43,32 @@ func (self *CiMap[K, V]) Set(key K, value V) *CiMap[K, V] {
 // Retrieves a value by the given key. If the key doesn't exist, it returns the zero-value of type
 // `V` and `false`.
 func (self *CiMap[K, V]) Get(key K) (V, bool) {
-	id := strings.ToLower(string(key))
-	idx := self.findIndex(id)
-
-	if idx == -1 {
-		return *new(V), false
-	}
-
-	record := self.records[idx]
-	return record.Value, true
+	return self.Map.Get(K(strings.ToLower(string(key))))
 }
 
 // Checks if the given key exists in the map.
 func (self *CiMap[K, V]) Has(key K) bool {
-	id := strings.ToLower(string(key))
-	idx := self.findIndex(id)
-	return idx != -1
+	return self.Map.Has(K(strings.ToLower(string(key))))
 }
 
 // Removes the key-value pair by the given key.
 func (self *CiMap[K, V]) Delete(key K) bool {
 	id := strings.ToLower(string(key))
-	idx := self.findIndex(id)
+	idx := self.findIndex(K(id))
 
 	if idx == -1 {
 		return false
 	}
 
-	record := &self.records[idx]
-	record.Id = ""
-	record.Key = *new(K)
-	record.Value = *new(V)
-	record.Deleted = true
-	self.size--
-
-	// Optimize memory, when too much records are deleted, re-allocate the internal list.
-	if limit := len(self.records); limit >= 100 && self.size <= int(limit/3) {
-		self.records = slicex.Filter(self.records, func(item ciMapRecordItem[K, V], idx int) bool {
-			return !item.Deleted
-		})
-	}
+	self.deleteAt(idx)
+	self.keys[idx] = ""
 
 	return true
 }
 
-// Empties the map and resets its size.
 func (self *CiMap[K, V]) Clear() {
-	self.records = []ciMapRecordItem[K, V]{}
-	self.size = 0
+	self.Map.Clear()
+	self.keys = nil
 }
 
 // Retrieves all the keys in the map.
@@ -119,22 +78,7 @@ func (self *CiMap[K, V]) Keys() []K {
 
 	for _, record := range self.records {
 		if !record.Deleted {
-			items[idx] = record.Key
-			idx++
-		}
-	}
-
-	return items
-}
-
-// Retrieves all the values in the map.
-func (self *CiMap[K, V]) Values() []V {
-	items := make([]V, self.size)
-	idx := 0
-
-	for _, record := range self.records {
-		if !record.Deleted {
-			items[idx] = record.Value
+			items[idx] = self.keys[idx]
 			idx++
 		}
 	}
@@ -146,9 +90,10 @@ func (self *CiMap[K, V]) Values() []V {
 func (self *CiMap[K, V]) ToMap() map[K]V {
 	items := map[K]V{}
 
-	for _, record := range self.records {
+	for idx, record := range self.records {
 		if !record.Deleted {
-			items[record.Key] = record.Value
+			key := self.keys[idx]
+			items[key] = record.Value
 		}
 	}
 
@@ -157,57 +102,35 @@ func (self *CiMap[K, V]) ToMap() map[K]V {
 
 // Loop through all the key-value pairs in the map and invoke the given function against them.
 func (self *CiMap[K, V]) ForEach(fn func(value V, key K)) {
-	for _, record := range self.records {
+	for idx, record := range self.records {
 		if !record.Deleted {
-			fn(record.Value, record.Key)
+			fn(record.Value, self.keys[idx])
 		}
 	}
 }
 
-// Returns the size of the map.
-func (self *CiMap[K, V]) Size() int {
-	return self.size
+func (self *CiMap[K, V]) getNormalizedRecords() []mapRecordItem[K, V] {
+	records := make([]mapRecordItem[K, V], self.size)
+	idx := 0
+
+	for i, record := range self.records {
+		if !record.Deleted {
+			records[idx] = mapRecordItem[K, V]{
+				Key:     self.keys[i],
+				Value:   record.Value,
+				Deleted: false,
+			}
+			idx++
+		}
+	}
+
+	return records
 }
 
 func (self *CiMap[K, V]) String() string {
-	str := "&oop.CiMap["
-	started := false
-
-	self.ForEach(func(value V, key K) {
-		if started {
-			str += " "
-		} else {
-			started = true
-		}
-
-		str += fmt.Sprint(key) + ":" + fmt.Sprint(value)
-	})
-
-	str += "]"
-	return str
+	return self.formatString("oop.CiMap", self.getNormalizedRecords())
 }
 
 func (self *CiMap[K, V]) GoString() string {
-	mapStr := fmt.Sprintf("%#v", map[K]V{})
-	idx1 := strings.Index(mapStr, "[")
-	idx2 := strings.Index(mapStr, "]")
-	idx3 := strings.Index(mapStr, "{")
-	keyType := mapStr[idx1+1 : idx2]
-	valueType := mapStr[idx2+1 : idx3]
-
-	str := "&oop.CiMap[" + keyType + ", " + valueType + "]{"
-	started := false
-
-	self.ForEach(func(value V, key K) {
-		if started {
-			str += ", "
-		} else {
-			started = true
-		}
-
-		str += fmt.Sprintf("%#v:%#v", key, value)
-	})
-
-	str += "}"
-	return str
+	return self.formatGoString("oop.CiMap", self.getNormalizedRecords())
 }

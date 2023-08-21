@@ -1,32 +1,18 @@
 package oop
 
 import (
-	"fmt"
 	"slices"
-	"strings"
-
-	"github.com/ayonli/goext/slicex"
 )
 
 // Bi-directional map, keys and values are unique and map to each other.
 type BiMap[K comparable, V comparable] struct {
-	records []mapRecordItem[K, V]
-	size    int
+	Map[K, V]
 }
 
 // Creates a new instance of the BiMap.
 func NewBiMap[K comparable, V comparable]() *BiMap[K, V] {
-	self := BiMap[K, V]{
-		records: []mapRecordItem[K, V]{},
-		size:    0,
-	}
+	self := BiMap[K, V]{}
 	return &self
-}
-
-func (self *BiMap[K, V]) findIndex(key K) int {
-	return slices.IndexFunc(self.records, func(record mapRecordItem[K, V]) bool {
-		return record.Key == key && !record.Deleted
-	})
 }
 
 func (self BiMap[K, V]) findIndexByValue(value V) int {
@@ -61,19 +47,6 @@ func (self *BiMap[K, V]) Set(key K, value V) *BiMap[K, V] {
 	return self
 }
 
-// Retrieves a value by the given key. If the key doesn't exist, it returns the zero-value of type
-// `V` and `false`.
-func (self *BiMap[K, V]) Get(key K) (V, bool) {
-	idx := self.findIndex(key)
-
-	if idx == -1 {
-		return *new(V), false
-	}
-
-	record := self.records[idx]
-	return record.Value, true
-}
-
 // Retrieves a key by the given value. If the value doesn't exist, it returns the zero-value of type
 // `K` and `false`.
 func (self *BiMap[K, V]) GetKey(value V) (K, bool) {
@@ -87,43 +60,10 @@ func (self *BiMap[K, V]) GetKey(value V) (K, bool) {
 	return record.Key, true
 }
 
-// Checks if the given key exists in the map.
-func (self *BiMap[K, V]) Has(key K) bool {
-	idx := self.findIndex(key)
-	return idx != -1
-}
-
 // Checks if the given value exists in the map.
 func (self *BiMap[K, V]) HasValue(value V) bool {
 	idx := self.findIndexByValue(value)
 	return idx != -1
-}
-
-func (self *BiMap[K, V]) deleteAt(idx int) bool {
-	if idx == -1 {
-		return false
-	}
-
-	record := &self.records[idx]
-	record.Key = *new(K)
-	record.Value = *new(V)
-	record.Deleted = true
-	self.size--
-
-	// Optimize memory, when too much records are deleted, re-allocate the internal list.
-	if limit := len(self.records); limit >= 100 && self.size <= int(limit/3) {
-		self.records = slicex.Filter(self.records, func(item mapRecordItem[K, V], idx int) bool {
-			return !item.Deleted
-		})
-	}
-
-	return true
-}
-
-// Removes the key-value pair by the given key.
-func (self *BiMap[K, V]) Delete(key K) bool {
-	idx := self.findIndex(key)
-	return self.deleteAt(idx)
 }
 
 // Removes the key-value pair by the given value.
@@ -132,108 +72,10 @@ func (self *BiMap[K, V]) DeleteValue(value V) bool {
 	return self.deleteAt(idx)
 }
 
-// Empties the map and reset its size.
-func (self *BiMap[K, V]) Clear() {
-	self.records = []mapRecordItem[K, V]{}
-	self.size = 0
-}
-
-// Retrieves all the keys in the map.
-func (self *BiMap[K, V]) Keys() []K {
-	items := make([]K, self.size)
-	idx := 0
-
-	for _, record := range self.records {
-		if !record.Deleted {
-			items[idx] = record.Key
-			idx++
-		}
-	}
-
-	return items
-}
-
-// Retrieves all the values in the map.
-func (self *BiMap[K, V]) Values() []V {
-	items := make([]V, self.size)
-	idx := 0
-
-	for _, record := range self.records {
-		if !record.Deleted {
-			items[idx] = record.Value
-			idx++
-		}
-	}
-
-	return items
-}
-
-// Creates a builtin `map` based on this map.
-func (self *BiMap[K, V]) ToMap() map[K]V {
-	items := map[K]V{}
-
-	for _, record := range self.records {
-		if !record.Deleted {
-			items[record.Key] = record.Value
-		}
-	}
-
-	return items
-}
-
-// Loop through all the key-value pairs in the map and invoke the given function against them.
-func (self *BiMap[K, V]) ForEach(fn func(value V, key K)) {
-	for _, record := range self.records {
-		if !record.Deleted {
-			fn(record.Value, record.Key)
-		}
-	}
-}
-
-// Returns the size of the map.
-func (self *BiMap[K, V]) Size() int {
-	return self.size
-}
-
 func (self *BiMap[K, V]) String() string {
-	str := "&oop.BiMap["
-	started := false
-
-	self.ForEach(func(value V, key K) {
-		if started {
-			str += " "
-		} else {
-			started = true
-		}
-
-		str += fmt.Sprint(key) + ":" + fmt.Sprint(value)
-	})
-
-	str += "]"
-	return str
+	return self.formatString("oop.BiMap", self.records)
 }
 
 func (self *BiMap[K, V]) GoString() string {
-	mapStr := fmt.Sprintf("%#v", map[K]V{})
-	idx1 := strings.Index(mapStr, "[")
-	idx2 := strings.Index(mapStr, "]")
-	idx3 := strings.Index(mapStr, "{")
-	keyType := mapStr[idx1+1 : idx2]
-	valueType := mapStr[idx2+1 : idx3]
-
-	str := "&oop.BiMap[" + keyType + ", " + valueType + "]{"
-	started := false
-
-	self.ForEach(func(value V, key K) {
-		if started {
-			str += ", "
-		} else {
-			started = true
-		}
-
-		str += fmt.Sprintf("%#v:%#v", key, value)
-	})
-
-	str += "}"
-	return str
+	return self.formatGoString("oop.BiMap", self.records)
 }

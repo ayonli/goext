@@ -11,7 +11,7 @@ func TestBiMap(suit *testing.T) {
 	suit.Run("NewBiMap", func(t *testing.T) {
 		m := NewBiMap[string, string]()
 
-		assert.Equal(t, []mapRecordItem[string, string]{}, m.records)
+		assert.Equal(t, []mapRecordItem[string, string](nil), m.records)
 		assert.Equal(t, 0, m.size)
 	})
 
@@ -123,7 +123,7 @@ func TestBiMap(suit *testing.T) {
 		m.Clear()
 
 		assert.Equal(t, 0, m.size)
-		assert.Equal(t, []mapRecordItem[string, string]{}, m.records)
+		assert.Equal(t, []mapRecordItem[string, string](nil), m.records)
 	})
 
 	suit.Run("Keys", func(t *testing.T) {

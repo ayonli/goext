@@ -27,7 +27,7 @@ type Map[K comparable, V any] struct {
 // Creates a new instance of the Map.
 func NewMap[K comparable, V any]() *Map[K, V] {
 	self := Map[K, V]{
-		records: []mapRecordItem[K, V]{},
+		records: *new([]mapRecordItem[K, V]),
 		size:    0,
 	}
 	return &self
@@ -77,10 +77,7 @@ func (self *Map[K, V]) Has(key K) bool {
 	return idx != -1
 }
 
-// Removes the key-value pair by the given key.
-func (self *Map[K, V]) Delete(key K) bool {
-	idx := self.findIndex(key)
-
+func (self *Map[K, V]) deleteAt(idx int) bool {
 	if idx == -1 {
 		return false
 	}
@@ -101,9 +98,15 @@ func (self *Map[K, V]) Delete(key K) bool {
 	return true
 }
 
+// Removes the key-value pair by the given key.
+func (self *Map[K, V]) Delete(key K) bool {
+	idx := self.findIndex(key)
+	return self.deleteAt(idx)
+}
+
 // Empties the map and resets its size.
 func (self *Map[K, V]) Clear() {
-	self.records = []mapRecordItem[K, V]{}
+	self.records = nil
 	self.size = 0
 }
 
@@ -164,25 +167,33 @@ func (self *Map[K, V]) Size() int {
 	return self.size
 }
 
-func (self *Map[K, V]) String() string {
-	str := "&oop.Map["
+func (self *Map[K, V]) formatString(typeName string, records []mapRecordItem[K, V]) string {
+	str := "&" + typeName + "["
 	started := false
 
-	self.ForEach(func(value V, key K) {
+	for _, record := range records {
+		if record.Deleted {
+			continue
+		}
+
 		if started {
 			str += " "
 		} else {
 			started = true
 		}
 
-		str += fmt.Sprint(key) + ":" + fmt.Sprint(value)
-	})
+		str += fmt.Sprint(record.Key) + ":" + fmt.Sprint(record.Value)
+	}
 
 	str += "]"
 	return str
 }
 
-func (self *Map[K, V]) GoString() string {
+func (self *Map[K, V]) String() string {
+	return self.formatString("oop.Map", self.records)
+}
+
+func (self *Map[K, V]) formatGoString(typeName string, records []mapRecordItem[K, V]) string {
 	mapStr := fmt.Sprintf("%#v", map[K]V{})
 	idx1 := strings.Index(mapStr, "[")
 	idx2 := strings.Index(mapStr, "]")
@@ -190,19 +201,25 @@ func (self *Map[K, V]) GoString() string {
 	keyType := mapStr[idx1+1 : idx2]
 	valueType := mapStr[idx2+1 : idx3]
 
-	str := "&oop.Map[" + keyType + ", " + valueType + "]{"
+	str := "&" + typeName + "[" + keyType + ", " + valueType + "]{"
 	started := false
 
-	self.ForEach(func(value V, key K) {
-		if started {
-			str += ", "
-		} else {
-			started = true
-		}
+	for _, record := range records {
+		if !record.Deleted {
+			if started {
+				str += ", "
+			} else {
+				started = true
+			}
 
-		str += fmt.Sprintf("%#v:%#v", key, value)
-	})
+			str += fmt.Sprintf("%#v:%#v", record.Key, record.Value)
+		}
+	}
 
 	str += "}"
 	return str
+}
+
+func (self *Map[K, V]) GoString() string {
+	return self.formatGoString("oop.Map", self.records)
 }
