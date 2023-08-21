@@ -10,8 +10,10 @@ func ExampleNewMap() {
 	m := oop.NewMap[string, string]()
 
 	fmt.Println(m)
+	fmt.Printf("%#v\n", m)
 	// Output:
-	// Map[]
+	// &oop.Map[]
+	// &oop.Map[string, string]{}
 }
 
 func ExampleMap_Set() {
@@ -19,8 +21,10 @@ func ExampleMap_Set() {
 	m.Set("foo", "Hello").Set("bar", "World") // Set() method can be chained
 
 	fmt.Println(m) // keys' order is preserved
+	fmt.Printf("%#v\n", m)
 	// Output:
-	// Map[foo:Hello bar:World]
+	// &oop.Map[foo:Hello bar:World]
+	// &oop.Map[string, string]{"foo":"Hello", "bar":"World"}
 }
 
 func ExampleMap_Get() {
@@ -56,7 +60,7 @@ func ExampleMap_Delete() {
 	fmt.Println(ok1)
 	fmt.Println(ok2)
 	// Output:
-	// Map[bar:World]
+	// &oop.Map[bar:World]
 	// true
 	// false
 }
@@ -69,7 +73,7 @@ func ExampleMap_Clear() {
 
 	fmt.Println(m)
 	// Output:
-	// Map[]
+	// &oop.Map[]
 }
 
 func ExampleMap_Keys() {

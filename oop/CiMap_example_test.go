@@ -10,8 +10,10 @@ func ExampleNewCiMap() {
 	m := oop.NewCiMap[string, string]()
 
 	fmt.Println(m)
+	fmt.Printf("%#v\n", m)
 	// Output:
-	// CiMap[]
+	// &oop.CiMap[]
+	// &oop.CiMap[string, string]{}
 }
 
 func ExampleCiMap_Set() {
@@ -19,8 +21,10 @@ func ExampleCiMap_Set() {
 	m.Set("Foo", "Hello").Set("bar", "World") // Set() method can be chained
 
 	fmt.Println(m) // keys' names and their order are preserved
+	fmt.Printf("%#v\n", m)
 	// Output:
-	// CiMap[Foo:Hello bar:World]
+	// &oop.CiMap[Foo:Hello bar:World]
+	// &oop.CiMap[string, string]{"Foo":"Hello", "bar":"World"}
 }
 
 func ExampleCiMap_Get() {
@@ -56,7 +60,7 @@ func ExampleCiMap_Delete() {
 	fmt.Println(ok1)
 	fmt.Println(ok2)
 	// Output:
-	// CiMap[bar:World]
+	// &oop.CiMap[bar:World]
 	// true
 	// false
 }
@@ -69,7 +73,7 @@ func ExampleCiMap_Clear() {
 
 	fmt.Println(m)
 	// Output:
-	// CiMap[]
+	// &oop.CiMap[]
 }
 
 func ExampleCiMap_Keys() {

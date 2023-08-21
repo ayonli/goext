@@ -16,10 +16,10 @@ func ExampleNewSet() {
 	})
 
 	fmt.Println(s1)
-	fmt.Println(s2)
+	fmt.Printf("%#v\n", s2)
 	// Output:
-	// Set[]
-	// Set[Hello World A-yon]
+	// &oop.Set[]
+	// &oop.Set[string]{"Hello", "World", "A-yon"}
 }
 
 func ExampleSet_Add() {
@@ -30,7 +30,7 @@ func ExampleSet_Add() {
 
 	fmt.Println(s)
 	// Output:
-	// Set[Hello World]
+	// &oop.Set[Hello World]
 }
 
 func ExampleSet_Has() {
@@ -55,7 +55,7 @@ func ExampleSet_Delete() {
 	fmt.Println(ok1)
 	fmt.Println(ok2)
 	// Output:
-	// Set[World]
+	// &oop.Set[World]
 	// true
 	// false
 }
@@ -68,7 +68,7 @@ func ExampleSet_Clear() {
 
 	fmt.Println(s)
 	// Output:
-	// Set[]
+	// &oop.Set[]
 }
 
 func ExampleSet_Values() {

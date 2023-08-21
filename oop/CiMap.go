@@ -170,7 +170,7 @@ func (self *CiMap[K, V]) Size() int {
 }
 
 func (self *CiMap[K, V]) String() string {
-	str := "CiMap["
+	str := "&oop.CiMap["
 	started := false
 
 	self.ForEach(func(value V, key K) {
@@ -184,5 +184,30 @@ func (self *CiMap[K, V]) String() string {
 	})
 
 	str += "]"
+	return str
+}
+
+func (self *CiMap[K, V]) GoString() string {
+	mapStr := fmt.Sprintf("%#v", map[K]V{})
+	idx1 := strings.Index(mapStr, "[")
+	idx2 := strings.Index(mapStr, "]")
+	idx3 := strings.Index(mapStr, "{")
+	keyType := mapStr[idx1+1 : idx2]
+	valueType := mapStr[idx2+1 : idx3]
+
+	str := "&oop.CiMap[" + keyType + ", " + valueType + "]{"
+	started := false
+
+	self.ForEach(func(value V, key K) {
+		if started {
+			str += ", "
+		} else {
+			started = true
+		}
+
+		str += fmt.Sprintf("%#v:%#v", key, value)
+	})
+
+	str += "}"
 	return str
 }

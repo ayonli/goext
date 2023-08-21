@@ -3,6 +3,7 @@ package oop
 import (
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/ayonli/goext/slicex"
 )
@@ -113,5 +114,11 @@ func (self *Set[T]) Size() int {
 }
 
 func (self *Set[T]) String() string {
-	return "Set" + fmt.Sprint(self.Values())
+	return "&oop.Set" + fmt.Sprint(self.Values())
+}
+
+func (self *Set[T]) GoString() string {
+	str := fmt.Sprintf("%#v", self.Values())
+	idx := strings.Index(str, "{")
+	return "&oop.Set[" + str[2:idx] + "]" + str[idx:]
 }

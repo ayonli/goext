@@ -10,8 +10,11 @@ func ExampleString() {
 	str := oop.String("你好，世界！")
 
 	fmt.Println(str)
+	fmt.Printf("%#v", str)
+
 	// Output:
 	// 你好，世界！
+	// "你好，世界！"
 }
 
 func ExampleString_At() {

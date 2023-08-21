@@ -10,8 +10,10 @@ func ExampleNewBiMap() {
 	m := oop.NewBiMap[string, string]()
 
 	fmt.Println(m)
+	fmt.Printf("%#v\n", m)
 	// Output:
-	// BiMap[]
+	// &oop.BiMap[]
+	// &oop.BiMap[string, string]{}
 }
 
 func ExampleBiMap_Set() {
@@ -19,8 +21,10 @@ func ExampleBiMap_Set() {
 	m.Set("foo", "Hello").Set("bar", "World") // Set() method can be chained
 
 	fmt.Println(m) // keys' order is preserved
+	fmt.Printf("%#v", m)
 	// Output:
-	// BiMap[foo:Hello bar:World]
+	// &oop.BiMap[foo:Hello bar:World]
+	// &oop.BiMap[string, string]{"foo":"Hello", "bar":"World"}
 }
 
 func ExampleBiMap_Get() {
@@ -78,7 +82,7 @@ func ExampleBiMap_Delete() {
 	fmt.Println(ok1)
 	fmt.Println(ok2)
 	// Output:
-	// BiMap[bar:World]
+	// &oop.BiMap[bar:World]
 	// true
 	// false
 }
@@ -94,7 +98,7 @@ func ExampleBiMap_DeleteValue() {
 	fmt.Println(ok1)
 	fmt.Println(ok2)
 	// Output:
-	// BiMap[bar:World]
+	// &oop.BiMap[bar:World]
 	// true
 	// false
 }
@@ -107,7 +111,7 @@ func ExampleBiMap_Clear() {
 
 	fmt.Println(m)
 	// Output:
-	// BiMap[]
+	// &oop.BiMap[]
 }
 
 func ExampleBiMap_Keys() {

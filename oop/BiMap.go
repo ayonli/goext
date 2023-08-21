@@ -3,6 +3,7 @@ package oop
 import (
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/ayonli/goext/slicex"
 )
@@ -195,7 +196,7 @@ func (self *BiMap[K, V]) Size() int {
 }
 
 func (self *BiMap[K, V]) String() string {
-	str := "BiMap["
+	str := "&oop.BiMap["
 	started := false
 
 	self.ForEach(func(value V, key K) {
@@ -209,5 +210,30 @@ func (self *BiMap[K, V]) String() string {
 	})
 
 	str += "]"
+	return str
+}
+
+func (self *BiMap[K, V]) GoString() string {
+	mapStr := fmt.Sprintf("%#v", map[K]V{})
+	idx1 := strings.Index(mapStr, "[")
+	idx2 := strings.Index(mapStr, "]")
+	idx3 := strings.Index(mapStr, "{")
+	keyType := mapStr[idx1+1 : idx2]
+	valueType := mapStr[idx2+1 : idx3]
+
+	str := "&oop.BiMap[" + keyType + ", " + valueType + "]{"
+	started := false
+
+	self.ForEach(func(value V, key K) {
+		if started {
+			str += ", "
+		} else {
+			started = true
+		}
+
+		str += fmt.Sprintf("%#v:%#v", key, value)
+	})
+
+	str += "}"
 	return str
 }

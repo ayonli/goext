@@ -3,6 +3,7 @@ package oop
 import (
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/ayonli/goext/slicex"
 )
@@ -164,7 +165,7 @@ func (self *Map[K, V]) Size() int {
 }
 
 func (self *Map[K, V]) String() string {
-	str := "Map["
+	str := "&oop.Map["
 	started := false
 
 	self.ForEach(func(value V, key K) {
@@ -178,5 +179,30 @@ func (self *Map[K, V]) String() string {
 	})
 
 	str += "]"
+	return str
+}
+
+func (self *Map[K, V]) GoString() string {
+	mapStr := fmt.Sprintf("%#v", map[K]V{})
+	idx1 := strings.Index(mapStr, "[")
+	idx2 := strings.Index(mapStr, "]")
+	idx3 := strings.Index(mapStr, "{")
+	keyType := mapStr[idx1+1 : idx2]
+	valueType := mapStr[idx2+1 : idx3]
+
+	str := "&oop.Map[" + keyType + ", " + valueType + "]{"
+	started := false
+
+	self.ForEach(func(value V, key K) {
+		if started {
+			str += ", "
+		} else {
+			started = true
+		}
+
+		str += fmt.Sprintf("%#v:%#v", key, value)
+	})
+
+	str += "}"
 	return str
 }
