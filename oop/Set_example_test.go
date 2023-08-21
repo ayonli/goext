@@ -1,10 +1,39 @@
 package oop_test
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/ayonli/goext/oop"
 )
+
+func ExampleSet() {
+	s := &oop.Set[string]{} // use & for literal creation
+	s.Add("Hello").Add("World")
+
+	fmt.Println(s)
+	fmt.Println(s.Has("Hello"))
+	fmt.Println(s.Has("foo"))
+	// Output:
+	// &oop.Set[Hello World]
+	// true
+	// false
+}
+
+func ExampleSet_json() {
+	s := &oop.Set[string]{} // use & for literal creation
+	s.Add("Hello").Add("World")
+
+	data, _ := json.Marshal(s)
+	fmt.Println(string(data))
+
+	s2 := &oop.Set[string]{}
+	json.Unmarshal(data, s2)
+	fmt.Println(s2)
+	// Output:
+	// ["Hello","World"]
+	// &oop.Set[Hello World]
+}
 
 func ExampleNewSet() {
 	s1 := oop.NewSet([]string{}) // create an empty set

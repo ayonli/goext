@@ -1,10 +1,36 @@
 package oop_test
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/ayonli/goext/oop"
 )
+
+func ExampleList() {
+	list := &oop.List[string]{"foo", "bar"} // use & for literal creation
+
+	fmt.Println(list)
+	fmt.Printf("%#v\n", list)
+	// Output:
+	// &[foo bar]
+	// &oop.List[string]{"foo", "bar"}
+}
+
+func ExampleList_json() {
+	jsonStr := `["foo","bar"]`
+	list := &oop.List[string]{}
+	err := json.Unmarshal([]byte(jsonStr), list)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%#v", list)
+	// Output:
+	// &oop.List[string]{"foo", "bar"}
+}
 
 func ExampleNewList() {
 	list := oop.NewList([]string{"foo", "bar"})

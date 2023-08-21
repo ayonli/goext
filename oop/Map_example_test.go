@@ -1,10 +1,39 @@
 package oop_test
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/ayonli/goext/oop"
 )
+
+func ExampleMap() {
+	m := &oop.Map[string, string]{} // use & for literal creation
+	m.Set("foo", "Hello").Set("bar", "World")
+
+	fmt.Println(m)
+	fmt.Println(m.Has("foo"))
+	fmt.Println(m.Get("bar"))
+	// Output:
+	// &oop.Map[foo:Hello bar:World]
+	// true
+	// World true
+}
+
+func ExampleMap_json() {
+	m := &oop.Map[string, string]{}
+	m.Set("foo", "Hello").Set("bar", "World")
+
+	data, _ := json.Marshal(m)
+	fmt.Println(string(data))
+
+	m2 := &oop.Map[string, string]{}
+	json.Unmarshal(data, m2)
+	fmt.Println(m2)
+	// Output:
+	// {"foo":"Hello","bar":"World"}
+	// &oop.Map[bar:World foo:Hello]
+}
 
 func ExampleNewMap() {
 	m := oop.NewMap[string, string]()

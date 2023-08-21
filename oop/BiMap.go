@@ -1,7 +1,10 @@
 package oop
 
 import (
+	"encoding/json"
 	"slices"
+
+	"github.com/ayonli/goext/mapx"
 )
 
 // Bi-directional map, keys and values are unique and map to each other.
@@ -77,4 +80,18 @@ func (self *BiMap[K, V]) String() string {
 
 func (self *BiMap[K, V]) GoString() string {
 	return self.formatGoString("oop.BiMap", self.records)
+}
+
+func (self *BiMap[K, V]) UnmarshalJSON(data []byte) error {
+	var m map[K]V
+
+	if err := json.Unmarshal(data, &m); err != nil {
+		return err
+	}
+
+	for _, key := range mapx.Keys(m) { // mapx.Keys() guarantees keys are ordered alphabetically
+		self.Set(key, m[key])
+	}
+
+	return nil
 }

@@ -1,10 +1,12 @@
 package oop
 
 import (
+	"encoding/json"
 	"fmt"
 	"slices"
 	"strings"
 
+	"github.com/ayonli/goext/mapx"
 	"github.com/ayonli/goext/slicex"
 )
 
@@ -218,4 +220,53 @@ func (self *Map[K, V]) formatGoString(typeName string, records []mapRecordItem[K
 
 func (self *Map[K, V]) GoString() string {
 	return self.formatGoString("oop.Map", self.records)
+}
+
+func (self *Map[K, V]) UnmarshalJSON(data []byte) error {
+	var m map[K]V
+
+	if err := json.Unmarshal(data, &m); err != nil {
+		return err
+	}
+
+	for _, key := range mapx.Keys(m) { // mapx.Keys() guarantees keys are ordered alphabetically
+		self.Set(key, m[key])
+	}
+
+	return nil
+}
+
+func (self *Map[K, V]) MarshalJSON() ([]byte, error) {
+	str := "{"
+	started := false
+
+	for _, record := range self.records {
+		if !record.Deleted {
+			if started {
+				str += ","
+			} else {
+				started = true
+			}
+
+			keyBytes, err := json.Marshal(record.Key)
+
+			if err != nil {
+				return []byte{}, err
+			} else {
+				str += string(keyBytes) + ":"
+			}
+
+			valueBytes, err := json.Marshal(record.Value)
+
+			if err != nil {
+				return []byte{}, err
+			} else {
+				str += string(valueBytes)
+			}
+		}
+	}
+
+	str += "}"
+
+	return []byte(str), nil
 }

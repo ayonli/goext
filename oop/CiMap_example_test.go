@@ -1,10 +1,39 @@
 package oop_test
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/ayonli/goext/oop"
 )
+
+func ExampleCiMap() {
+	m := &oop.CiMap[string, string]{} // use & for literal creation
+	m.Set("Foo", "Hello").Set("bar", "World")
+
+	fmt.Println(m)
+	fmt.Println(m.Has("foo"))
+	fmt.Println(m.Get("foo"))
+	// Output:
+	// &oop.CiMap[Foo:Hello bar:World]
+	// true
+	// Hello true
+}
+
+func ExampleCiMap_json() {
+	m := &oop.CiMap[string, string]{}
+	m.Set("Foo", "Hello").Set("bar", "World")
+
+	data, _ := json.Marshal(m)
+	fmt.Println(string(data))
+
+	m2 := &oop.CiMap[string, string]{}
+	json.Unmarshal(data, m2)
+	fmt.Println(m2)
+	// Output:
+	// {"Foo":"Hello","bar":"World"}
+	// &oop.CiMap[Foo:Hello bar:World]
+}
 
 func ExampleNewCiMap() {
 	m := oop.NewCiMap[string, string]()

@@ -1,7 +1,10 @@
 package oop
 
 import (
+	"encoding/json"
 	"strings"
+
+	"github.com/ayonli/goext/mapx"
 )
 
 // Case-insensitive map, keys are case-insensitive.
@@ -132,4 +135,54 @@ func (self *CiMap[K, V]) String() string {
 
 func (self *CiMap[K, V]) GoString() string {
 	return self.formatGoString("oop.CiMap", self.getNormalizedRecords())
+}
+
+func (self *CiMap[K, V]) UnmarshalJSON(data []byte) error {
+	var m map[K]V
+
+	if err := json.Unmarshal(data, &m); err != nil {
+		return err
+	}
+
+	for _, key := range mapx.Keys(m) { // mapx.Keys() guarantees keys are ordered alphabetically
+		self.Set(key, m[key])
+	}
+
+	return nil
+}
+
+func (self *CiMap[K, V]) MarshalJSON() ([]byte, error) {
+	str := "{"
+	started := false
+
+	for idx, record := range self.records {
+		if !record.Deleted {
+			if started {
+				str += ","
+			} else {
+				started = true
+			}
+
+			key := self.keys[idx]
+			keyBytes, err := json.Marshal(key)
+
+			if err != nil {
+				return []byte{}, err
+			} else {
+				str += string(keyBytes) + ":"
+			}
+
+			valueBytes, err := json.Marshal(record.Value)
+
+			if err != nil {
+				return []byte{}, err
+			} else {
+				str += string(valueBytes)
+			}
+		}
+	}
+
+	str += "}"
+
+	return []byte(str), nil
 }

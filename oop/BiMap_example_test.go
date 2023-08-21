@@ -1,10 +1,39 @@
 package oop_test
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/ayonli/goext/oop"
 )
+
+func ExampleBiMap() {
+	m := &oop.BiMap[string, string]{} // use & for literal creation
+	m.Set("foo", "Hello").Set("bar", "World")
+
+	fmt.Println(m)
+	fmt.Println(m.Get("foo"))
+	fmt.Println(m.GetKey("Hello"))
+	// Output:
+	// &oop.BiMap[foo:Hello bar:World]
+	// Hello true
+	// foo true
+}
+
+func ExampleBiMap_json() {
+	m := &oop.BiMap[string, string]{}
+	m.Set("foo", "Hello").Set("bar", "World")
+
+	data, _ := json.Marshal(m)
+	fmt.Println(string(data))
+
+	m2 := &oop.BiMap[string, string]{}
+	json.Unmarshal(data, m2)
+	fmt.Println(m2)
+	// Output:
+	// {"foo":"Hello","bar":"World"}
+	// &oop.BiMap[bar:World foo:Hello]
+}
 
 func ExampleNewBiMap() {
 	m := oop.NewBiMap[string, string]()

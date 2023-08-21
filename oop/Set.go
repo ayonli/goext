@@ -1,6 +1,7 @@
 package oop
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -69,4 +70,22 @@ func (self *Set[T]) GoString() string {
 	str := fmt.Sprintf("%#v", self.Values())
 	idx := strings.Index(str, "{")
 	return "&oop.Set[" + str[2:idx] + "]" + str[idx:]
+}
+
+func (self *Set[T]) UnmarshalJSON(data []byte) error {
+	var s []T
+
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+
+	for _, value := range s {
+		self.Add(value)
+	}
+
+	return nil
+}
+
+func (self Set[T]) MarshalJSON() ([]byte, error) {
+	return json.Marshal(self.Values())
 }
