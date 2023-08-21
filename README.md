@@ -155,7 +155,7 @@ Especially for JavaScript developers, these packages should make us feel right a
 
         Sadly, due to the limitation of Golang's generics, methods like `Map()`, `Reduce()` and
         `GroupBy()` cannot be implemented in List, we'll have to use them from the `slicex` package.
-- **[oop](https://pkg.go.dev/github.com/ayonli/goext/oop)**
+- **[collections](https://pkg.go.dev/github.com/ayonli/goext/collections)**
     Object-oriented abstract wrappers for basic types.
     - `Set` is an object-oriented collection that stores unique items.
         - `NewSet()`
