@@ -1,63 +1,63 @@
-package oop_test
+package collections_test
 
 import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ayonli/goext/oop"
+	"github.com/ayonli/goext/collections"
 )
 
 func ExampleCiMap() {
-	m := &oop.CiMap[string, string]{} // use & for literal creation
+	m := &collections.CiMap[string, string]{} // use & for literal creation
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	fmt.Println(m)
 	fmt.Println(m.Has("foo"))
 	fmt.Println(m.Get("foo"))
 	// Output:
-	// &oop.CiMap[Foo:Hello bar:World]
+	// &collections.CiMap[Foo:Hello bar:World]
 	// true
 	// Hello true
 }
 
 func ExampleCiMap_json() {
-	m := &oop.CiMap[string, string]{}
+	m := &collections.CiMap[string, string]{}
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	data, _ := json.Marshal(m)
 	fmt.Println(string(data))
 
-	m2 := &oop.CiMap[string, string]{}
+	m2 := &collections.CiMap[string, string]{}
 	json.Unmarshal(data, m2)
 	fmt.Println(m2)
 	// Output:
 	// {"Foo":"Hello","bar":"World"}
-	// &oop.CiMap[Foo:Hello bar:World]
+	// &collections.CiMap[Foo:Hello bar:World]
 }
 
 func ExampleNewCiMap() {
-	m := oop.NewCiMap[string, string]()
+	m := collections.NewCiMap[string, string]()
 
 	fmt.Println(m)
 	fmt.Printf("%#v\n", m)
 	// Output:
-	// &oop.CiMap[]
-	// &oop.CiMap[string, string]{}
+	// &collections.CiMap[]
+	// &collections.CiMap[string, string]{}
 }
 
 func ExampleCiMap_Set() {
-	m := oop.NewCiMap[string, string]()
+	m := collections.NewCiMap[string, string]()
 	m.Set("Foo", "Hello").Set("bar", "World") // Set() method can be chained
 
 	fmt.Println(m) // keys' names and their order are preserved
 	fmt.Printf("%#v\n", m)
 	// Output:
-	// &oop.CiMap[Foo:Hello bar:World]
-	// &oop.CiMap[string, string]{"Foo":"Hello", "bar":"World"}
+	// &collections.CiMap[Foo:Hello bar:World]
+	// &collections.CiMap[string, string]{"Foo":"Hello", "bar":"World"}
 }
 
 func ExampleCiMap_Get() {
-	m := oop.NewCiMap[string, string]()
+	m := collections.NewCiMap[string, string]()
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	fmt.Println(m.Get("foo"))
@@ -68,7 +68,7 @@ func ExampleCiMap_Get() {
 }
 
 func ExampleCiMap_Has() {
-	m := oop.NewCiMap[string, string]()
+	m := collections.NewCiMap[string, string]()
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	fmt.Println(m.Has("foo"))
@@ -79,7 +79,7 @@ func ExampleCiMap_Has() {
 }
 
 func ExampleCiMap_Delete() {
-	m := oop.NewCiMap[string, string]()
+	m := collections.NewCiMap[string, string]()
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	ok1 := m.Delete("foo") // succeed
@@ -89,24 +89,24 @@ func ExampleCiMap_Delete() {
 	fmt.Println(ok1)
 	fmt.Println(ok2)
 	// Output:
-	// &oop.CiMap[bar:World]
+	// &collections.CiMap[bar:World]
 	// true
 	// false
 }
 
 func ExampleCiMap_Clear() {
-	m := oop.NewCiMap[string, string]()
+	m := collections.NewCiMap[string, string]()
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	m.Clear()
 
 	fmt.Println(m)
 	// Output:
-	// &oop.CiMap[]
+	// &collections.CiMap[]
 }
 
 func ExampleCiMap_Keys() {
-	m := oop.NewCiMap[string, string]()
+	m := collections.NewCiMap[string, string]()
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	fmt.Println(m.Keys()) // keys' names and their order are preserved
@@ -115,7 +115,7 @@ func ExampleCiMap_Keys() {
 }
 
 func ExampleCiMap_Values() {
-	m := oop.NewCiMap[string, string]()
+	m := collections.NewCiMap[string, string]()
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	fmt.Println(m.Values()) // values' order is the same as keys'
@@ -124,7 +124,7 @@ func ExampleCiMap_Values() {
 }
 
 func ExampleCiMap_ToMap() {
-	m := oop.NewCiMap[string, string]()
+	m := collections.NewCiMap[string, string]()
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	fmt.Println(m.ToMap()) // the printed representation is ordered alphabetically, but the real value is not
@@ -133,7 +133,7 @@ func ExampleCiMap_ToMap() {
 }
 
 func ExampleCiMap_ForEach() {
-	m := oop.NewCiMap[string, string]()
+	m := collections.NewCiMap[string, string]()
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	m.ForEach(func(value string, key string) {
@@ -145,7 +145,7 @@ func ExampleCiMap_ForEach() {
 }
 
 func ExampleCiMap_Size() {
-	m := oop.NewCiMap[string, string]()
+	m := collections.NewCiMap[string, string]()
 	m.Set("foo", "Hello").Set("bar", "World")
 
 	fmt.Println(m.Size())

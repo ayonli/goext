@@ -1,4 +1,4 @@
-package oop
+package collections
 
 import (
 	"encoding/json"
@@ -75,11 +75,11 @@ func (self *BiMap[K, V]) DeleteValue(value V) bool {
 }
 
 func (self *BiMap[K, V]) String() string {
-	return self.formatString("oop.BiMap", self.records)
+	return self.formatString("collections.BiMap", self.records)
 }
 
 func (self *BiMap[K, V]) GoString() string {
-	return self.formatGoString("oop.BiMap", self.records)
+	return self.formatGoString("collections.BiMap", self.records)
 }
 
 func (self *BiMap[K, V]) UnmarshalJSON(data []byte) error {

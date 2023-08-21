@@ -7,7 +7,7 @@ import (
 	"github.com/ayonli/goext/slicex"
 )
 
-// List is an objected-oriented abstract that works around the slice.
+// List is an objected-oriented abstract that works around the slice and acts as a dynamic array.
 type List[T comparable] []T
 
 func NewList[T comparable](base []T) *List[T] {

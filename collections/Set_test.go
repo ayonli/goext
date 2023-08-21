@@ -1,8 +1,9 @@
-package oop
+package collections
 
 import (
 	"testing"
 
+	"github.com/ayonli/goext/oop"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -92,7 +93,7 @@ func TestSet(suit *testing.T) {
 	suit.Run("ForEach", func(t *testing.T) {
 		s := NewSet([]string{})
 		s.Add("Hello").Add("World")
-		entries := &List[string]{}
+		entries := &oop.List[string]{}
 
 		s.ForEach(func(value string) {
 			entries.Push(value)

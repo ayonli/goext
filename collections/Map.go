@@ -1,4 +1,4 @@
-package oop
+package collections
 
 import (
 	"encoding/json"
@@ -188,7 +188,7 @@ func (self *Map[K, V]) formatString(typeName string, records []mapRecordItem[K, 
 }
 
 func (self *Map[K, V]) String() string {
-	return self.formatString("oop.Map", self.records)
+	return self.formatString("collections.Map", self.records)
 }
 
 func (self *Map[K, V]) formatGoString(typeName string, records []mapRecordItem[K, V]) string {
@@ -219,7 +219,7 @@ func (self *Map[K, V]) formatGoString(typeName string, records []mapRecordItem[K
 }
 
 func (self *Map[K, V]) GoString() string {
-	return self.formatGoString("oop.Map", self.records)
+	return self.formatGoString("collections.Map", self.records)
 }
 
 func (self *Map[K, V]) UnmarshalJSON(data []byte) error {

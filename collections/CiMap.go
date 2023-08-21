@@ -1,4 +1,4 @@
-package oop
+package collections
 
 import (
 	"encoding/json"
@@ -130,11 +130,11 @@ func (self *CiMap[K, V]) getNormalizedRecords() []mapRecordItem[K, V] {
 }
 
 func (self *CiMap[K, V]) String() string {
-	return self.formatString("oop.CiMap", self.getNormalizedRecords())
+	return self.formatString("collections.CiMap", self.getNormalizedRecords())
 }
 
 func (self *CiMap[K, V]) GoString() string {
-	return self.formatGoString("oop.CiMap", self.getNormalizedRecords())
+	return self.formatGoString("collections.CiMap", self.getNormalizedRecords())
 }
 
 func (self *CiMap[K, V]) UnmarshalJSON(data []byte) error {

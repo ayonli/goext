@@ -1,9 +1,10 @@
-package oop
+package collections
 
 import (
 	"strconv"
 	"testing"
 
+	"github.com/ayonli/goext/oop"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -128,7 +129,7 @@ func TestCiMap(suit *testing.T) {
 	suit.Run("ForEach", func(t *testing.T) {
 		m := NewCiMap[string, string]()
 		m.Set("foo", "Hello").Set("Bar", "World")
-		entries := &List[*[]string]{}
+		entries := &oop.List[*[]string]{}
 
 		m.ForEach(func(value string, key string) {
 			entries.Push(&[]string{key, value})

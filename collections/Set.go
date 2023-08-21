@@ -1,4 +1,4 @@
-package oop
+package collections
 
 import (
 	"encoding/json"
@@ -63,13 +63,13 @@ func (self *Set[T]) Size() int {
 }
 
 func (self *Set[T]) String() string {
-	return "&oop.Set" + fmt.Sprint(self.Values())
+	return "&collections.Set" + fmt.Sprint(self.Values())
 }
 
 func (self *Set[T]) GoString() string {
 	str := fmt.Sprintf("%#v", self.Values())
 	idx := strings.Index(str, "{")
-	return "&oop.Set[" + str[2:idx] + "]" + str[idx:]
+	return "&collections.Set[" + str[2:idx] + "]" + str[idx:]
 }
 
 func (self *Set[T]) UnmarshalJSON(data []byte) error {
