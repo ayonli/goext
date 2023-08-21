@@ -92,7 +92,7 @@ func TestSet(suit *testing.T) {
 	suit.Run("ForEach", func(t *testing.T) {
 		s := NewSet([]string{})
 		s.Add("Hello").Add("World")
-		entries := List[string]{}
+		entries := &List[string]{}
 
 		s.ForEach(func(value string) {
 			entries.Push(value)

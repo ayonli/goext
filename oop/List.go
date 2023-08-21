@@ -57,9 +57,12 @@ func (self *List[T]) Count(item T) int {
 
 func (self *List[T]) valuedWithOthers(others []*List[T]) []List[T] {
 	sources := append([]List[T]{}, *self)
-	_others := slicex.Filter(others, func(list *List[T], _ int) bool { return list != nil })
-	return append(sources, slicex.Map(_others, func(list *List[T], _ int) List[T] {
-		return *list
+	return append(sources, slicex.Map(others, func(list *List[T], _ int) List[T] {
+		if list == nil {
+			return nil
+		} else {
+			return *list
+		}
 	})...)
 }
 
@@ -140,6 +143,14 @@ func (self *List[T]) Filter(fn func(item T, idx int) bool) *List[T] {
 	return &list
 }
 
+func (self *List[T]) ForEach(fn func(item T, idx int)) *List[T] {
+	for idx, item := range *self {
+		fn(item, idx)
+	}
+
+	return self
+}
+
 func (self *List[T]) Pop() T {
 	return slicex.Pop(self)
 }
@@ -163,7 +174,11 @@ func (self *List[T]) Shuffle() *List[T] {
 
 func (self *List[T]) Diff(others ...*List[T]) *List[T] {
 	sources := append([]List[T]{}, slicex.Map(others, func(list *List[T], _ int) List[T] {
-		return *list
+		if list == nil {
+			return nil
+		} else {
+			return *list
+		}
 	})...)
 	list := slicex.Diff(*self, sources...)
 	return &list

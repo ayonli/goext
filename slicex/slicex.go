@@ -61,75 +61,35 @@ func Concat[S ~[]T, T any](sources ...S) S {
 	sources = Filter(sources, func(item S, _ int) bool { return item != nil })
 	lengths := Map(sources, func(item S, _ int) float64 { return float64(len(item)) })
 	length := mathx.Sum(lengths...)
-	newSlice := make(S, int(length))
+	list := make(S, int(length))
 	idx := 0
 
 	for _, items := range sources {
 		for _, value := range items {
-			newSlice[idx] = value
+			list[idx] = value
 			idx++
 		}
 	}
 
-	return newSlice
-}
-
-// Creates a new slice based on the original slice and removes all the duplicated items.
-func Uniq[S ~[]E, E comparable](original S) S {
-	items := make(S, 0)
-
-	for _, item := range original {
-		if !slices.Contains(items, item) {
-			items = append(items, item)
-		}
-	}
-
-	return items
-}
-
-// Creates a new slice based on the original slice and remove all the duplicated items identified
-// by the given key.
-func UniqBy[S ~[]M, M ~map[K]V, K comparable, V comparable](original S, key K) S {
-	ids := []V{}
-	items := S{}
-
-	for _, item := range original {
-		if item == nil {
-			continue
-		}
-
-		id, ok := item[key]
-
-		if !ok {
-			continue
-		}
-
-		if !slices.Contains(ids, id) {
-			ids = append(ids, id)
-			items = append(items, item)
-		}
-	}
-
-	return items
+	return list
 }
 
 // Creates a new slice with all sub-slice items concatenated into it.
 func Flat[S ~[]T, T any](original []S) S {
 	original = Filter(original, func(item S, _ int) bool { return item != nil })
-	length := mathx.Sum(Map(original, func(item S, _ int) float64 {
-		return float64(len(item))
-	})...)
-	newOne := make(S, int(length))
+	lengths := Map(original, func(item S, _ int) float64 { return float64(len(item)) })
+	length := mathx.Sum(lengths...)
+	list := make(S, int(length))
 	idx := 0
 
 	for _, items := range original {
 		for _, item := range items {
-			newOne[idx] = item
+			list[idx] = item
 			idx++
 		}
 	}
 
-	return newOne
+	return list
 }
 
 // Returns a shallow copy of a portion of the slice into a new slice selected from `start` to `end`
@@ -164,10 +124,10 @@ func Slice[S ~[]T, T any](original S, start int, end int) S {
 	// Create a new slice with a new underlying array, so that when the new slice are modified,
 	// the old slice (and its underlying array) remains untouched.
 	// And vice versa.
-	newOne := make(S, end-start)
-	copy(newOne, original[start:end])
+	part := make(S, end-start)
+	copy(part, original[start:end])
 
-	return newOne
+	return part
 }
 
 // Breaks the original slice into smaller chunks according to the given length.
@@ -293,29 +253,66 @@ func FindLastIndex[S ~[]T, T any](s S, fn func(item T, idx int) bool) int {
 // Creates a shallow copy of a portion of a given slice, filtered down to just the items from the
 // given slice that pass the test implemented by the provided function.
 func Filter[S ~[]T, T any](original S, fn func(item T, idx int) bool) S {
-	newOne := make(S, len(original))
-	i := 0
+	items := S{}
 
 	for idx, item := range original {
 		if fn(item, idx) {
-			newOne[i] = item
-			i++
+			items = append(items, item)
 		}
 	}
 
-	return slices.Delete(newOne, i, len(newOne))
+	return items
+}
+
+// Creates a new slice based on the original slice and removes all the duplicated items.
+func Uniq[S ~[]E, E comparable](original S) S {
+	items := S{}
+
+	for _, item := range original {
+		if !slices.Contains(items, item) {
+			items = append(items, item)
+		}
+	}
+
+	return items
+}
+
+// Creates a new slice based on the original slice and remove all the duplicated items identified
+// by the given key.
+func UniqBy[S ~[]M, M ~map[K]V, K comparable, V comparable](original S, key K) S {
+	ids := []V{}
+	items := S{}
+
+	for _, item := range original {
+		if item == nil {
+			continue
+		}
+
+		id, ok := item[key]
+
+		if !ok {
+			continue
+		}
+
+		if !slices.Contains(ids, id) {
+			ids = append(ids, id)
+			items = append(items, item)
+		}
+	}
+
+	return items
 }
 
 // Creates a new slice populated with the results of calling a provided function on every item in
 // the original slice.
 func Map[S ~[]T, T any, R any](original S, fn func(item T, idx int) R) []R {
-	newOne := make([]R, len(original))
+	items := make([]R, len(original))
 
 	for idx, item := range original {
-		newOne[idx] = fn(item, idx)
+		items[idx] = fn(item, idx)
 	}
 
-	return newOne
+	return items
 }
 
 // Executes a user-supplied "reducer" callback function on each item of the slice, in order,

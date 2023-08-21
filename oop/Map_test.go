@@ -117,7 +117,7 @@ func TestMap(suit *testing.T) {
 	suit.Run("ForEach", func(t *testing.T) {
 		m := NewMap[string, string]()
 		m.Set("foo", "Hello").Set("bar", "World")
-		entries := List[*[]string]{}
+		entries := &List[*[]string]{}
 
 		m.ForEach(func(value string, key string) {
 			entries.Push(&[]string{key, value})
