@@ -43,6 +43,10 @@ func (str String) Contains(sub string) bool {
 	return strings.Contains(string(str), sub)
 }
 
+func (str String) Count(sub string) int {
+	return strings.Count(string(str), sub)
+}
+
 func (str String) StartsWith(sub string) bool {
 	return stringx.StartsWith(string(str), sub)
 }

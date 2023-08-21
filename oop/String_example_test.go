@@ -88,6 +88,16 @@ func ExampleString_Contains() {
 	// false
 }
 
+func ExampleString_Count() {
+	str := oop.String("你好，世界！")
+
+	fmt.Println(str.Count("你好"))
+	fmt.Println(str.Count("Hello"))
+	// Output:
+	// 1
+	// 0
+}
+
 func ExampleString_StartsWith() {
 	str := oop.String("你好，世界！")
 
