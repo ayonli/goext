@@ -53,7 +53,7 @@ func Keys[M ~map[K]V, K comparable, V any](m M) []K {
 		idx++
 	}
 
-	slices.SortStableFunc(keys, slicex.CompareFunc)
+	slices.SortStableFunc(keys, slicex.CompareItems)
 	return keys
 }
 

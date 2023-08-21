@@ -1,6 +1,7 @@
 package oop
 
 import (
+	"fmt"
 	"slices"
 
 	"github.com/ayonli/goext/slicex"
@@ -13,11 +14,11 @@ func (self *List[T]) At(i int) (T, bool) {
 	return slicex.At(*self, i)
 }
 
-func (self *List[T]) Index(item T) int {
+func (self *List[T]) IndexOf(item T) int {
 	return slices.Index(*self, item)
 }
 
-func (self *List[T]) LastIndex(item T) int {
+func (self *List[T]) LastIndexOf(item T) int {
 	return slicex.LastIndex(*self, item)
 }
 
@@ -29,13 +30,21 @@ func (self *List[T]) Values() []T {
 	return []T(*self)
 }
 
+func (self *List[T]) String() string {
+	return "&" + fmt.Sprint(*self)
+}
+
+func (self *List[T]) GoString() string {
+	return "&" + fmt.Sprintf("%#v", *self)
+}
+
 func (self *List[T]) Clone() *List[T] {
 	list := slices.Clone(*self)
 	return &list
 }
 
-func (self *List[T]) Equal(another List[T]) bool {
-	return slices.Equal(*self, another)
+func (self *List[T]) Equal(another *List[T]) bool {
+	return slices.Equal(*self, *another)
 }
 
 func (self *List[T]) Contains(item T) bool {
@@ -46,10 +55,16 @@ func (self *List[T]) Count(item T) int {
 	return slicex.Count(*self, item)
 }
 
-func (self *List[T]) Concat(others ...List[T]) *List[T] {
+func (self *List[T]) valuedWithOthers(others []*List[T]) []List[T] {
 	sources := append([]List[T]{}, *self)
-	sources = append(sources, others...)
-	list := slicex.Concat(sources...)
+	_others := slicex.Filter(others, func(list *List[T], _ int) bool { return list != nil })
+	return append(sources, slicex.Map(_others, func(list *List[T], _ int) List[T] {
+		return *list
+	})...)
+}
+
+func (self *List[T]) Concat(others ...*List[T]) *List[T] {
+	list := slicex.Concat(self.valuedWithOthers(others)...)
 	return &list
 }
 
@@ -63,8 +78,10 @@ func (self *List[T]) Slice(start int, end int) *List[T] {
 	return &list
 }
 
-func (self *List[T]) Chunk(length int) []List[T] {
-	return slicex.Chunk(*self, length)
+func (self *List[T]) Chunk(length int) []*List[T] { // TODO
+	return slicex.Map(slicex.Chunk(*self, length), func(list List[T], _ int) *List[T] {
+		return &list
+	})
 }
 
 func (self *List[T]) Join(sep string) string {
@@ -72,8 +89,8 @@ func (self *List[T]) Join(sep string) string {
 }
 
 func (self *List[T]) Replace(start int, end int, values ...T) *List[T] {
-	list := slices.Replace(*self, start, end, values...)
-	return &list
+	*self = slices.Replace(*self, start, end, values...)
+	return self
 }
 
 func (self *List[T]) Reverse() *List[T] {
@@ -86,7 +103,7 @@ func (self *List[T]) ToReversed() *List[T] {
 }
 
 func (self *List[T]) Sort() *List[T] {
-	slices.SortStableFunc(*self, slicex.CompareFunc)
+	slices.SortStableFunc(*self, slicex.CompareItems)
 	return self
 }
 
@@ -144,28 +161,25 @@ func (self *List[T]) Shuffle() *List[T] {
 	return self
 }
 
-func (self *List[T]) Diff(others ...List[T]) *List[T] {
-	list := slicex.Diff(*self, others...)
+func (self *List[T]) Diff(others ...*List[T]) *List[T] {
+	sources := append([]List[T]{}, slicex.Map(others, func(list *List[T], _ int) List[T] {
+		return *list
+	})...)
+	list := slicex.Diff(*self, sources...)
 	return &list
 }
 
-func (self *List[T]) Xor(others ...List[T]) *List[T] {
-	sources := append([]List[T]{}, *self)
-	sources = append(sources, others...)
-	list := slicex.Xor(sources...)
+func (self *List[T]) Xor(others ...*List[T]) *List[T] {
+	list := slicex.Xor(self.valuedWithOthers(others)...)
 	return &list
 }
 
-func (self *List[T]) Union(others ...List[T]) *List[T] {
-	sources := append([]List[T]{}, *self)
-	sources = append(sources, others...)
-	list := slicex.Union(sources...)
+func (self *List[T]) Union(others ...*List[T]) *List[T] {
+	list := slicex.Union(self.valuedWithOthers(others)...)
 	return &list
 }
 
-func (self *List[T]) Intersect(others ...List[T]) *List[T] {
-	sources := append([]List[T]{}, *self)
-	sources = append(sources, others...)
-	list := slicex.Intersect(sources...)
+func (self *List[T]) Intersect(others ...*List[T]) *List[T] {
+	list := slicex.Intersect(self.valuedWithOthers(others)...)
 	return &list
 }

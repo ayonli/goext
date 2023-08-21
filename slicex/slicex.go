@@ -1,10 +1,4 @@
 // Additional functions for playing with slices and reduce mistakes.
-//
-// This package favors immutability over efficiency, when a new slice is created by its functions,
-// unless explicitly stated out, they not only create a slice (which is a view of the underlying
-// array), they also create a new underlying array and copy the data to it, so that when we
-// modifying the new slice, it will not causing side-effect on the old slice (and vice versa), which
-// is typical and troublesome when using the `[:]` syntax to derive new slices.
 package slicex
 
 import (
@@ -63,8 +57,6 @@ func Count[S ~[]T, T comparable](s S, item T) int {
 }
 
 // Merges two or more slices into one and returns the new slice.
-//
-// This function does not mutate the original slice(s) but create a new one.
 func Concat[S ~[]T, T any](sources ...S) S {
 	sources = Filter(sources, func(item S, _ int) bool { return item != nil })
 	lengths := Map(sources, func(item S, _ int) float64 { return float64(len(item)) })
@@ -143,13 +135,13 @@ func Flat[S ~[]T, T any](original []S) S {
 // Returns a shallow copy of a portion of the slice into a new slice selected from `start` to `end`
 // (excluded).
 //
-// Unlike the `[:]` syntax which creates a new slice that shares the same underlying array with the
-// old slice, this function creates a new slice with new underlying array and copies data from the
-// old one to the new one that prevent side effect when modifying them.
-//
 // If `start < 0`, it will be calculated as `len(original) + start`.
 //
 // If `end < 0`, it will be calculated as `len(original) + end`.
+//
+// Unlike the `[:]` syntax which creates a new slice that shares the same underlying array with the
+// old slice, this function creates a new slice with new underlying array and copies data from the
+// old one to the new one that prevent side effect when modifying them.
 func Slice[S ~[]T, T any](original S, start int, end int) S {
 	limit := len(original)
 
@@ -385,7 +377,7 @@ func Shuffle[S ~[]T, T any](s S) {
 }
 
 // This function is used as the compare function for sorting functions.
-func CompareFunc[T any](a, b T) int {
+func CompareItems[T any](a, b T) int {
 	switch _a := any(a).(type) {
 	case int:
 		_b := any(b).(int)
@@ -465,7 +457,7 @@ func OrderBy[S ~[]T, T ~map[K]V, K comparable, V any](original S, key K, order s
 			return -1 // remain the original order
 		}
 
-		return CompareFunc(_a, _b)
+		return CompareItems(_a, _b)
 	})
 
 	if order == "desc" {
