@@ -20,8 +20,8 @@ func ExampleString() {
 func ExampleString_At() {
 	str := oop.String("你好，世界！")
 
-	fmt.Println(str.At(0))  // do not use str[0] as it refers to a single byte
-	fmt.Println(str.At(1))  // do not use str[1] as it refers to a single byte
+	fmt.Println(str.At(0))  // do not use str[0] or str[0:1] as they refer to a single byte
+	fmt.Println(str.At(1))  // do not use str[1] or str[1:2] as they refer to a single byte
 	fmt.Println(str.At(-1)) // negative index counts backwards
 	// Output:
 	// 你

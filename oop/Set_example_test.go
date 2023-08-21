@@ -8,7 +8,7 @@ import (
 
 func ExampleNewSet() {
 	s1 := oop.NewSet([]string{}) // create an empty set
-	s2 := oop.NewSet([]string{   // create an set with initial values
+	s2 := oop.NewSet([]string{   // create a set with initial values
 		"Hello",
 		"World",
 		"Hello",

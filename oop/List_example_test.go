@@ -175,7 +175,7 @@ func ExampleList_Reverse() {
 
 func ExampleList_ToReversed() {
 	list1 := &oop.List[string]{"foo", "bar"}
-	list2 := list1.ToReversed() // ToReversed() returns a new list with all items reversed
+	list2 := list1.ToReversed() // ToReversed() returns a copy of the list with all items reversed
 
 	fmt.Println(list1)
 	fmt.Println(list2)
@@ -196,7 +196,7 @@ func ExampleList_Sort() {
 
 func ExampleList_ToSorted() {
 	list1 := &oop.List[string]{"foo", "bar"}
-	list2 := list1.ToSorted() // ToSorted() returns a new list with all items reversed
+	list2 := list1.ToSorted() // ToSorted() returns a copy of the list with all items reversed
 
 	fmt.Println(list1)
 	fmt.Println(list2)
@@ -284,6 +284,17 @@ func ExampleList_Filter() {
 	fmt.Println(list2)
 	// Output:
 	// &[hello world]
+}
+
+func ExampleList_ForEach() {
+	list := &oop.List[string]{"foo", "bar"}
+
+	list.ForEach(func(item string, idx int) {
+		fmt.Println(idx, "=>", item)
+	})
+	// Output:
+	// 0 => foo
+	// 1 => bar
 }
 
 func ExampleList_Pop() {

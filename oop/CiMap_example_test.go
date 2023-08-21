@@ -89,7 +89,7 @@ func ExampleCiMap_Values() {
 	m := oop.NewCiMap[string, string]()
 	m.Set("Foo", "Hello").Set("bar", "World")
 
-	fmt.Println(m.Values()) // values' order is the same with keys'
+	fmt.Println(m.Values()) // values' order is the same as keys'
 	// Output:
 	// [Hello World]
 }
@@ -108,7 +108,7 @@ func ExampleCiMap_ForEach() {
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	m.ForEach(func(value string, key string) {
-		fmt.Println(key + " => " + value)
+		fmt.Println(key, "=>", value)
 	})
 	// Output:
 	// Foo => Hello
