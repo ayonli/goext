@@ -2,7 +2,6 @@ package mbstring_test
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/ayonli/goext/stringx/mbstring"
 )
@@ -20,8 +19,8 @@ func ExampleAt() {
 	fmt.Println(char1)
 	fmt.Println(char2)
 	fmt.Println(char3)
-	fmt.Println(strconv.Quote(char4))
-	fmt.Println(strconv.Quote(char5))
+	fmt.Printf("%#v\n", char4)
+	fmt.Printf("%#v\n", char5)
 	// Output:
 	// W
 	// 世
@@ -107,7 +106,7 @@ func ExamplePadStart() {
 	str5 := mbstring.PadStart(str1, 8, "Hola")
 	str6 := mbstring.PadStart(str1, 5, "**")
 
-	fmt.Println(strconv.Quote(str2))
+	fmt.Printf("%#v\n", str2)
 	fmt.Println(str3)
 	fmt.Println(str4)
 	fmt.Println(str5)
@@ -128,7 +127,7 @@ func ExamplePadEnd() {
 	str5 := mbstring.PadEnd(str1, 8, "Hola")
 	str6 := mbstring.PadEnd(str1, 5, "**")
 
-	fmt.Println(strconv.Quote(str2))
+	fmt.Printf("%#v\n", str2)
 	fmt.Println(str3)
 	fmt.Println(str4)
 	fmt.Println(str5)
@@ -154,8 +153,8 @@ func ExampleSlice() {
 	fmt.Println(str4)
 	fmt.Println(str5)
 	fmt.Println(str6)
-	fmt.Println(strconv.Quote(str7))
-	fmt.Println(strconv.Quote(str8))
+	fmt.Printf("%#v\n", str7)
+	fmt.Printf("%#v\n", str8)
 	// Output:
 	// Hello
 	// 世界
@@ -174,10 +173,10 @@ func ExampleSubstring() {
 	str7 := mbstring.Substring(str2, 7, -1)
 
 	fmt.Println(str3)
-	fmt.Println(strconv.Quote(str4))
+	fmt.Printf("%#v\n", str4)
 	fmt.Println(str5)
 	fmt.Println(str6)
-	fmt.Println(strconv.Quote(str7))
+	fmt.Printf("%#v\n", str7)
 	// Output:
 	// Hello
 	// ""
@@ -221,11 +220,11 @@ func ExampleTruncate() {
 	fmt.Println(str2)
 	fmt.Println(str3)
 	fmt.Println(str4)
-	fmt.Println(strconv.Quote(str5))
+	fmt.Printf("%#v\n", str5)
 	fmt.Println(str7)
 	fmt.Println(str8)
 	fmt.Println(str9)
-	fmt.Println(strconv.Quote(str10))
+	fmt.Printf("%#v\n", str10)
 	// Output:
 	// Hello, World!
 	// Hello, Wo...

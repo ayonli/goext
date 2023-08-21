@@ -2,7 +2,6 @@ package oop_test
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/ayonli/goext/oop"
 )
@@ -125,7 +124,7 @@ func ExampleString_PadEnd() {
 func ExampleString_Trim() {
 	str := oop.String("  你好，世界！  ")
 
-	fmt.Println(strconv.Quote(string(str.Trim(" "))))
+	fmt.Printf("%#v\n", str.Trim(" "))
 	// Output:
 	// "你好，世界！"
 }
@@ -133,7 +132,7 @@ func ExampleString_Trim() {
 func ExampleString_TrimLeft() {
 	str := oop.String("  你好，世界！  ")
 
-	fmt.Println(strconv.Quote(string(str.TrimLeft(" "))))
+	fmt.Printf("%#v\n", str.TrimLeft(" "))
 	// Output:
 	// "你好，世界！  "
 }
@@ -141,7 +140,7 @@ func ExampleString_TrimLeft() {
 func ExampleString_TrimRight() {
 	str := oop.String("  你好，世界！  ")
 
-	fmt.Println(strconv.Quote(string(str.TrimRight(" "))))
+	fmt.Printf("%#v\n", str.TrimRight(" "))
 	// Output:
 	// "  你好，世界！"
 }

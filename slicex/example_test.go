@@ -3,7 +3,6 @@ package slicex_test
 import (
 	"fmt"
 	"slices"
-	"strconv"
 	"strings"
 
 	"github.com/ayonli/goext/slicex"
@@ -32,7 +31,7 @@ func ExampleAt_string() {
 
 	fmt.Println(v1, ok1)
 	fmt.Println(v2, ok2)
-	fmt.Println(strconv.Quote(v3), ok3)
+	fmt.Printf("%#v %v\n", v3, ok3)
 	// Output:
 	// World true
 	// Hi true
@@ -347,7 +346,7 @@ func ExampleFind_string() {
 	value2, ok2 := slicex.Find(list, func(item string, idx int) bool { return idx == 5 })
 
 	fmt.Println(value1, ok1)
-	fmt.Println(strconv.Quote(value2), ok2)
+	fmt.Printf("%#v %v\n", value2, ok2)
 	// Output:
 	// Hi true
 	// "" false
@@ -375,7 +374,7 @@ func ExampleFindLast_string() {
 	})
 
 	fmt.Println(value1, ok1)
-	fmt.Println(strconv.Quote(value2), ok2)
+	fmt.Printf("%#v %v\n", value2, ok2)
 	// Output:
 	// Hi true
 	// "" false

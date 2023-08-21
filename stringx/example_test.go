@@ -2,7 +2,6 @@ package stringx_test
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/ayonli/goext/stringx"
 )
@@ -35,7 +34,7 @@ func ExamplePadStart() {
 	str5 := stringx.PadStart(str1, 15, "Hola")
 	str6 := stringx.PadStart(str1, 12, "**")
 
-	fmt.Println(strconv.Quote(str2))
+	fmt.Printf("%#v\n", str2)
 	fmt.Println(str3)
 	fmt.Println(str4)
 	fmt.Println(str5)
@@ -56,7 +55,7 @@ func ExamplePadEnd() {
 	str5 := stringx.PadEnd(str1, 15, "Hola")
 	str6 := stringx.PadEnd(str1, 12, "**")
 
-	fmt.Println(strconv.Quote(str2))
+	fmt.Printf("%#v\n", str2)
 	fmt.Println(str3)
 	fmt.Println(str4)
 	fmt.Println(str5)
@@ -79,8 +78,8 @@ func ExampleCapitalize() {
 
 	fmt.Println(str2)
 	fmt.Println(str3)
-	fmt.Println(strconv.Quote(str4))
-	fmt.Println(strconv.Quote(str5))
+	fmt.Printf("%#v\n", str4)
+	fmt.Printf("%#v\n", str5)
 	fmt.Println(str6)
 	// Output:
 	// Hello, world
@@ -95,7 +94,7 @@ func ExampleHyphenate() {
 	str2 := stringx.Hyphenate(" hello  world   ")
 
 	fmt.Println(str1)
-	fmt.Println(strconv.Quote(str2))
+	fmt.Printf("%#v\v", str2)
 	// Output:
 	// hello-world
 	// " hello-world   "
@@ -113,7 +112,7 @@ func ExampleSlice() {
 	fmt.Println(str3)
 	fmt.Println(str4)
 	fmt.Println(str5)
-	fmt.Println(strconv.Quote(str6))
+	fmt.Printf("%#v\n", str6)
 	// Output:
 	// He
 	// Hello, Worl
@@ -131,10 +130,10 @@ func ExampleSubstring() {
 	str6 := stringx.Substring(str1, 7, -1)
 
 	fmt.Println(str2)
-	fmt.Println(strconv.Quote(str3))
+	fmt.Printf("%#v\n", str3)
 	fmt.Println(str4)
 	fmt.Println(str5)
-	fmt.Println(strconv.Quote(str6))
+	fmt.Printf("%#v\n", str6)
 	// Output:
 	// He
 	// ""
@@ -174,7 +173,7 @@ func ExampleTruncate() {
 	fmt.Println(str2)
 	fmt.Println(str3)
 	fmt.Println(str4)
-	fmt.Println(strconv.Quote(str5))
+	fmt.Printf("%#v\n", str5)
 	// Output:
 	// Hello, World!
 	// Hello, Wo...
@@ -204,8 +203,8 @@ func ExampleMatch() {
 	match3 := stringx.Match(str, "[a") // invalid regex pattern returns an empty string
 
 	fmt.Println(match1)
-	fmt.Println(strconv.Quote(match2))
-	fmt.Println(strconv.Quote(match3))
+	fmt.Printf("%#v\n", match2)
+	fmt.Printf("%#v\n", match3)
 	// Output:
 	// ll
 	// ""
