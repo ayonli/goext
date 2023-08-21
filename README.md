@@ -5,6 +5,12 @@ languages.
 
 Especially for JavaScript developers, these packages should make us feel right at home.
 
+## Install
+
+```sh
+go get github.com/ayonli/goext
+```
+
 ## Packages
 
 - **[mathx](https://pkg.go.dev/github.com/ayonli/goext/mathx)**
