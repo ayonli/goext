@@ -13,6 +13,8 @@ go get github.com/ayonli/goext
 
 ## Packages
 
+- **[async](https://pkg.go.dev/github.com/ayonli/goext/async)** (Since v0.2.0)
+    Package async provides functions to run functions in other goroutines and wait for their results.
 - **[mathx](https://pkg.go.dev/github.com/ayonli/goext/mathx)**
     Additional functions for math calculation that are missing in the standard library.
 - **[stringx](https://pkg.go.dev/github.com/ayonli/goext/stringx)**
