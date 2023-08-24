@@ -170,3 +170,21 @@ func ExampleWaitAllSettled() {
 	// Hi, World!
 	// something went wrong
 }
+
+func ExampleTry() {
+	texture := func(good bool) string {
+		if !good {
+			panic("something went wrong")
+		}
+
+		return "everything looks fine"
+	}
+
+	_, err := async.Try(func() (string, error) {
+		return texture(false), nil
+	})
+
+	fmt.Println(err)
+	// Output:
+	// something went wrong
+}

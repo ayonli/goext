@@ -2,6 +2,8 @@
 package async
 
 import (
+	"errors"
+	"fmt"
 	"slices"
 
 	"github.com/ayonli/goext/slicex"
@@ -211,4 +213,38 @@ func WaitAllSettled[F func() (R, error), R any](fns ...F) []WaitResult[R] {
 			Error: item.reason,
 		}
 	})
+}
+
+// Try runs a function in a safe context where if it or what's inside it panics, the panic reason
+// can be caught and returned as a normal error.
+func Try[R any](fn func() (R, error)) (R, error) {
+	resChan := make(chan R)
+	errChan := make(chan error)
+
+	go func() {
+		defer func() {
+			if re := recover(); re != nil {
+				if str, ok := re.(string); ok {
+					errChan <- errors.New(str)
+				} else {
+					errChan <- errors.New(fmt.Sprint(re))
+				}
+			}
+		}()
+
+		res, err := fn()
+
+		if err != nil {
+			errChan <- err
+		} else {
+			resChan <- res
+		}
+	}()
+
+	select {
+	case res := <-resChan:
+		return res, nil
+	case err := <-errChan:
+		return *new(R), err
+	}
 }
