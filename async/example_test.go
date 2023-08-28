@@ -37,10 +37,10 @@ func ExampleWaitRace() {
 		time.Sleep(time.Microsecond * 1)
 		return "Hello, World!", nil
 	}, func() (string, error) {
-		time.Sleep(time.Microsecond * 10)
+		time.Sleep(time.Microsecond * 15)
 		return "Hi, World!", nil
 	}, func() (string, error) {
-		time.Sleep(time.Microsecond * 20)
+		time.Sleep(time.Microsecond * 30)
 		return "", errors.New("something went wrong")
 	})
 
@@ -53,10 +53,10 @@ func ExampleWaitRace() {
 
 func ExampleWaitRace_error() {
 	res, errors := async.WaitRace(func() (string, error) {
-		time.Sleep(time.Microsecond * 20)
+		time.Sleep(time.Microsecond * 30)
 		return "Hello, World!", nil
 	}, func() (string, error) {
-		time.Sleep(time.Microsecond * 10)
+		time.Sleep(time.Microsecond * 15)
 		return "Hi, World!", nil
 	}, func() (string, error) {
 		time.Sleep(time.Microsecond * 1)
