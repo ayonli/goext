@@ -207,8 +207,8 @@ func Truncate(str string, length int) string {
 func Search(str string, pattern string) int {
 	match := stringx.Match(str, pattern)
 
-	if match != "" {
-		return Index(str, match)
+	if match != nil {
+		return Index(str, match[0])
 	}
 
 	return -1

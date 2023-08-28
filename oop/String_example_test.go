@@ -273,7 +273,7 @@ func ExampleString_Match() {
 
 	fmt.Println(str.Match("l{2,}"))
 	// Output:
-	// ll
+	// [ll]
 }
 
 func ExampleString_MatchAll() {
@@ -281,5 +281,5 @@ func ExampleString_MatchAll() {
 
 	fmt.Println(str.MatchAll("(?i)h{1,}"))
 	// Output:
-	// [H H]
+	// [[H] [H]]
 }

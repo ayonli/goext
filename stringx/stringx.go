@@ -204,26 +204,26 @@ func Search(str string, pattern string) int {
 	return loc[0]
 }
 
-// Retrieves the first result of matching the string against a regular expression.
-// If no match, this function returns an empty string.
-func Match(str string, patten string) string {
+// Retrieves the first result (with sub matches) of matching the string against a regular expression.
+// If no match, this function returns nil.
+func Match(str string, patten string) []string {
 	regex, err := regexp.Compile(patten)
 
 	if err != nil {
-		return ""
+		return nil
 	}
 
-	return regex.FindString(str)
+	return regex.FindStringSubmatch(str)
 }
 
-// Retrieves all results of matching the string against a regular expression.
-// If no match, this function returns `[]string(nil)`.
-func MatchAll(str string, pattern string) []string {
+// Retrieves all results (with sub matches) of matching the string against a regular expression.
+// If no match, this function returns an empty slice.
+func MatchAll(str string, pattern string) [][]string {
 	regexp, err := regexp.Compile(pattern)
 
 	if err != nil {
-		return []string{}
+		return [][]string(nil)
 	}
 
-	return regexp.FindAllString(str, -1)
+	return regexp.FindAllStringSubmatch(str, -1)
 }

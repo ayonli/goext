@@ -206,9 +206,9 @@ func ExampleMatch() {
 	fmt.Printf("%#v\n", match2)
 	fmt.Printf("%#v\n", match3)
 	// Output:
-	// ll
-	// ""
-	// ""
+	// [ll]
+	// []string(nil)
+	// []string(nil)
 }
 
 func ExampleMatchAll() {
@@ -218,10 +218,10 @@ func ExampleMatchAll() {
 	match3 := stringx.MatchAll(str, "[a") // invalid regex pattern returns an empty slice
 
 	fmt.Println(match1)
-	fmt.Println(match2)
-	fmt.Println(match3)
+	fmt.Printf("%#v\n", match2)
+	fmt.Printf("%#v\n", match3)
 	// Output:
-	// [ll]
-	// []
-	// []
+	// [[ll]]
+	// [][]string(nil)
+	// [][]string(nil)
 }

@@ -131,12 +131,22 @@ func (str String) Search(pattern string) int {
 	return mbstring.Search(string(str), pattern)
 }
 
-func (str String) Match(pattern string) String {
-	return String(stringx.Match(string(str), pattern))
+func (str String) Match(pattern string) []String {
+	match := stringx.Match(string(str), pattern)
+
+	if match == nil {
+		return nil
+	}
+
+	return slicex.Map(match, func(str string, _ int) String {
+		return String(str)
+	})
 }
 
-func (str String) MatchAll(pattern string) []String {
-	return slicex.Map(stringx.MatchAll(string(str), pattern), func(str string, _ int) String {
-		return String(str)
+func (str String) MatchAll(pattern string) [][]String {
+	return slicex.Map(stringx.MatchAll(string(str), pattern), func(sub []string, _ int) []String {
+		return slicex.Map(sub, func(str string, _ int) String {
+			return String(str)
+		})
 	})
 }
