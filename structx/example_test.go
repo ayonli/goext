@@ -272,7 +272,11 @@ func ExamplePick() {
 		Gender: 1,
 		Age:    28,
 	}
-	record2 := structx.Pick(record1, []string{"Name", "Email"})
+	record2 := structx.Pick(record1, []string{
+		"Name",
+		"Email",
+		"Other", // unrecognized field is ignored
+	})
 
 	fmt.Printf("%#v\n", record2)
 	// Output:
@@ -340,6 +344,244 @@ func ExampleOmit_pointer() {
 	fmt.Printf("%#v\n", record2)
 	// Output:
 	// &structx_test.Person{Name:"A-yon Lee", Email:"the@ayon.li", Gender:0, Age:0}
+}
+
+func ExampleSet() {
+	type Person struct {
+		Name  string
+		Email string
+	}
+
+	person := Person{}
+	ok1 := structx.Set(&person, "Name", "A-yon Lee")
+	ok2 := structx.Set(&person, "Gender", "MALE")
+
+	fmt.Printf("%#v\n", person)
+	fmt.Println(ok1)
+	fmt.Println(ok2)
+	// Output:
+	// structx_test.Person{Name:"A-yon Lee", Email:""}
+	// true
+	// false
+}
+
+func TestSetNonPointer(t *testing.T) {
+	type Person struct {
+		Name  string
+		Email string
+	}
+
+	person := Person{}
+
+	ok, err := goext.Try(func() (bool, error) {
+		return structx.Set(person, "Name", "A-yon Lee"), nil
+	})
+
+	assert.Equal(t, Person{}, person)
+	assert.False(t, ok)
+	assert.Equal(t,
+		"the first argument passed to structx.Set() must be a pointer of a struct",
+		err.Error())
+}
+
+func ExampleHas() {
+	type Person struct {
+		Name   string
+		Email  string
+		Gender string
+	}
+
+	person := Person{
+		Name:  "A-yon Lee",
+		Email: "the@ayon.li",
+	}
+	ok1 := structx.Has(person, "Name")
+	ok2 := structx.Has(person, "Gender")
+	ok3 := structx.Has(person, "Age")
+
+	fmt.Println(ok1)
+	fmt.Println(ok2)
+	fmt.Println(ok3)
+	// Output:
+	// true
+	// true
+	// false
+}
+
+func ExampleHas_pointer() {
+	type Person struct {
+		Name   string
+		Email  string
+		Gender string
+	}
+
+	person := &Person{
+		Name:  "A-yon Lee",
+		Email: "the@ayon.li",
+	}
+	ok1 := structx.Has(person, "Name")
+	ok2 := structx.Has(person, "Gender")
+	ok3 := structx.Has(person, "Age")
+
+	fmt.Println(ok1)
+	fmt.Println(ok2)
+	fmt.Println(ok3)
+	// Output:
+	// true
+	// true
+	// false
+}
+
+func ExampleGet() {
+	type Person struct {
+		Name   string
+		Email  string
+		Gender string
+	}
+
+	person := Person{
+		Name:  "A-yon Lee",
+		Email: "the@ayon.li",
+	}
+	name, ok1 := structx.Get[string](person, "Name")
+	gender, ok2 := structx.Get[string](person, "Gender")
+	age, ok3 := structx.Get[int](person, "Age")
+
+	fmt.Println(name, ok1)
+	fmt.Println(gender, ok2)
+	fmt.Println(age, ok3)
+	// Output:
+	// A-yon Lee true
+	//  true
+	// 0 false
+}
+
+func ExampleGet_pointer() {
+	type Person struct {
+		Name   string
+		Email  string
+		Gender string
+	}
+
+	person := &Person{
+		Name:  "A-yon Lee",
+		Email: "the@ayon.li",
+	}
+	name, ok1 := structx.Get[string](person, "Name")
+	gender, ok2 := structx.Get[string](person, "Gender")
+	age, ok3 := structx.Get[int](person, "Age")
+
+	fmt.Println(name, ok1)
+	fmt.Println(gender, ok2)
+	fmt.Println(age, ok3)
+	// Output:
+	// A-yon Lee true
+	//  true
+	// 0 false
+}
+
+type Person struct {
+	Name   string
+	Email  string
+	Gender string
+}
+
+func (self Person) GetName() string {
+	return self.Name
+}
+
+func (self *Person) Greet(verb string) string {
+	return verb + ", " + self.Name
+}
+
+func ExampleHasMethod() {
+	person := Person{
+		Name:  "A-yon Lee",
+		Email: "the@ayon.li",
+	}
+	ok1 := structx.HasMethod(person, "GetName")
+	ok2 := structx.HasMethod(person, "Greet")
+	ok3 := structx.HasMethod(person, "GetEmail")
+
+	fmt.Println(ok1)
+	fmt.Println(ok2)
+	fmt.Println(ok3)
+	// Output:
+	// true
+	// false
+	// false
+}
+
+func ExampleHasMethod_pointer() {
+	person := &Person{
+		Name:  "A-yon Lee",
+		Email: "the@ayon.li",
+	}
+	ok1 := structx.HasMethod(person, "GetName")
+	ok2 := structx.HasMethod(person, "Greet")
+	ok3 := structx.HasMethod(person, "GetEmail")
+
+	fmt.Println(ok1)
+	fmt.Println(ok2)
+	fmt.Println(ok3)
+	// Output:
+	// true
+	// true
+	// false
+}
+
+func TestHasMethodNonStruct(t *testing.T) {
+	_, err := goext.Try(func() (bool, error) {
+		return structx.HasMethod("", "method"), nil
+	})
+
+	assert.Equal(t, "the argument of structx.HasMethod() must be a struct", err.Error())
+}
+
+func ExampleCallMethod() {
+	person := &Person{
+		Name:  "A-yon Lee",
+		Email: "the@ayon.li",
+	}
+	returns1 := structx.CallMethod(person, "GetName")
+	returns2 := structx.CallMethod(person, "Greet", "Hello")
+	_, err := goext.Try(func() ([]any, error) {
+		return structx.CallMethod(person, "GetEmail"), nil
+	})
+
+	fmt.Println(returns1...)
+	fmt.Println(returns2...)
+	fmt.Println(err)
+	// Output:
+	// A-yon Lee
+	// Hello, A-yon Lee
+	// method GetEmail() doesn't exist on *structx_test.Person
+}
+
+func TestCallMethodNonPointer(t *testing.T) {
+	person := Person{
+		Name:  "A-yon Lee",
+		Email: "the@ayon.li",
+	}
+	returns1 := structx.CallMethod(person, "GetName")
+	_, err1 := goext.Try(func() ([]any, error) {
+		return structx.CallMethod(person, "Greet", "Hello"), nil
+	})
+	_, err2 := goext.Try(func() ([]any, error) {
+		return structx.CallMethod(person, "GetEmail"), nil
+	})
+
+	assert.Equal(t, []any{"A-yon Lee"}, returns1)
+	assert.Equal(t, "method Greet() doesn't exist on structx_test.Person", err1.Error())
+	assert.Equal(t, "method GetEmail() doesn't exist on structx_test.Person", err2.Error())
+}
+
+func TestCallMethodNonStruct(t *testing.T) {
+	_, err := goext.Try(func() ([]any, error) {
+		return structx.CallMethod("", "method"), nil
+	})
+
+	assert.Equal(t, "the argument of structx.CallMethod() must be a struct", err.Error())
 }
 
 func ExampleToMap() {

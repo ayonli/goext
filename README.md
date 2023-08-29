@@ -11,7 +11,11 @@ Especially for JavaScript developers, these packages should make us feel right a
 go get github.com/ayonli/goext
 ```
 
-## Packages
+## Functions
+
+- `func Try[R any](fn func() (R, error)) (res R, err error)`
+
+## Sub-packages
 
 - **[async](https://pkg.go.dev/github.com/ayonli/goext/async)** (Since v0.2.0)
     Package async provides functions to run functions in other goroutines and wait for their results.
@@ -25,6 +29,8 @@ go get github.com/ayonli/goext
     Additional functions for playing with slices and reduce mistakes.
 - **[mapx](https://pkg.go.dev/github.com/ayonli/goext/mapx)**
     Additional functions for dealing with maps.
+- **[structx](https://pkg.go.dev/github.com/ayonli/goext/structx)**
+    Functions used to manipulate structs.
 - **[oop](https://pkg.go.dev/github.com/ayonli/goext/oop)**
     Object-oriented abstract wrappers for basic data structures.
     - `String` is an object-oriented abstract that works around multi-byte strings.

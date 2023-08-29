@@ -1,3 +1,4 @@
+// Functions used to manipulate structs.
 package structx
 
 import (
@@ -125,7 +126,7 @@ func Values[V any](target any) []V {
 // Executes a provided function once for each field-value pair.
 //
 // This function only loops the exported fields, it panics if the given argument is not a struct.
-func ForEach[V any](target any, fn func(value V, key string)) {
+func ForEach[V any](target any, fn func(value V, field string)) {
 	targetValue := reflect.ValueOf(ensureValue("ForEach", target))
 	numField := targetValue.NumField()
 
@@ -159,7 +160,7 @@ func Pick[S any](original S, fields []string) S {
 		newField := newValue.Elem().FieldByName(field)
 		originalField := originalValue.FieldByName(field)
 
-		if newField.CanSet() && !originalField.IsZero() {
+		if newField.CanSet() && originalField.IsValid() {
 			newField.Set(originalField)
 		}
 	}
@@ -181,12 +182,80 @@ func Omit[S any](original S, fields []string) S {
 	return Pick(original, keptFields)
 }
 
+// Sets the field of the struct to be the given value.
+//
+// This function takes a pointer of the struct instead of its value, and it only supports the
+// exported fields of the struct.
+func Set[S any](target S, field string, value any) bool {
+	targetValue := reflect.ValueOf(target)
+
+	if targetValue.Kind() != reflect.Pointer || targetValue.Elem().Kind() != reflect.Struct {
+		panic("the first argument passed to structx.Set() must be a pointer of a struct")
+	}
+
+	fieldValue := targetValue.Elem().FieldByName(field)
+
+	if fieldValue.CanSet() {
+		fieldValue.Set(reflect.ValueOf(value))
+		return true
+	} else {
+		return false
+	}
+}
+
+func Has[S any](target S, field string) bool {
+	targetValue := reflect.ValueOf(ensureValue("Has", target))
+	return targetValue.FieldByName(field).IsValid()
+}
+
+// Returns the value of the specified field of the struct.
+//
+// This function only supports the exported fields, it panics if the given argument is not a struct.
+func Get[V any](target any, field string) (V, bool) {
+	targetValue := reflect.ValueOf(ensureValue("Get", target))
+	fieldValue := targetValue.FieldByName(field)
+
+	if fieldValue.IsValid() {
+		return fieldValue.Interface().(V), true
+	} else {
+		return *new(V), false
+	}
+}
+
+// Checks if the target struct has a method of the given name.
+func HasMethod[S any](target S, method string) bool {
+	ensureValue("HasMethod", target)
+	targetValue := reflect.ValueOf(target)
+	return targetValue.MethodByName(method).IsValid()
+}
+
+// Calls the method of the target struct.
+//
+// This function panics if the given method doesn't exist.
+func CallMethod(target any, method string, args ...any) []any {
+	ensureValue("CallMethod", target)
+	targetValue := reflect.ValueOf(target)
+	fn := targetValue.MethodByName(method)
+
+	if !fn.IsValid() {
+		typeName := reflect.TypeOf(target).String()
+		panic(fmt.Sprintf("method %s() doesn't exist on %s", method, typeName))
+	} else {
+		returns := fn.Call(slicex.Map(args, func(arg any, _ int) reflect.Value {
+			return reflect.ValueOf(arg)
+		}))
+		return slicex.Map(returns, func(res reflect.Value, _ int) any {
+			return res.Interface()
+		})
+	}
+}
+
 // Creates a map based on the given struct.
 //
 // This function only collects the exported fields.
 func ToMap[V any](s any) map[string]V {
 	m := make(map[string]V)
-	originalValue := reflect.ValueOf(ensureValue("Pick", s))
+	originalValue := reflect.ValueOf(ensureValue("ToMap", s))
 	numField := originalValue.NumField()
 
 	for i := 0; i < numField; i++ {
