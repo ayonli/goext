@@ -303,6 +303,16 @@ func UniqBy[S ~[]M, M ~map[K]V, K comparable, V comparable](original S, key K) S
 	return items
 }
 
+// Executes a provided function once for each slice item.
+//
+// This function adds a closure context around each item looped, may be useful for preventing
+// variable pollution.
+func ForEach[S ~[]T, T any](s S, fn func(item T, idx int)) {
+	for idx, item := range s {
+		fn(item, idx)
+	}
+}
+
 // Creates a new slice populated with the results of calling a provided function on every item in
 // the original slice.
 func Map[S ~[]T, T any, R any](original S, fn func(item T, idx int) R) []R {

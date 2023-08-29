@@ -446,6 +446,29 @@ func ExampleFilter_string() {
 	// [Hello Hi]
 }
 
+func ExampleForEach_int() {
+	list1 := []int{0, 1, 2}
+
+	slicex.ForEach(list1, func(item int, _ int) {
+		fmt.Println(item)
+	})
+	// Output:
+	// 0
+	// 1
+	// 2
+}
+
+func ExampleForEach_string() {
+	list1 := []string{"Hello", "World"}
+
+	slicex.ForEach(list1, func(item string, _ int) {
+		fmt.Println(item)
+	})
+	// Output:
+	// Hello
+	// World
+}
+
 func ExampleMap_int() {
 	list1 := []int{0, 1, 2}
 	list2 := slicex.Map(list1, func(item int, _ int) int { return item * 2 })

@@ -73,6 +73,34 @@ func ExampleValues() {
 	// [World Hello]
 }
 
+func ExampleForEach_string() {
+	m := map[string]string{
+		"foo": "Hello",
+		"bar": "World",
+	}
+
+	mapx.ForEach(m, func(value, key string) {
+		fmt.Println(key, "=>", value)
+	})
+	// Output:
+	// foo => Hello
+	// bar => World
+}
+
+func ExampleForEach_int() {
+	m := map[int]string{
+		0: "Hello",
+		1: "World",
+	}
+
+	mapx.ForEach(m, func(value string, key int) {
+		fmt.Println(key, "=>", value)
+	})
+	// Output:
+	// 0 => Hello
+	// 1 => World
+}
+
 func ExamplePick_string() {
 	m1 := map[string]string{
 		"foo": "Hello",

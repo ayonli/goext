@@ -71,6 +71,16 @@ func Values[M ~map[K]V, K comparable, V any](m M) []V {
 	return values
 }
 
+// Executes a provided function once for each key-value pair.
+//
+// This function adds a closure context around each item looped, may be useful for preventing
+// variable pollution.
+func ForEach[M ~map[K]V, K comparable, V any](m M, fn func(value V, key K)) {
+	for key, value := range m {
+		fn(value, key)
+	}
+}
+
 // Creates a new map based on the original map but only contains the specified keys.
 func Pick[M ~map[K]V, K comparable, V any](original M, keys []K) M {
 	newMap := M{}
@@ -88,17 +98,7 @@ func Pick[M ~map[K]V, K comparable, V any](original M, keys []K) M {
 
 // Creates a new map based on the original map but without the specified keys.
 func Omit[M ~map[K]V, K comparable, V any](original M, keys []K) M {
-	newMap := M{}
 	allKeys := Keys(original)
 	keptKeys := slicex.Diff(allKeys, keys)
-
-	for _, key := range keptKeys {
-		value, ok := original[key]
-
-		if ok {
-			newMap[key] = value
-		}
-	}
-
-	return newMap
+	return Pick(original, keptKeys)
 }
