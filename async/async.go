@@ -217,14 +217,18 @@ func WaitAllSettled[F func() (R, error), R any](fns ...F) []WaitResult[R] {
 
 // Try runs a function in a safe context where if it or what's inside it panics, the panic reason
 // can be caught and returned as a normal error.
-func Try[R any](fn func() (R, error)) (R, error) {
+//
+// Deprecated: use goext.Try() instead.
+func Try[R any](fn func() (R, error)) (res R, err error) {
 	resChan := make(chan R)
 	errChan := make(chan error)
 
 	go func() {
 		defer func() {
 			if re := recover(); re != nil {
-				if str, ok := re.(string); ok {
+				if _err, ok := re.(error); ok {
+					errChan <- _err
+				} else if str, ok := re.(string); ok {
 					errChan <- errors.New(str)
 				} else {
 					errChan <- errors.New(fmt.Sprint(re))
