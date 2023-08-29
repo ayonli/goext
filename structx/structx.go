@@ -87,7 +87,7 @@ func ensureValue[T any](fnName string, target T) any {
 // Returns the fields of the given struct.
 //
 // This function only collects the exported fields, it panics if the given argument is not a struct.
-func Fields(target any) []string {
+func Fields[S any](target S) []string {
 	targetValue := reflect.ValueOf(ensureValue("Fields", target))
 	numField := targetValue.NumField()
 	fields := []string{}
@@ -232,7 +232,7 @@ func HasMethod[S any](target S, method string) bool {
 // Calls the method of the target struct.
 //
 // This function panics if the given method doesn't exist.
-func CallMethod(target any, method string, args ...any) []any {
+func CallMethod[S any](target S, method string, args ...any) []any {
 	ensureValue("CallMethod", target)
 	targetValue := reflect.ValueOf(target)
 	fn := targetValue.MethodByName(method)
