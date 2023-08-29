@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ayonli/goext/async"
+	"github.com/ayonli/goext"
 	"github.com/ayonli/goext/structx"
 	"github.com/stretchr/testify/assert"
 )
@@ -144,7 +144,7 @@ func TestFieldsNonStruct(t *testing.T) {
 		"Name":  "A-yon Lee",
 		"Email": "the@ayon.li",
 	}
-	fields, err := async.Try(func() ([]string, error) {
+	fields, err := goext.Try(func() ([]string, error) {
 		fields := structx.Fields(person)
 		return fields, nil
 	})
@@ -192,7 +192,7 @@ func TestValuesNonStruct(t *testing.T) {
 		"Name":  "A-yon Lee",
 		"Email": "the@ayon.li",
 	}
-	fields, err := async.Try(func() ([]string, error) {
+	fields, err := goext.Try(func() ([]string, error) {
 		fields := structx.Values[string](person)
 		return fields, nil
 	})
@@ -244,7 +244,7 @@ func TestForEachNonStruct(t *testing.T) {
 		"Name":  "A-yon Lee",
 		"Email": "the@ayon.li",
 	}
-	pairs, err := async.Try(func() ([]string, error) {
+	pairs, err := goext.Try(func() ([]string, error) {
 		pairs := []string{}
 
 		structx.ForEach[string](person, func(value, key string) {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/ayonli/goext"
 	"github.com/ayonli/goext/async"
 )
 
@@ -180,7 +181,7 @@ func ExampleTry() {
 		return "everything looks fine"
 	}
 
-	_, err := async.Try(func() (string, error) {
+	_, err := goext.Try(func() (string, error) {
 		return texture(false), nil
 	})
 
