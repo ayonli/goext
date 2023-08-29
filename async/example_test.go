@@ -180,10 +180,7 @@ func ExampleTry() {
 
 		return "everything looks fine"
 	}
-
-	_, err := goext.Try(func() (string, error) {
-		return texture(false), nil
-	})
+	_, err := goext.Try(func() string { return texture(false) })
 
 	fmt.Println(err)
 	// Output:

@@ -13,7 +13,9 @@ go get github.com/ayonli/goext
 
 ## Functions
 
-- `func Try[R any](fn func() (R, error)) (res R, err error)`
+- `func Ok[R any](res R, err error) R`
+- `func Try[R any](fn func() R) (res R, err error)`
+- `func Wrap[R any](fn func(args ...any) R) func(args ...any) (R, error)`
 
 ## Sub-packages
 

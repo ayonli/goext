@@ -144,10 +144,7 @@ func TestFieldsNonStruct(t *testing.T) {
 		"Name":  "A-yon Lee",
 		"Email": "the@ayon.li",
 	}
-	fields, err := goext.Try(func() ([]string, error) {
-		fields := structx.Fields(person)
-		return fields, nil
-	})
+	fields, err := goext.Try(func() []string { return structx.Fields(person) })
 
 	assert.Equal(t, []string(nil), fields)
 	assert.Equal(t, "the argument of structx.Fields() must be a struct", err.Error())
@@ -192,10 +189,7 @@ func TestValuesNonStruct(t *testing.T) {
 		"Name":  "A-yon Lee",
 		"Email": "the@ayon.li",
 	}
-	fields, err := goext.Try(func() ([]string, error) {
-		fields := structx.Values[string](person)
-		return fields, nil
-	})
+	fields, err := goext.Try(func() []string { return structx.Values[string](person) })
 
 	assert.Equal(t, []string(nil), fields)
 	assert.Equal(t, "the argument of structx.Values() must be a struct", err.Error())
@@ -244,14 +238,14 @@ func TestForEachNonStruct(t *testing.T) {
 		"Name":  "A-yon Lee",
 		"Email": "the@ayon.li",
 	}
-	pairs, err := goext.Try(func() ([]string, error) {
+	pairs, err := goext.Try(func() []string {
 		pairs := []string{}
 
 		structx.ForEach[string](person, func(value, key string) {
 			pairs = append(pairs, fmt.Sprint(key, "=>", value))
 		})
 
-		return pairs, nil
+		return pairs
 	})
 
 	assert.Equal(t, []string(nil), pairs)
@@ -372,10 +366,7 @@ func TestSetNonPointer(t *testing.T) {
 	}
 
 	person := Person{}
-
-	ok, err := goext.Try(func() (bool, error) {
-		return structx.Set(person, "Name", "A-yon Lee"), nil
-	})
+	ok, err := goext.Try(func() bool { return structx.Set(person, "Name", "A-yon Lee") })
 
 	assert.Equal(t, Person{}, person)
 	assert.False(t, ok)
@@ -531,9 +522,7 @@ func ExampleHasMethod_pointer() {
 }
 
 func TestHasMethodNonStruct(t *testing.T) {
-	_, err := goext.Try(func() (bool, error) {
-		return structx.HasMethod("", "method"), nil
-	})
+	_, err := goext.Try(func() bool { return structx.HasMethod("", "method") })
 
 	assert.Equal(t, "the argument of structx.HasMethod() must be a struct", err.Error())
 }
@@ -545,9 +534,7 @@ func ExampleCallMethod() {
 	}
 	returns1 := structx.CallMethod(person, "GetName")
 	returns2 := structx.CallMethod(person, "Greet", "Hello")
-	_, err := goext.Try(func() ([]any, error) {
-		return structx.CallMethod(person, "GetEmail"), nil
-	})
+	_, err := goext.Try(func() []any { return structx.CallMethod(person, "GetEmail") })
 
 	fmt.Println(returns1...)
 	fmt.Println(returns2...)
@@ -564,12 +551,8 @@ func TestCallMethodNonPointer(t *testing.T) {
 		Email: "the@ayon.li",
 	}
 	returns1 := structx.CallMethod(person, "GetName")
-	_, err1 := goext.Try(func() ([]any, error) {
-		return structx.CallMethod(person, "Greet", "Hello"), nil
-	})
-	_, err2 := goext.Try(func() ([]any, error) {
-		return structx.CallMethod(person, "GetEmail"), nil
-	})
+	_, err1 := goext.Try(func() []any { return structx.CallMethod(person, "Greet", "Hello") })
+	_, err2 := goext.Try(func() []any { return structx.CallMethod(person, "GetEmail") })
 
 	assert.Equal(t, []any{"A-yon Lee"}, returns1)
 	assert.Equal(t, "method Greet() doesn't exist on structx_test.Person", err1.Error())
@@ -577,9 +560,7 @@ func TestCallMethodNonPointer(t *testing.T) {
 }
 
 func TestCallMethodNonStruct(t *testing.T) {
-	_, err := goext.Try(func() ([]any, error) {
-		return structx.CallMethod("", "method"), nil
-	})
+	_, err := goext.Try(func() []any { return structx.CallMethod("", "method") })
 
 	assert.Equal(t, "the argument of structx.CallMethod() must be a struct", err.Error())
 }
