@@ -29,7 +29,7 @@ go get github.com/ayonli/goext
     Additional functions for playing with slices and reduce mistakes.
 - **[mapx](https://pkg.go.dev/github.com/ayonli/goext/mapx)**
     Additional functions for dealing with maps.
-- **[structx](https://pkg.go.dev/github.com/ayonli/goext/structx)**
+- **[structx](https://pkg.go.dev/github.com/ayonli/goext/structx)** (Since v0.3.0)
     Functions used to manipulate structs.
 - **[oop](https://pkg.go.dev/github.com/ayonli/goext/oop)**
     Object-oriented abstract wrappers for basic data structures.
