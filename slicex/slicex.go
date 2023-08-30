@@ -145,6 +145,8 @@ func Split[S ~[]T, T comparable](original S, delimiter T) []S {
 
 	if offset < limit {
 		chunks = append(chunks, original[offset:limit])
+	} else if offset == limit {
+		chunks = append(chunks, S{})
 	}
 
 	return chunks

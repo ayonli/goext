@@ -224,24 +224,27 @@ func ExampleSplit_int() {
 	list1 := []int{0, 1, 2, 3, 4, 5, 4, 3, 2, 1}
 	list2 := slicex.Split(list1, 2)
 	list3 := slicex.Split(list1, 5)
+	list4 := slicex.Split(list1, 1)
 
 	fmt.Println(list2)
 	fmt.Println(list3)
+	fmt.Println(list4)
 	// Output:
 	// [[0 1] [3 4 5 4 3] [1]]
 	// [[0 1 2 3 4] [4 3 2 1]]
+	// [[0] [2 3 4 5 4 3 2] []]
 }
 
 func ExampleSplit_string() {
-	list1 := []string{"foo", "bar", "foo", "abc", "def", "foo", "ghi", "jkl"}
+	list1 := []string{"foo", "bar", "foo", "abc", "def", "foo", "bar"}
 	list2 := slicex.Split(list1, "foo")
 	list3 := slicex.Split(list1, "bar")
 
 	fmt.Println(list2)
 	fmt.Println(list3)
 	// Output:
-	// [[] [bar] [abc def] [ghi jkl]]
-	// [[foo] [foo abc def foo ghi jkl]]
+	// [[] [bar] [abc def] [bar]]
+	// [[foo] [foo abc def foo] []]
 }
 
 func ExampleChunk_int() {
