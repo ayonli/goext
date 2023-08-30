@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ayonli/goext"
 	"github.com/ayonli/goext/async"
 )
 
@@ -180,9 +179,43 @@ func ExampleTry() {
 
 		return "everything looks fine"
 	}
-	_, err := goext.Try(func() string { return texture(false) })
+	_, err := async.Try(func() (string, error) {
+		return texture(false), nil
+	})
 
 	fmt.Println(err)
 	// Output:
 	// something went wrong
+}
+
+func ExampleQueue() {
+	out := make(chan []string)
+	list := []string{}
+	push := async.Queue(func(str string) (fin bool) {
+		list = append(list, str)
+		fin = len(list) == 2
+
+		if fin {
+			// The order of the `list` is not stable, but we can guarantee that all two strings have
+			// been appended and stored to the `list`.
+			//
+			// Without concurrency control, we may end up `list` only has one item left or
+			// len(list) == 2 but when we trying to print or send it, it becomes 1.
+			out <- list
+		}
+
+		return fin
+	})
+
+	go func() {
+		push("foo")
+	}()
+
+	go func() {
+		push("bar")
+	}()
+
+	fmt.Println(len(<-out))
+	// Output:
+	// 2
 }

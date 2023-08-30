@@ -252,3 +252,23 @@ func Try[R any](fn func() (R, error)) (res R, err error) {
 		return *new(R), err
 	}
 }
+
+// Queue processes data sequentially by the given callback function that prevents concurrency
+// conflicts, it returns a new function that pushes data into the queue.
+//
+// The callback function returns a boolean value indicates whether the queue has finished, once true,
+// the internal channel will be closed and no more data shall be pushed.
+func Queue[T any](callback func(data T) (fin bool)) func(data T) {
+	c := make(chan T)
+
+	go func() {
+		for !callback(<-c) {
+		}
+
+		close(c)
+	}()
+
+	return func(data T) {
+		c <- data
+	}
+}
