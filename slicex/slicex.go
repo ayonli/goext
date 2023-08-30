@@ -130,6 +130,26 @@ func Slice[S ~[]T, T any](original S, start int, end int) S {
 	return part
 }
 
+// Breaks the original slice into smaller chunks according to the given delimiter.
+func Split[S ~[]T, T comparable](original S, delimiter T) []S {
+	chunks := []S{}
+	limit := len(original)
+	offset := 0
+
+	for i := 0; i < limit; i++ {
+		if original[i] == delimiter {
+			chunks = append(chunks, original[offset:i])
+			offset = i + 1
+		}
+	}
+
+	if offset < limit {
+		chunks = append(chunks, original[offset:limit])
+	}
+
+	return chunks
+}
+
 // Breaks the original slice into smaller chunks according to the given length.
 func Chunk[S ~[]T, T any](original S, length int) []S {
 	limit := len(original)
