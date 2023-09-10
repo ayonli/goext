@@ -3,6 +3,7 @@ package async_test
 import (
 	"errors"
 	"fmt"
+	"runtime"
 	"time"
 
 	"github.com/ayonli/goext/async"
@@ -171,23 +172,6 @@ func ExampleWaitAllSettled() {
 	// something went wrong
 }
 
-func ExampleTry() {
-	texture := func(good bool) string {
-		if !good {
-			panic("something went wrong")
-		}
-
-		return "everything looks fine"
-	}
-	_, err := async.Try(func() (string, error) {
-		return texture(false), nil
-	})
-
-	fmt.Println(err)
-	// Output:
-	// something went wrong
-}
-
 func ExampleQueue() {
 	out := make(chan []string)
 	list := []string{}
@@ -216,6 +200,8 @@ func ExampleQueue() {
 	}()
 
 	fmt.Println(len(<-out))
+	fmt.Println(runtime.NumGoroutine())
 	// Output:
+	// 2
 	// 2
 }

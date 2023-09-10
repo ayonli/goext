@@ -84,7 +84,7 @@ func Capitalize(str string, all bool) string {
 	}
 }
 
-// Replaces the spaces of the given string with hyphens (`-`).
+// Replaces the spaces between non-empty characters of the given string with hyphens (`-`).
 func Hyphenate(str string) string {
 	return spaceSepRegex.ReplaceAllStringFunc(str, func(s string) string {
 		return spaceRegex.ReplaceAllString(s, "-")
