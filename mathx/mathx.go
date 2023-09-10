@@ -34,6 +34,11 @@ func Sum(values ...float64) float64 {
 	return sum
 }
 
+// Returns the average value of the given values.
+func Avg(values ...float64) float64 {
+	return Sum(values...) / float64(len(values))
+}
+
 // Returns a the product value multiplied by the given values.
 func Product(first float64, rest ...float64) float64 {
 	for _, v := range rest {

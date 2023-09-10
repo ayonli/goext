@@ -36,6 +36,16 @@ func ExampleSum() {
 	// 3.5
 }
 
+func ExampleAvg() {
+	fmt.Println(mathx.Avg(1))
+	fmt.Println(mathx.Avg(1, 2))
+	fmt.Println(mathx.Avg(1, 2, 3))
+	// Output:
+	// 1
+	// 1.5
+	// 2
+}
+
 func ExampleProduct() {
 	fmt.Println(mathx.Product(1))
 	fmt.Println(mathx.Product(1, 2))
