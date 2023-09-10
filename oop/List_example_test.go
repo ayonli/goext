@@ -368,7 +368,7 @@ func ExampleList_Unshift() {
 }
 
 func ExampleList_Shuffle() {
-	list1 := oop.NewList([]int{0, 12, 3, 4, 5, 6, 7, 8, 9})
+	list1 := oop.NewList([]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9})
 	list2 := list1.Clone()
 	list3 := list1.Clone()
 
@@ -379,9 +379,20 @@ func ExampleList_Shuffle() {
 	fmt.Printf("list3(len: %d) != list1(len: %d): %v\n", list3.Length(), list1.Length(), !list3.Equal(list1))
 	fmt.Printf("list3(len: %d) != list2(len: %d): %v\n", list3.Length(), list2.Length(), !list3.Equal(list2))
 	// Output:
-	// list2(len: 9) != list1(len: 9): true
-	// list3(len: 9) != list1(len: 9): true
-	// list3(len: 9) != list2(len: 9): true
+	// list2(len: 10) != list1(len: 10): true
+	// list3(len: 10) != list1(len: 10): true
+	// list3(len: 10) != list2(len: 10): true
+}
+
+func ExampleList_ToShuffled() {
+	list1 := oop.NewList([]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9})
+	list2 := list1.ToShuffled()
+
+	fmt.Println(list1) // list1 is not modified
+	fmt.Printf("list2(len: %d) != list1(len: %d): %v\n", list2.Length(), list1.Length(), !list2.Equal(list1))
+	// Output:
+	// &[0 1 2 3 4 5 6 7 8 9]
+	// list2(len: 10) != list1(len: 10): true
 }
 
 func ExampleList_Diff() {

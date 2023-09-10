@@ -180,6 +180,10 @@ func (self *List[T]) Shuffle() *List[T] {
 	return self
 }
 
+func (self *List[T]) ToShuffled() *List[T] {
+	return self.Clone().Shuffle()
+}
+
 func (self *List[T]) Diff(others ...*List[T]) *List[T] {
 	sources := append([]List[T]{}, slicex.Map(others, func(list *List[T], _ int) List[T] {
 		if list == nil {

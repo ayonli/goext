@@ -637,7 +637,7 @@ func ExampleUnshift_string() {
 }
 
 func ExampleShuffle_int() {
-	list1 := []int{0, 12, 3, 4, 5, 6, 7, 8, 9}
+	list1 := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 	list2 := slices.Clone(list1)
 	list3 := slices.Clone(list1)
 
@@ -648,9 +648,9 @@ func ExampleShuffle_int() {
 	fmt.Printf("list3(len: %d) != list1(len: %d): %v\n", len(list3), len(list1), !slices.Equal(list3, list1))
 	fmt.Printf("list3(len: %d) != list2(len: %d): %v\n", len(list3), len(list2), !slices.Equal(list3, list2))
 	// Output:
-	// list2(len: 9) != list1(len: 9): true
-	// list3(len: 9) != list1(len: 9): true
-	// list3(len: 9) != list2(len: 9): true
+	// list2(len: 10) != list1(len: 10): true
+	// list3(len: 10) != list1(len: 10): true
+	// list3(len: 10) != list2(len: 10): true
 }
 
 func ExampleShuffle_sting() {
