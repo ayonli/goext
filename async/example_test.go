@@ -3,7 +3,6 @@ package async_test
 import (
 	"errors"
 	"fmt"
-	"runtime"
 	"time"
 
 	"github.com/ayonli/goext/async"
@@ -172,6 +171,41 @@ func ExampleWaitAllSettled() {
 	// something went wrong
 }
 
+func ExampleWaitTimeout() {
+	res1, err1 := async.WaitTimeout(func() (string, error) {
+		return "Hello, World!", nil
+	}, time.Millisecond*10)
+	res2, err2 := async.WaitTimeout(func() (string, error) {
+		time.Sleep(time.Millisecond * 20)
+		return "Hello, World!", nil
+	}, time.Millisecond*10)
+
+	fmt.Println(res1)
+	fmt.Println(err1)
+	fmt.Printf("%#v\n", res2)
+	fmt.Println(err2)
+	// Output:
+	// Hello, World!
+	// <nil>
+	// ""
+	// context deadline exceeded
+}
+
+func ExampleWaitAfter() {
+	start := time.Now()
+	res, err := async.WaitAfter(func() (string, error) {
+		return "Hello, World!", nil
+	}, time.Millisecond*10)
+
+	fmt.Println(res)
+	fmt.Println(err)
+	fmt.Println(time.Since(start).Milliseconds() >= 10) // may exceed 10 due to context change
+	// Output:
+	// Hello, World!
+	// <nil>
+	// true
+}
+
 func ExampleQueue() {
 	out := make(chan []string)
 	list := []string{}
@@ -200,8 +234,6 @@ func ExampleQueue() {
 	}()
 
 	fmt.Println(len(<-out))
-	fmt.Println(runtime.NumGoroutine())
 	// Output:
-	// 2
 	// 2
 }

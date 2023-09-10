@@ -2,6 +2,9 @@
 package async
 
 import (
+	"context"
+	"time"
+
 	"github.com/ayonli/goext/slicex"
 )
 
@@ -146,6 +149,37 @@ func WaitAllSettled[F func() (R, error), R any](fns ...F) []WaitResult[R] {
 	}
 
 	return results
+}
+
+// WaitTimeout runs the given function in another goroutine and shall return its result before the
+// timeout limit.
+func WaitTimeout[R any](fn func() (R, error), duration time.Duration) (R, error) {
+	channel := make(chan WaitResult[R], 1)
+	ctx, cancel := context.WithTimeout(context.Background(), duration)
+	defer cancel()
+
+	go func() {
+		res, err := fn()
+		channel <- WaitResult[R]{Value: res, Error: err}
+	}()
+
+	select {
+	case res := <-channel:
+		return res.Value, res.Error
+	case <-ctx.Done():
+		return *new(R), ctx.Err()
+	}
+}
+
+// WaitAfter runs the given function in another goroutine and returns its result only after the
+// given duration.
+func WaitAfter[R any](fn func() (R, error), duration time.Duration) (R, error) {
+	results := WaitAllSettled(fn, func() (R, error) {
+		time.Sleep(duration)
+		return *new(R), nil
+	})
+	result := results[0]
+	return result.Value, result.Error
 }
 
 // Queue processes data sequentially by the given callback function that prevents concurrency
