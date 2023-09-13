@@ -12,12 +12,8 @@ func ExampleBiMap() {
 	m.Set("foo", "Hello").Set("bar", "World")
 
 	fmt.Println(m)
-	fmt.Println(m.Get("foo"))
-	fmt.Println(m.GetKey("Hello"))
 	// Output:
 	// &collections.BiMap[foo:Hello bar:World]
-	// Hello true
-	// foo true
 }
 
 func ExampleBiMap_json() {
@@ -36,17 +32,18 @@ func ExampleBiMap_json() {
 }
 
 func ExampleNewBiMap() {
-	m := collections.NewBiMap[string, string]()
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m)
-	fmt.Printf("%#v\n", m)
 	// Output:
-	// &collections.BiMap[]
-	// &collections.BiMap[string, string]{}
+	// &collections.BiMap[foo:Hello bar:World]
 }
 
 func ExampleBiMap_Set() {
-	m := collections.NewBiMap[string, string]()
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{})
 	m.Set("foo", "Hello").Set("bar", "World") // Set() method can be chained
 
 	fmt.Println(m) // keys' order is preserved
@@ -57,8 +54,10 @@ func ExampleBiMap_Set() {
 }
 
 func ExampleBiMap_Get() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m.Get("foo"))
 	fmt.Println(m.Get("foo1"))
@@ -68,8 +67,10 @@ func ExampleBiMap_Get() {
 }
 
 func ExampleBiMap_GetKey() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m.GetKey("Hello"))
 	fmt.Println(m.GetKey("Hi"))
@@ -79,8 +80,10 @@ func ExampleBiMap_GetKey() {
 }
 
 func ExampleBiMap_Has() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m.Has("foo"))
 	fmt.Println(m.Has("foo1"))
@@ -90,8 +93,10 @@ func ExampleBiMap_Has() {
 }
 
 func ExampleBiMap_HasValue() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m.HasValue("Hello"))
 	fmt.Println(m.HasValue("Hi"))
@@ -101,11 +106,13 @@ func ExampleBiMap_HasValue() {
 }
 
 func ExampleBiMap_Delete() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	ok1 := m.Delete("foo") // succeed
-	ok2 := m.Delete("foo") // failed
+	ok2 := m.Delete("foo") // fail
 
 	fmt.Println(m)
 	fmt.Println(ok1)
@@ -117,8 +124,10 @@ func ExampleBiMap_Delete() {
 }
 
 func ExampleBiMap_DeleteValue() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	ok1 := m.DeleteValue("Hello") // succeed
 	ok2 := m.DeleteValue("Hello") // failed
@@ -133,8 +142,10 @@ func ExampleBiMap_DeleteValue() {
 }
 
 func ExampleBiMap_Clear() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	m.Clear()
 
@@ -144,8 +155,10 @@ func ExampleBiMap_Clear() {
 }
 
 func ExampleBiMap_Keys() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m.Keys()) // keys' order is preserved
 	// Output:
@@ -153,26 +166,35 @@ func ExampleBiMap_Keys() {
 }
 
 func ExampleBiMap_Values() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m.Values()) // values' order is the same as keys'
 	// Output:
 	// [Hello World]
 }
 
-func ExampleBiMap_ToMap() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+func ExampleBiMap_Entries() {
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
-	fmt.Println(m.ToMap()) // the printed representation is ordered alphabetically, but the real value is not
+	for entry := range m.Entries() {
+		fmt.Println(entry.Key, "=>", entry.Value)
+	}
 	// Output:
-	// map[bar:World foo:Hello]
+	// foo => Hello
+	// bar => World
 }
 
 func ExampleBiMap_ForEach() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	m.ForEach(func(value string, key string) {
 		fmt.Println(key, "=>", value)
@@ -183,10 +205,27 @@ func ExampleBiMap_ForEach() {
 }
 
 func ExampleBiMap_Size() {
-	m := collections.NewBiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{})
+	fmt.Println(m.Size())
 
+	m.Set("foo", "Hello")
+	fmt.Println(m.Size())
+
+	m.Set("bar", "World")
 	fmt.Println(m.Size())
 	// Output:
+	// 0
+	// 1
 	// 2
+}
+
+func ExampleBiMap_ToMap() {
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
+
+	fmt.Println(m.ToMap()) // the printed representation is ordered alphabetically, but the real value is not
+	// Output:
+	// map[bar:World foo:Hello]
 }

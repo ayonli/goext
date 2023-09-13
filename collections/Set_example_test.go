@@ -12,12 +12,8 @@ func ExampleSet() {
 	s.Add("Hello").Add("World")
 
 	fmt.Println(s)
-	fmt.Println(s.Has("Hello"))
-	fmt.Println(s.Has("foo"))
 	// Output:
 	// &collections.Set[Hello World]
-	// true
-	// false
 }
 
 func ExampleSet_json() {
@@ -36,19 +32,16 @@ func ExampleSet_json() {
 }
 
 func ExampleNewSet() {
-	s1 := collections.NewSet([]string{}) // create an empty set
-	s2 := collections.NewSet([]string{   // create a set with initial values
+	s := collections.NewSet([]string{
 		"Hello",
 		"World",
 		"Hello",
 		"A-yon",
 	})
 
-	fmt.Println(s1)
-	fmt.Printf("%#v\n", s2)
+	fmt.Println(s)
 	// Output:
-	// &collections.Set[]
-	// &collections.Set[string]{"Hello", "World", "A-yon"}
+	// &collections.Set[Hello World A-yon]
 }
 
 func ExampleSet_Add() {

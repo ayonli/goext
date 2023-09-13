@@ -14,8 +14,14 @@ type CiMap[K ~string, V any] struct {
 }
 
 // Creates a new instance of the CiMap.
-func NewCiMap[K ~string, V string]() *CiMap[K, V] {
-	return &CiMap[K, V]{}
+func NewCiMap[K ~string, V string](initial []MapEntry[K, V]) *CiMap[K, V] {
+	m := &CiMap[K, V]{}
+
+	for _, entry := range initial {
+		m.Set(entry.Key, entry.Value)
+	}
+
+	return m
 }
 
 // Sets a pair of key and value in the map. If the key already exists, it changes the corresponding
@@ -88,6 +94,29 @@ func (self *CiMap[K, V]) Keys() []K {
 	return items
 }
 
+// Returns a channel for the map entries that can be used in the `for...range...` loop.
+func (self *CiMap[K, V]) Entries() <-chan MapEntry[K, V] {
+	channel := make(chan MapEntry[K, V])
+
+	go func() {
+		self.ForEach(func(value V, key K) {
+			channel <- MapEntry[K, V]{Key: key, Value: value}
+		})
+		close(channel)
+	}()
+
+	return channel
+}
+
+// Loop through all the key-value pairs in the map and invoke the given function against them.
+func (self *CiMap[K, V]) ForEach(fn func(value V, key K)) {
+	for idx, record := range self.records {
+		if !record.Deleted {
+			fn(record.Value, self.keys[idx])
+		}
+	}
+}
+
 // Creates a builtin `map` based on this map.
 func (self *CiMap[K, V]) ToMap() map[K]V {
 	items := map[K]V{}
@@ -100,15 +129,6 @@ func (self *CiMap[K, V]) ToMap() map[K]V {
 	}
 
 	return items
-}
-
-// Loop through all the key-value pairs in the map and invoke the given function against them.
-func (self *CiMap[K, V]) ForEach(fn func(value V, key K)) {
-	for idx, record := range self.records {
-		if !record.Deleted {
-			fn(record.Value, self.keys[idx])
-		}
-	}
 }
 
 func (self *CiMap[K, V]) getNormalizedRecords() []mapRecordItem[K, V] {

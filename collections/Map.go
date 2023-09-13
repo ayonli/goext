@@ -16,6 +16,11 @@ type mapRecordItem[K comparable, V any] struct {
 	Deleted bool
 }
 
+type MapEntry[K comparable, V any] struct {
+	Key   K
+	Value V
+}
+
 // Map is an object-oriented collection of map with ordered keys.
 //
 // Unlike the builtin `map` type, this Map stores data in a underlying list, which provides ordered
@@ -27,8 +32,14 @@ type Map[K comparable, V any] struct {
 }
 
 // Creates a new instance of the Map.
-func NewMap[K comparable, V any]() *Map[K, V] {
-	return &Map[K, V]{}
+func NewMap[K comparable, V any](initial []MapEntry[K, V]) *Map[K, V] {
+	m := &Map[K, V]{}
+
+	for _, entry := range initial {
+		m.Set(entry.Key, entry.Value)
+	}
+
+	return m
 }
 
 func (self *Map[K, V]) findIndex(key K) int {
@@ -138,17 +149,18 @@ func (self *Map[K, V]) Values() []V {
 	return items
 }
 
-// Creates a builtin `map` based on this map.
-func (self *Map[K, V]) ToMap() map[K]V {
-	items := map[K]V{}
+// Returns a channel for the map entries that can be used in the `for...range...` loop.
+func (self *Map[K, V]) Entries() <-chan MapEntry[K, V] {
+	channel := make(chan MapEntry[K, V])
 
-	for _, record := range self.records {
-		if !record.Deleted {
-			items[record.Key] = record.Value
-		}
-	}
+	go func() {
+		self.ForEach(func(value V, key K) {
+			channel <- MapEntry[K, V]{Key: key, Value: value}
+		})
+		close(channel)
+	}()
 
-	return items
+	return channel
 }
 
 // Loop through all the key-value pairs in the map and invoke the given function against them.
@@ -163,6 +175,19 @@ func (self *Map[K, V]) ForEach(fn func(value V, key K)) {
 // Returns the size of the map.
 func (self *Map[K, V]) Size() int {
 	return self.size
+}
+
+// Creates a builtin `map` based on this map.
+func (self *Map[K, V]) ToMap() map[K]V {
+	items := map[K]V{}
+
+	for _, record := range self.records {
+		if !record.Deleted {
+			items[record.Key] = record.Value
+		}
+	}
+
+	return items
 }
 
 func (self *Map[K, V]) formatString(typeName string, records []mapRecordItem[K, V]) string {

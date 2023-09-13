@@ -12,12 +12,8 @@ func ExampleCiMap() {
 	m.Set("Foo", "Hello").Set("bar", "World")
 
 	fmt.Println(m)
-	fmt.Println(m.Has("foo"))
-	fmt.Println(m.Get("foo"))
 	// Output:
 	// &collections.CiMap[Foo:Hello bar:World]
-	// true
-	// Hello true
 }
 
 func ExampleCiMap_json() {
@@ -36,17 +32,18 @@ func ExampleCiMap_json() {
 }
 
 func ExampleNewCiMap() {
-	m := collections.NewCiMap[string, string]()
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"Foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m)
-	fmt.Printf("%#v\n", m)
 	// Output:
-	// &collections.CiMap[]
-	// &collections.CiMap[string, string]{}
+	// &collections.CiMap[Foo:Hello bar:World]
 }
 
 func ExampleCiMap_Set() {
-	m := collections.NewCiMap[string, string]()
+	m := &collections.CiMap[string, string]{}
 	m.Set("Foo", "Hello").Set("bar", "World") // Set() method can be chained
 
 	fmt.Println(m) // keys' names and their order are preserved
@@ -57,8 +54,10 @@ func ExampleCiMap_Set() {
 }
 
 func ExampleCiMap_Get() {
-	m := collections.NewCiMap[string, string]()
-	m.Set("Foo", "Hello").Set("bar", "World")
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"Foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m.Get("foo"))
 	fmt.Println(m.Get("foo1"))
@@ -68,8 +67,10 @@ func ExampleCiMap_Get() {
 }
 
 func ExampleCiMap_Has() {
-	m := collections.NewCiMap[string, string]()
-	m.Set("Foo", "Hello").Set("bar", "World")
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"Foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m.Has("foo"))
 	fmt.Println(m.Has("foo1"))
@@ -79,8 +80,10 @@ func ExampleCiMap_Has() {
 }
 
 func ExampleCiMap_Delete() {
-	m := collections.NewCiMap[string, string]()
-	m.Set("Foo", "Hello").Set("bar", "World")
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"Foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	ok1 := m.Delete("foo") // succeed
 	ok2 := m.Delete("foo") // failed
@@ -95,8 +98,10 @@ func ExampleCiMap_Delete() {
 }
 
 func ExampleCiMap_Clear() {
-	m := collections.NewCiMap[string, string]()
-	m.Set("Foo", "Hello").Set("bar", "World")
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"Foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	m.Clear()
 
@@ -106,8 +111,10 @@ func ExampleCiMap_Clear() {
 }
 
 func ExampleCiMap_Keys() {
-	m := collections.NewCiMap[string, string]()
-	m.Set("Foo", "Hello").Set("bar", "World")
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"Foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m.Keys()) // keys' names and their order are preserved
 	// Output:
@@ -115,26 +122,35 @@ func ExampleCiMap_Keys() {
 }
 
 func ExampleCiMap_Values() {
-	m := collections.NewCiMap[string, string]()
-	m.Set("Foo", "Hello").Set("bar", "World")
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"Foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	fmt.Println(m.Values()) // values' order is the same as keys'
 	// Output:
 	// [Hello World]
 }
 
-func ExampleCiMap_ToMap() {
-	m := collections.NewCiMap[string, string]()
-	m.Set("Foo", "Hello").Set("bar", "World")
+func ExampleCiMap_Entries() {
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"Foo", "Hello"},
+		{"bar", "World"},
+	})
 
-	fmt.Println(m.ToMap()) // the printed representation is ordered alphabetically, but the real value is not
+	for entry := range m.Entries() {
+		fmt.Println(entry.Key, "=>", entry.Value)
+	}
 	// Output:
-	// map[Foo:Hello bar:World]
+	// Foo => Hello
+	// bar => World
 }
 
 func ExampleCiMap_ForEach() {
-	m := collections.NewCiMap[string, string]()
-	m.Set("Foo", "Hello").Set("bar", "World")
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"Foo", "Hello"},
+		{"bar", "World"},
+	})
 
 	m.ForEach(func(value string, key string) {
 		fmt.Println(key, "=>", value)
@@ -145,10 +161,27 @@ func ExampleCiMap_ForEach() {
 }
 
 func ExampleCiMap_Size() {
-	m := collections.NewCiMap[string, string]()
-	m.Set("foo", "Hello").Set("bar", "World")
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{})
+	fmt.Println(m.Size())
 
+	m.Set("Foo", "Hello")
+	fmt.Println(m.Size())
+
+	m.Set("bar", "World")
 	fmt.Println(m.Size())
 	// Output:
+	// 0
+	// 1
 	// 2
+}
+
+func ExampleCiMap_ToMap() {
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"Foo", "Hello"},
+		{"bar", "World"},
+	})
+
+	fmt.Println(m.ToMap()) // the printed representation is ordered alphabetically, but the real value is not
+	// Output:
+	// map[Foo:Hello bar:World]
 }

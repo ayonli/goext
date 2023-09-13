@@ -10,7 +10,7 @@ import (
 
 func TestCiMap(suit *testing.T) {
 	suit.Run("NewMap", func(t *testing.T) {
-		m := NewCiMap[string, string]()
+		m := NewCiMap([]MapEntry[string, string]{})
 
 		assert.Equal(t, []mapRecordItem[string, string](nil), m.records)
 		assert.Equal(t, []string(nil), m.keys)
@@ -18,7 +18,7 @@ func TestCiMap(suit *testing.T) {
 	})
 
 	suit.Run("Set", func(t *testing.T) {
-		m := NewCiMap[string, string]()
+		m := NewCiMap([]MapEntry[string, string]{})
 		m.Set("foo", "Hello").Set("bar", "World")
 
 		assert.Equal(t, []mapRecordItem[string, string]{
@@ -37,8 +37,10 @@ func TestCiMap(suit *testing.T) {
 	})
 
 	suit.Run("Get", func(t *testing.T) {
-		m := NewCiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewCiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		v1, ok1 := m.Get("foo")
 		v2, ok2 := m.Get("Bar")
@@ -53,8 +55,10 @@ func TestCiMap(suit *testing.T) {
 	})
 
 	suit.Run("Has", func(t *testing.T) {
-		m := NewCiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewCiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		assert.Equal(t, true, m.Has("foo"))
 		assert.Equal(t, true, m.Has("Foo"))
@@ -62,8 +66,11 @@ func TestCiMap(suit *testing.T) {
 	})
 
 	suit.Run("Delete", func(t *testing.T) {
-		m := NewCiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewCiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
+
 		ok1 := m.Delete("foo")
 		ok2 := m.Delete("Bar")
 		ok3 := m.Delete("bar")
@@ -78,7 +85,7 @@ func TestCiMap(suit *testing.T) {
 		}, m.records)
 		assert.Equal(t, []string{"", ""}, m.keys)
 
-		m2 := NewCiMap[string, string]()
+		m2 := NewCiMap([]MapEntry[string, string]{})
 
 		for i := 0; i < 100; i++ {
 			m2.Set(strconv.Itoa(i), strconv.Itoa(i))
@@ -93,8 +100,11 @@ func TestCiMap(suit *testing.T) {
 	})
 
 	suit.Run("Clear", func(t *testing.T) {
-		m := NewCiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewCiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
+
 		m.Clear()
 
 		assert.Equal(t, 0, m.size)
@@ -103,22 +113,28 @@ func TestCiMap(suit *testing.T) {
 	})
 
 	suit.Run("Keys", func(t *testing.T) {
-		m := NewCiMap[string, string]()
-		m.Set("Foo", "Hello").Set("Bar", "World")
+		m := NewCiMap([]MapEntry[string, string]{
+			{"Foo", "Hello"},
+			{"Bar", "World"},
+		})
 
 		assert.Equal(t, []string{"Foo", "Bar"}, m.Keys())
 	})
 
 	suit.Run("Values", func(t *testing.T) {
-		m := NewCiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewCiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		assert.Equal(t, []string{"Hello", "World"}, m.Values())
 	})
 
 	suit.Run("ToMap", func(t *testing.T) {
-		m := NewCiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewCiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		assert.Equal(t, map[string]string{
 			"foo": "Hello",
@@ -127,8 +143,11 @@ func TestCiMap(suit *testing.T) {
 	})
 
 	suit.Run("ForEach", func(t *testing.T) {
-		m := NewCiMap[string, string]()
-		m.Set("foo", "Hello").Set("Bar", "World")
+		m := NewCiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"Bar", "World"},
+		})
+
 		entries := &oop.List[*[]string]{}
 
 		m.ForEach(func(value string, key string) {
@@ -142,8 +161,10 @@ func TestCiMap(suit *testing.T) {
 	})
 
 	suit.Run("Size", func(t *testing.T) {
-		m := NewCiMap[string, string]()
-		m.Set("foo", "Hello").Set("Bar", "World")
+		m := NewCiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"Bar", "World"},
+		})
 
 		assert.Equal(t, 2, m.Size())
 

@@ -10,14 +10,14 @@ import (
 
 func TestBiMap(suit *testing.T) {
 	suit.Run("NewBiMap", func(t *testing.T) {
-		m := NewBiMap[string, string]()
+		m := NewBiMap([]MapEntry[string, string]{})
 
 		assert.Equal(t, []mapRecordItem[string, string](nil), m.records)
 		assert.Equal(t, 0, m.size)
 	})
 
 	suit.Run("Set", func(t *testing.T) {
-		m := NewBiMap[string, string]()
+		m := NewBiMap([]MapEntry[string, string]{})
 		m.Set("foo", "Hello").Set("bar", "World")
 
 		assert.Equal(t, []mapRecordItem[string, string]{
@@ -34,8 +34,10 @@ func TestBiMap(suit *testing.T) {
 	})
 
 	suit.Run("Get", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		v1, ok1 := m.Get("foo")
 		v2, ok2 := m.Get("bar1")
@@ -47,8 +49,10 @@ func TestBiMap(suit *testing.T) {
 	})
 
 	suit.Run("GetKey", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		v1, ok1 := m.GetKey("Hello")
 		v2, ok2 := m.GetKey("World1")
@@ -60,24 +64,31 @@ func TestBiMap(suit *testing.T) {
 	})
 
 	suit.Run("Has", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		assert.Equal(t, true, m.Has("foo"))
 		assert.Equal(t, false, m.Has("bar1"))
 	})
 
 	suit.Run("HasValue", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		assert.Equal(t, true, m.HasValue("Hello"))
 		assert.Equal(t, false, m.HasValue("World1"))
 	})
 
 	suit.Run("Delete", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
+
 		ok1 := m.Delete("foo")
 		ok2 := m.Delete("bar1")
 
@@ -91,8 +102,11 @@ func TestBiMap(suit *testing.T) {
 	})
 
 	suit.Run("DeleteValue", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
+
 		ok1 := m.DeleteValue("Hello")
 		ok2 := m.DeleteValue("World1")
 
@@ -104,7 +118,7 @@ func TestBiMap(suit *testing.T) {
 			{Key: "bar", Value: "World", Deleted: false},
 		}, m.records)
 
-		m2 := NewBiMap[int, string]()
+		m2 := NewBiMap([]MapEntry[int, string]{})
 
 		for i := 0; i < 100; i++ {
 			m2.Set(i, strconv.Itoa(i))
@@ -119,8 +133,11 @@ func TestBiMap(suit *testing.T) {
 	})
 
 	suit.Run("Clear", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
+
 		m.Clear()
 
 		assert.Equal(t, 0, m.size)
@@ -128,22 +145,28 @@ func TestBiMap(suit *testing.T) {
 	})
 
 	suit.Run("Keys", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		assert.Equal(t, []string{"foo", "bar"}, m.Keys())
 	})
 
 	suit.Run("Values", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		assert.Equal(t, []string{"Hello", "World"}, m.Values())
 	})
 
 	suit.Run("ToMap", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		assert.Equal(t, map[string]string{
 			"foo": "Hello",
@@ -152,8 +175,10 @@ func TestBiMap(suit *testing.T) {
 	})
 
 	suit.Run("ForEach", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 		entries := &oop.List[*[]string]{}
 
 		m.ForEach(func(value string, key string) {
@@ -167,8 +192,10 @@ func TestBiMap(suit *testing.T) {
 	})
 
 	suit.Run("Size", func(t *testing.T) {
-		m := NewBiMap[string, string]()
-		m.Set("foo", "Hello").Set("bar", "World")
+		m := NewBiMap([]MapEntry[string, string]{
+			{"foo", "Hello"},
+			{"bar", "World"},
+		})
 
 		assert.Equal(t, 2, m.Size())
 
