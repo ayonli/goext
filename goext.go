@@ -45,6 +45,8 @@ func Try[R any](fn func() R) (res R, err error) {
 
 // Wrap returns a new function that wraps the `goext.Try()`, rendering the new function already
 // catchable.
+//
+// Deprecated: this function is not good.
 func Wrap[R any](fn func(args ...any) R) func(args ...any) (R, error) {
 	return func(args ...any) (R, error) {
 		return Try(func() R {
