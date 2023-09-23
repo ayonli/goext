@@ -10,6 +10,17 @@ import (
 	"github.com/ayonli/goext/collections"
 )
 
+// ReadAll reads all values from the channel at once.
+func ReadAll[T any](ch <-chan T) []T {
+	values := []T{}
+
+	for val := range ch {
+		values = append(values, val)
+	}
+
+	return values
+}
+
 // Ok asserts a typical Golang function call which returns a result and an error is successful and
 // returns the result, it panics if the return error is not nil. This function should be composite
 // with the `goext.Try()` function, allowing the program to bubble the error and catch it from

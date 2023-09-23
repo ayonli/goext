@@ -8,6 +8,19 @@ import (
 	"github.com/ayonli/goext"
 )
 
+func ExampleReadAll() {
+	ch := make(chan int, 3)
+
+	ch <- 1
+	ch <- 2
+	ch <- 3
+	close(ch)
+
+	fmt.Println(goext.ReadAll(ch))
+	// Output:
+	// [1 2 3]
+}
+
 func ExampleOk() {
 	texture := func(good bool) (string, error) {
 		if !good {
