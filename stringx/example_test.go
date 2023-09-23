@@ -6,6 +6,15 @@ import (
 	"github.com/ayonli/goext/stringx"
 )
 
+func ExampleRandom() {
+	str := stringx.Random(4)
+	matches := stringx.Match(str, "[0-9a-zA-Z]{4}")
+
+	fmt.Println(matches[0] == str)
+	// Output:
+	// true
+}
+
 func ExampleStartsWith() {
 	str := "Hello, World"
 

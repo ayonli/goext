@@ -3,6 +3,7 @@ package stringx
 
 import (
 	"math"
+	"math/rand"
 	"regexp"
 	"strings"
 )
@@ -10,6 +11,21 @@ import (
 var wordRegex = regexp.MustCompile(`\w+`)
 var spaceRegex = regexp.MustCompile(`\s+`)
 var spaceSepRegex = regexp.MustCompile(`\S\s+\S`)
+
+// Returns a random string, the charset matches `/[0-9a-zA-Z]/`.
+func Random(length int) string {
+	chars := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	limit := float64(len(chars))
+	bytes := []byte{}
+
+	for length > 0 {
+		i := int(math.Floor(rand.Float64() * limit))
+		bytes = append(bytes, chars[i])
+		length--
+	}
+
+	return string(bytes)
+}
 
 // Checks if the given string starts with the specified sub string.
 //
