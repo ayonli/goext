@@ -237,3 +237,74 @@ func ExampleQueue() {
 	// Output:
 	// 2
 }
+
+func ExampleAsyncTask() {
+	task := &async.AsyncTask[string]{}
+
+	go func() {
+		task.Resolve("Hello, World!")
+	}()
+
+	res, _ := task.Result()
+
+	fmt.Println(res)
+	// Output:
+	// Hello, World!
+}
+
+func ExampleAsyncTask_Resolve() {
+	task := &async.AsyncTask[string]{}
+
+	go func() {
+		task.Resolve("Hello, World!")
+
+		// Resolve and Reject can only be called once and once one of them has been called,
+		// calling the other will not effect.
+		task.Reject(errors.New("something went wrong"))
+	}()
+
+	res, err := task.Result()
+
+	fmt.Println(res)
+	fmt.Println(err)
+	// Output:
+	// Hello, World!
+	// <nil>
+}
+
+func ExampleAsyncTask_Reject() {
+	task := &async.AsyncTask[string]{}
+
+	go func() {
+		task.Reject(errors.New("something went wrong"))
+
+		// Resolve and Reject can only be called once and once one of them has been called,
+		// calling the other will not effect.
+		task.Resolve("Hello, World!")
+	}()
+
+	res, err := task.Result()
+
+	fmt.Printf("%#v\n", res)
+	fmt.Println(err)
+	// Output:
+	// ""
+	// something went wrong
+}
+
+func ExampleAsyncTask_Result() {
+	task := &async.AsyncTask[string]{}
+
+	go func() {
+		task.Resolve("Hello, World!")
+	}()
+
+	res1, _ := task.Result()
+	res2, _ := task.Result() // successive calls returns the same result
+
+	fmt.Println(res1)
+	fmt.Println(res2)
+	// Output:
+	// Hello, World!
+	// Hello, World!
+}

@@ -3,6 +3,7 @@ package async
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/ayonli/goext/slicex"
@@ -200,4 +201,66 @@ func Queue[T any](callback func(data T) (fin bool)) func(data T) {
 	return func(data T) {
 		c <- data
 	}
+}
+
+// AsyncTask represents the eventual completion (or failure) of an asynchronous operation and
+// its resulting value.
+//
+// Unlike channel, whose value can be consumed only once, AsyncTask caches the result so that
+// it can be retrieved as many times as we want.
+type AsyncTask[T any] struct {
+	result *WaitResult[T]
+	queue  []chan bool
+	mu     sync.Mutex
+}
+
+// Resolve settles the task successfully with a given value.
+func (task *AsyncTask[T]) Resolve(value T) {
+	task.mu.Lock()
+
+	if task.result != nil {
+		return
+	}
+
+	task.result = &WaitResult[T]{Value: value}
+	task.mu.Unlock()
+
+	for _, done := range task.queue {
+		done <- true
+	}
+}
+
+// Reject settles the task with a failure reason.
+func (task *AsyncTask[T]) Reject(err error) {
+	task.mu.Lock()
+
+	if task.result != nil {
+		return
+	}
+
+	task.result = &WaitResult[T]{Error: err}
+	task.mu.Unlock()
+
+	for _, done := range task.queue {
+		done <- true
+	}
+}
+
+// Result returns the result of the task.
+//
+// Successive calls this function returns the same result.
+func (task *AsyncTask[T]) Result() (T, error) {
+	task.mu.Lock()
+
+	if task.result != nil {
+		return task.result.Value, task.result.Error
+	}
+
+	done := make(chan bool)
+	task.queue = append(task.queue, done)
+	task.mu.Unlock()
+
+	<-done
+
+	return task.result.Value, task.result.Error
 }
