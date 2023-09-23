@@ -206,6 +206,17 @@ func ExampleWaitAfter() {
 	// true
 }
 
+func ExampleWaitUntil() {
+	result := 0
+	async.WaitUntil(func() bool {
+		result++
+		return result == 10
+	})
+	fmt.Println(result)
+	// Output:
+	// 10
+}
+
 func ExampleQueue() {
 	out := make(chan []string)
 	list := []string{}

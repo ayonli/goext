@@ -183,6 +183,21 @@ func WaitAfter[R any](fn func() (R, error), duration time.Duration) (R, error) {
 	return result.Value, result.Error
 }
 
+// Blocks the context until the test is passed.
+func WaitUntil(test func() bool) {
+	pass := make(chan bool)
+
+	go func() {
+		for !test() {
+			time.Sleep(time.Millisecond)
+		}
+
+		pass <- true
+	}()
+
+	<-pass
+}
+
 // Queue processes data sequentially by the given callback function that prevents concurrency
 // conflicts, it returns a new function that pushes data into the queue.
 //
