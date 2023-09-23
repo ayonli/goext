@@ -248,7 +248,7 @@ func (task *AsyncTask[T]) Reject(err error) {
 
 // Result returns the result of the task.
 //
-// Successive calls this function returns the same result.
+// Successive calling this function returns the same result.
 func (task *AsyncTask[T]) Result() (T, error) {
 	task.mu.Lock()
 

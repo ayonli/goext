@@ -13,8 +13,67 @@ go get github.com/ayonli/goext
 
 ## Functions
 
-- `func Ok[R any](res R, err error) R`
-- `func Try[R any](fn func() R) (res R, err error)`
+```go
+func Ok[R any](res R, err error) R
+```
+
+Ok asserts a typical Golang function call which returns a result and an error is successful and
+returns the result, it panics if the return error is not nil. This function should be composite
+with the `goext.Try()` function, allowing the program to bubble the error and catch it from
+outside.
+
+**Example**
+
+```go
+_, err := goext.Try(func () int {
+	res1 := goext.Ok(someCall())
+	res2 := goext.Ok(anotherCall())
+	return 0
+})
+```
+
+---
+
+```go
+func Try[R any](fn func() R) (res R, err error)
+```
+
+Try runs a function in a safe context where if it or what's inside it panics, the panic reason
+can be caught and returned as a normal error.
+
+**Example**
+
+```go
+_, err := goext.Try(func () int {
+	res1 := goext.Ok(someCall())
+	res2 := goext.Ok(anotherCall())
+	return 0
+})
+```
+
+---
+
+```go
+func Throttle[A any, R any, Fn func(arg A) (R, error)](
+	handler Fn,
+	duration time.Duration,
+	forKey string,
+) Fn
+```
+
+Creates a throttled function that will only be run once in a certain amount of time.
+
+If a subsequent call happens within the `duration`, the previous result will be returned and
+the `handler` function will not be invoked.
+
+If the `handler` function returns a promise, and two or more calls happen simultaneously,
+the later calls will try to resolve with the previous result immediately instead of waiting
+the pending call to complete.
+
+If `forKey` is provided, use the throttle strategy for the given key, this will keep the
+result in a global cache, binding new `handler` function for the same key will result in the
+same result as the previous, unless the duration has passed. This mechanism guarantees that both
+creating the throttled function in function scopes and overwriting the handler are possible.
 
 ## Sub-packages
 
