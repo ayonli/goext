@@ -7,7 +7,7 @@ import (
 	"github.com/ayonli/goext/mapx"
 )
 
-// Bi-directional map, keys and values are unique and map to each other.
+// Thread-safe bi-directional map, keys and values are unique and map to each other.
 type BiMap[K comparable, V comparable] struct {
 	Map[K, V]
 }
@@ -17,7 +17,7 @@ func NewBiMap[K comparable, V comparable](initial []MapEntry[K, V]) *BiMap[K, V]
 	m := &BiMap[K, V]{}
 
 	for _, entry := range initial {
-		m.Set(entry.Key, entry.Value)
+		m.set(entry.Key, entry.Value)
 	}
 
 	return m
@@ -33,6 +33,12 @@ func (self BiMap[K, V]) findIndexByValue(value V) int {
 // value; if the value already exists, it changes the corresponding key; if both are missing, it
 // adds the new pair into the map.
 func (self *BiMap[K, V]) Set(key K, value V) *BiMap[K, V] {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+	return self.set(key, value)
+}
+
+func (self *BiMap[K, V]) set(key K, value V) *BiMap[K, V] {
 	idx := self.findIndex(key)
 
 	if idx == -1 {
@@ -58,6 +64,9 @@ func (self *BiMap[K, V]) Set(key K, value V) *BiMap[K, V] {
 // Retrieves a key by the given value. If the value doesn't exist, it returns the zero-value of type
 // `K` and `false`.
 func (self *BiMap[K, V]) GetKey(value V) (K, bool) {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
+
 	idx := self.findIndexByValue(value)
 
 	if idx == -1 {
@@ -76,19 +85,29 @@ func (self *BiMap[K, V]) HasValue(value V) bool {
 
 // Removes the key-value pair by the given value.
 func (self *BiMap[K, V]) DeleteValue(value V) bool {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
 	idx := self.findIndexByValue(value)
 	return self.deleteAt(idx)
 }
 
 func (self *BiMap[K, V]) String() string {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
 	return self.formatString("collections.BiMap", self.records)
 }
 
 func (self *BiMap[K, V]) GoString() string {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
 	return self.formatGoString("collections.BiMap", self.records)
 }
 
 func (self *BiMap[K, V]) UnmarshalJSON(data []byte) error {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
 	var m map[K]V
 
 	if err := json.Unmarshal(data, &m); err != nil {
@@ -96,7 +115,7 @@ func (self *BiMap[K, V]) UnmarshalJSON(data []byte) error {
 	}
 
 	for _, key := range mapx.Keys(m) { // mapx.Keys() guarantees keys are ordered alphabetically
-		self.Set(key, m[key])
+		self.set(key, m[key])
 	}
 
 	return nil

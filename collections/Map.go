@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"sync"
 
 	"github.com/ayonli/goext/mapx"
 	"github.com/ayonli/goext/slicex"
@@ -21,7 +22,7 @@ type MapEntry[K comparable, V any] struct {
 	Value V
 }
 
-// Map is an object-oriented collection of map with ordered keys.
+// Map is an object-oriented collection of map with ordered keys and thread-safe by default.
 //
 // Unlike the builtin `map` type, this Map stores data in a underlying list, which provides ordered
 // keys sequence. However, the op time is O(n), which might be inefficient for large amount of data.
@@ -29,6 +30,7 @@ type MapEntry[K comparable, V any] struct {
 type Map[K comparable, V any] struct {
 	records []mapRecordItem[K, V]
 	size    int
+	mut     sync.RWMutex
 }
 
 // Creates a new instance of the Map.
@@ -36,7 +38,7 @@ func NewMap[K comparable, V any](initial []MapEntry[K, V]) *Map[K, V] {
 	m := &Map[K, V]{}
 
 	for _, entry := range initial {
-		m.Set(entry.Key, entry.Value)
+		m.set(entry.Key, entry.Value)
 	}
 
 	return m
@@ -51,6 +53,12 @@ func (self *Map[K, V]) findIndex(key K) int {
 // Sets a pair of key and value in the map. If the key already exists, it changes the corresponding
 // value; otherwise, it adds the new pair into the map.
 func (self *Map[K, V]) Set(key K, value V) *Map[K, V] {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+	return self.set(key, value)
+}
+
+func (self *Map[K, V]) set(key K, value V) *Map[K, V] {
 	idx := self.findIndex(key)
 
 	if idx == -1 {
@@ -70,6 +78,9 @@ func (self *Map[K, V]) Set(key K, value V) *Map[K, V] {
 // Retrieves a value by the given key. If the key doesn't exist, it returns the zero-value of type
 // `V` and `false`.
 func (self *Map[K, V]) Get(key K) (V, bool) {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
+
 	idx := self.findIndex(key)
 
 	if idx == -1 {
@@ -84,6 +95,28 @@ func (self *Map[K, V]) Get(key K) (V, bool) {
 func (self *Map[K, V]) Has(key K) bool {
 	idx := self.findIndex(key)
 	return idx != -1
+}
+
+// Retrieves a value by the given key. If the key doesn't exist yet, invokes the `setter` function
+// to set the value and return it.
+//
+// This function is atomic.
+func (self *Map[K, V]) EnsureGet(key K, setter func() V) V {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
+	idx := self.findIndex(key)
+	var value V
+
+	if idx == -1 {
+		value = setter()
+		self.set(key, value)
+	} else {
+		record := self.records[idx]
+		value = record.Value
+	}
+
+	return value
 }
 
 func (self *Map[K, V]) deleteAt(idx int) bool {
@@ -109,18 +142,27 @@ func (self *Map[K, V]) deleteAt(idx int) bool {
 
 // Removes the key-value pair by the given key.
 func (self *Map[K, V]) Delete(key K) bool {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
 	idx := self.findIndex(key)
 	return self.deleteAt(idx)
 }
 
 // Empties the map and resets its size.
 func (self *Map[K, V]) Clear() {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
 	self.records = nil
 	self.size = 0
 }
 
 // Retrieves all the keys in the map.
 func (self *Map[K, V]) Keys() []K {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
+
 	items := make([]K, self.size)
 	idx := 0
 
@@ -136,6 +178,9 @@ func (self *Map[K, V]) Keys() []K {
 
 // Retrieves all the values in the map.
 func (self *Map[K, V]) Values() []V {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
+
 	items := make([]V, self.size)
 	idx := 0
 
@@ -179,6 +224,9 @@ func (self *Map[K, V]) Size() int {
 
 // Creates a builtin `map` based on this map.
 func (self *Map[K, V]) ToMap() map[K]V {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
+
 	items := map[K]V{}
 
 	for _, record := range self.records {
@@ -213,6 +261,8 @@ func (self *Map[K, V]) formatString(typeName string, records []mapRecordItem[K, 
 }
 
 func (self *Map[K, V]) String() string {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
 	return self.formatString("collections.Map", self.records)
 }
 
@@ -244,10 +294,15 @@ func (self *Map[K, V]) formatGoString(typeName string, records []mapRecordItem[K
 }
 
 func (self *Map[K, V]) GoString() string {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
 	return self.formatGoString("collections.Map", self.records)
 }
 
 func (self *Map[K, V]) UnmarshalJSON(data []byte) error {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
 	var m map[K]V
 
 	if err := json.Unmarshal(data, &m); err != nil {
@@ -255,13 +310,16 @@ func (self *Map[K, V]) UnmarshalJSON(data []byte) error {
 	}
 
 	for _, key := range mapx.Keys(m) { // mapx.Keys() guarantees keys are ordered alphabetically
-		self.Set(key, m[key])
+		self.set(key, m[key])
 	}
 
 	return nil
 }
 
 func (self *Map[K, V]) MarshalJSON() ([]byte, error) {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
+
 	str := "{"
 	started := false
 

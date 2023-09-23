@@ -38,7 +38,7 @@ go get github.com/ayonli/goext
     - `List` is an objected-oriented abstract that works around the slice and acts as a dynamic array.
 - **[collections](https://pkg.go.dev/github.com/ayonli/goext/collections)**
     Object-oriented abstract wrappers for basic types.
-    - `Set` is an object-oriented collection that stores unique items.
-    - `Map` is an object-oriented collection of map with ordered keys.
-    - `CiMap` Case-insensitive map, keys are case-insensitive.
-    - `BiMap` Bi-directional map, keys and values are unique and map to each other.
+    - `Set` is an object-oriented collection that stores unique items and is thread-safe.
+    - `Map` is an object-oriented collection of map with ordered keys and thread-safe by default.
+    - `CiMap` Thread-safe case-insensitive map, keys are case-insensitive.
+    - `BiMap` Thread-safe bi-directional map, keys and values are unique and map to each other.

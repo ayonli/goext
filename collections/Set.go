@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Set is an object-oriented collection that stores unique items.
+// Set is an object-oriented collection that stores unique items and is thread-safe.
 type Set[T comparable] struct {
 	m Map[T, int]
 }
@@ -16,7 +16,9 @@ func NewSet[T comparable](base []T) *Set[T] {
 	self := Set[T]{}
 
 	for _, item := range base {
-		self.Add(item)
+		if !self.m.Has(item) {
+			self.m.set(item, self.m.size)
+		}
 	}
 
 	return &self
@@ -24,10 +26,7 @@ func NewSet[T comparable](base []T) *Set[T] {
 
 // Adds an item to the set. If the item already exists, the set remains untouched.
 func (self *Set[T]) Add(item T) *Set[T] {
-	if !self.Has(item) {
-		self.m.Set(item, self.m.size)
-	}
-
+	self.m.EnsureGet(item, func() int { return self.m.size })
 	return self
 }
 
@@ -73,6 +72,9 @@ func (self *Set[T]) GoString() string {
 }
 
 func (self *Set[T]) UnmarshalJSON(data []byte) error {
+	self.m.mut.Lock()
+	defer self.m.mut.Unlock()
+
 	var s []T
 
 	if err := json.Unmarshal(data, &s); err != nil {
@@ -80,12 +82,14 @@ func (self *Set[T]) UnmarshalJSON(data []byte) error {
 	}
 
 	for _, value := range s {
-		self.Add(value)
+		if !self.m.Has(value) {
+			self.m.set(value, self.m.size)
+		}
 	}
 
 	return nil
 }
 
-func (self Set[T]) MarshalJSON() ([]byte, error) {
+func (self *Set[T]) MarshalJSON() ([]byte, error) {
 	return json.Marshal(self.Values())
 }

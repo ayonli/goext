@@ -7,7 +7,7 @@ import (
 	"github.com/ayonli/goext/mapx"
 )
 
-// Case-insensitive map, keys are case-insensitive.
+// Thread-safe case-insensitive map, keys are case-insensitive.
 type CiMap[K ~string, V any] struct {
 	Map[K, V]
 	keys []K
@@ -27,6 +27,12 @@ func NewCiMap[K ~string, V string](initial []MapEntry[K, V]) *CiMap[K, V] {
 // Sets a pair of key and value in the map. If the key already exists, it changes the corresponding
 // value; otherwise, it adds the new pair into the map.
 func (self *CiMap[K, V]) Set(key K, value V) *CiMap[K, V] {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+	return self.set(key, value)
+}
+
+func (self *CiMap[K, V]) set(key K, value V) *CiMap[K, V] {
 	id := strings.ToLower(string(key))
 	idx := self.findIndex(K(id))
 
@@ -59,8 +65,34 @@ func (self *CiMap[K, V]) Has(key K) bool {
 	return self.Map.Has(K(strings.ToLower(string(key))))
 }
 
+// Retrieves a value by the given key. If the key doesn't exist yet, invokes the `setter` function
+// to set the value and return it.
+//
+// This function is atomic.
+func (self *CiMap[K, V]) EnsureGet(key K, setter func() V) V {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
+	id := strings.ToLower(string(key))
+	idx := self.findIndex(K(id))
+	var value V
+
+	if idx == -1 {
+		value = setter()
+		self.set(key, value)
+	} else {
+		record := self.records[idx]
+		value = record.Value
+	}
+
+	return value
+}
+
 // Removes the key-value pair by the given key.
 func (self *CiMap[K, V]) Delete(key K) bool {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
 	id := strings.ToLower(string(key))
 	idx := self.findIndex(K(id))
 
@@ -75,12 +107,19 @@ func (self *CiMap[K, V]) Delete(key K) bool {
 }
 
 func (self *CiMap[K, V]) Clear() {
-	self.Map.Clear()
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
+	self.records = nil
+	self.size = 0
 	self.keys = nil
 }
 
 // Retrieves all the keys in the map.
 func (self *CiMap[K, V]) Keys() []K {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
+
 	items := make([]K, self.size)
 	idx := 0
 
@@ -119,6 +158,9 @@ func (self *CiMap[K, V]) ForEach(fn func(value V, key K)) {
 
 // Creates a builtin `map` based on this map.
 func (self *CiMap[K, V]) ToMap() map[K]V {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
+
 	items := map[K]V{}
 
 	for idx, record := range self.records {
@@ -150,14 +192,21 @@ func (self *CiMap[K, V]) getNormalizedRecords() []mapRecordItem[K, V] {
 }
 
 func (self *CiMap[K, V]) String() string {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
 	return self.formatString("collections.CiMap", self.getNormalizedRecords())
 }
 
 func (self *CiMap[K, V]) GoString() string {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
 	return self.formatGoString("collections.CiMap", self.getNormalizedRecords())
 }
 
 func (self *CiMap[K, V]) UnmarshalJSON(data []byte) error {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
 	var m map[K]V
 
 	if err := json.Unmarshal(data, &m); err != nil {
@@ -165,13 +214,16 @@ func (self *CiMap[K, V]) UnmarshalJSON(data []byte) error {
 	}
 
 	for _, key := range mapx.Keys(m) { // mapx.Keys() guarantees keys are ordered alphabetically
-		self.Set(key, m[key])
+		self.set(key, m[key])
 	}
 
 	return nil
 }
 
 func (self *CiMap[K, V]) MarshalJSON() ([]byte, error) {
+	self.mut.RLock()
+	defer self.mut.RUnlock()
+
 	str := "{"
 	started := false
 
