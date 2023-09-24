@@ -95,6 +95,7 @@ func Throttle[A any, R any, Fn func(arg A) (R, error)](
     handler Fn,
     duration time.Duration,
     forKey string,
+    noWait bool,
 ) Fn
 ```
 
@@ -103,14 +104,13 @@ Creates a throttled function that will only be run once in a certain amount of t
 If a subsequent call happens within the `duration`, the previous result will be returned and
 the `handler` function will not be invoked.
 
-If the `handler` function returns a promise, and two or more calls happen simultaneously,
-the later calls will try to resolve with the previous result immediately instead of waiting
-the pending call to complete.
-
 If `forKey` is provided, use the throttle strategy for the given key, this will keep the
 result in a global cache, binding new `handler` function for the same key will result in the
 same result as the previous, unless the duration has passed. This mechanism guarantees that both
 creating the throttled function in function scopes and overwriting the handler are possible.
+
+If `noWait` is turned on, respond with the last cache (if available) immediately, even if it has
+expired, and update the cache in the background.
 
 ## Sub-packages
 
