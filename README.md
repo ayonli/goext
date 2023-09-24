@@ -13,6 +13,24 @@ go get github.com/ayonli/goext
 
 ## Functions
 
+- [goext.ReadAll](#goextreadall)
+- [goext.Ok](#goextok)
+- [goext.Try](#goexttry)
+- [goext.Queue](#goextqueue)
+- [goext.Throttle](#goextthrottle)
+
+### goext.ReadAll
+
+```go
+func ReadAll[T any](ch <-chan T) []T
+```
+
+ReadAll reads all values from the channel at once.
+
+---
+
+### goext.Ok
+
 ```go
 func Ok[R any](res R, err error) R
 ```
@@ -26,13 +44,15 @@ outside.
 
 ```go
 _, err := goext.Try(func () int {
-	res1 := goext.Ok(someCall())
-	res2 := goext.Ok(anotherCall())
-	return 0
+    res1 := goext.Ok(someCall())
+    res2 := goext.Ok(anotherCall())
+    return 0
 })
 ```
 
 ---
+
+### goext.Try
 
 ```go
 func Try[R any](fn func() R) (res R, err error)
@@ -45,19 +65,36 @@ can be caught and returned as a normal error.
 
 ```go
 _, err := goext.Try(func () int {
-	res1 := goext.Ok(someCall())
-	res2 := goext.Ok(anotherCall())
-	return 0
+    res1 := goext.Ok(someCall())
+    res2 := goext.Ok(anotherCall())
+    return 0
 })
 ```
 
 ---
 
+### goext.Queue
+
+```go
+func Queue[T any](handler func(data T), bufferSize int) IQueue[T]
+```
+
+Queue processes data sequentially by the given `handler` function and prevents concurrency
+conflicts, it returns a queue instance that we can push data into.
+
+`bufferSize` is the maximum capacity of the underlying channel, once reached, the push
+operation will block until there is new room available. Bu default, this option is not set and
+use a non-buffered channel instead.
+
+---
+
+### goext.Throttle
+
 ```go
 func Throttle[A any, R any, Fn func(arg A) (R, error)](
-	handler Fn,
-	duration time.Duration,
-	forKey string,
+    handler Fn,
+    duration time.Duration,
+    forKey string,
 ) Fn
 ```
 
