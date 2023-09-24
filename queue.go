@@ -27,7 +27,7 @@ func (queue *QueueImpl[T]) OnError(handler func(err error)) {
 // conflicts, it returns a queue instance that we can push data into.
 //
 // `bufferSize` is the maximum capacity of the underlying channel, once reached, the push
-// operation will block until there is new room available. Bu default, this option is not set and
+// operation will block until there is new space available. Bu default, this option is not set and
 // use a non-buffered channel instead.
 func Queue[T any](handler func(data T), bufferSize int) IQueue[T] {
 	queue := &QueueImpl[T]{channel: make(chan T, bufferSize)}

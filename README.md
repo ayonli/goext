@@ -83,7 +83,7 @@ Queue processes data sequentially by the given `handler` function and prevents c
 conflicts, it returns a queue instance that we can push data into.
 
 `bufferSize` is the maximum capacity of the underlying channel, once reached, the push
-operation will block until there is new room available. Bu default, this option is not set and
+operation will block until there is new space available. Bu default, this option is not set and
 use a non-buffered channel instead.
 
 ---
