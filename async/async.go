@@ -203,6 +203,8 @@ func WaitUntil(test func() bool) {
 //
 // The callback function returns a boolean value indicates whether the queue has finished, once true,
 // the internal channel will be closed and no more data shall be pushed.
+//
+// Deprecated: use `goext.Queue` instead.
 func Queue[T any](callback func(data T) (fin bool)) func(data T) {
 	c := make(chan T)
 
