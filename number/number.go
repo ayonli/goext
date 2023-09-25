@@ -1,3 +1,4 @@
+// Functions for dealing with numbers.
 package number
 
 import (

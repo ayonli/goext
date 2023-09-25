@@ -128,6 +128,8 @@ expired, and update the cache in the background.
     Additional functions for dealing with maps.
 - **[structx](https://pkg.go.dev/github.com/ayonli/goext/structx)** (Since v0.3.0)
     Functions used to manipulate structs.
+- **[number](https://pkg.go.dev/github.com/ayonli/goext/number)** (Since v0.4.0)
+    Functions for dealing with numbers.
 - **[oop](https://pkg.go.dev/github.com/ayonli/goext/oop)**
     Object-oriented abstract wrappers for basic data structures.
     - `String` is an object-oriented abstract that works around multi-byte strings.

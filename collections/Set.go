@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"github.com/ayonli/goext/number"
 )
 
 // Set is an object-oriented collection that stores unique items and is thread-safe.
@@ -40,6 +42,65 @@ func (self *Set[T]) Delete(item T) bool {
 	return self.m.Delete(item)
 }
 
+// Removes and returns the first (if `order >= 0`) or the last (if `order < 0`) item from the set.
+func (self *Set[T]) Pop(order int) (T, bool) {
+	if self.Size() == 0 {
+		return *new(T), false
+	}
+
+	self.m.mut.Lock()
+	defer self.m.mut.Unlock()
+
+	if order >= 0 {
+		for idx, item := range self.m.records {
+			if !item.Deleted {
+				self.m.deleteAt(idx)
+				return item.Key, true
+			}
+		}
+	} else {
+		for idx := len(self.m.records) - 1; idx >= 0; idx-- {
+			item := self.m.records[idx]
+
+			if !item.Deleted {
+				self.m.deleteAt(idx)
+				return item.Key, true
+			}
+		}
+	}
+
+	// never
+	return *new(T), false
+}
+
+// Removes and returns a random item from the set.
+func (self *Set[T]) Random() (T, bool) {
+	if self.Size() == 0 {
+		return *new(T), false
+	}
+
+	self.m.mut.Lock()
+	defer self.m.mut.Unlock()
+
+	pos := number.Random(0, self.Size()-1)
+	idx := 0
+
+	for i, item := range self.m.records {
+		if !item.Deleted {
+			if idx == pos {
+				self.m.deleteAt(i)
+				return item.Key, true
+			}
+
+			idx++
+		}
+	}
+
+	// never
+	return *new(T), true
+}
+
+// Empties the set and resets its size.
 func (self *Set[T]) Clear() {
 	self.m.Clear()
 }

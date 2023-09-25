@@ -3,6 +3,7 @@ package collections_test
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 
 	"github.com/ayonli/goext/collections"
 )
@@ -25,10 +26,10 @@ func ExampleSet_json() {
 
 	s2 := &collections.Set[string]{}
 	json.Unmarshal(data, s2)
-	fmt.Println(s2)
+	fmt.Printf("%#v", s2)
 	// Output:
 	// ["Hello","World"]
-	// &collections.Set[Hello World]
+	// &collections.Set[string]{"Hello", "World"}
 }
 
 func ExampleNewSet() {
@@ -56,8 +57,7 @@ func ExampleSet_Add() {
 }
 
 func ExampleSet_Has() {
-	s := collections.NewSet([]string{})
-	s.Add("Hello")
+	s := collections.NewSet([]string{"Hello"})
 
 	fmt.Println(s.Has("Hello"))
 	fmt.Println(s.Has("World"))
@@ -67,8 +67,7 @@ func ExampleSet_Has() {
 }
 
 func ExampleSet_Delete() {
-	s := collections.NewSet([]string{})
-	s.Add("Hello").Add("World")
+	s := collections.NewSet([]string{"Hello", "World"})
 
 	ok1 := s.Delete("Hello") // succeed
 	ok2 := s.Delete("Hello") // failed
@@ -82,9 +81,52 @@ func ExampleSet_Delete() {
 	// false
 }
 
+func ExampleSet_Pop() {
+	s := collections.NewSet([]string{
+		"Hello",
+		"World",
+		"Hi",
+		"A-yon",
+	})
+
+	fmt.Println(s.Pop(0))
+	fmt.Println(s.Pop(-1))
+	fmt.Println(s.Size())
+
+	s.Clear()
+	fmt.Println(s.Pop(0))
+
+	// Output:
+	// Hello true
+	// A-yon true
+	// 2
+	//  false
+}
+
+func ExampleSet_Random() {
+	list := []string{
+		"Hello",
+		"World",
+		"Hi",
+		"A-yon",
+	}
+	s := collections.NewSet(list)
+
+	item, _ := s.Random()
+	fmt.Println(slices.Contains(list, item))
+	fmt.Println(s.Size())
+
+	s.Clear()
+	fmt.Println(s.Random())
+
+	// Output:
+	// true
+	// 3
+	//  false
+}
+
 func ExampleSet_Clear() {
-	s := collections.NewSet([]string{})
-	s.Add("Hello").Add("World")
+	s := collections.NewSet([]string{"Hello", "World"})
 
 	s.Clear()
 
@@ -94,8 +136,7 @@ func ExampleSet_Clear() {
 }
 
 func ExampleSet_Values() {
-	s := collections.NewSet([]string{})
-	s.Add("Hello").Add("World")
+	s := collections.NewSet([]string{"Hello", "World"})
 
 	fmt.Println(s.Values())
 	// Output:
@@ -103,8 +144,7 @@ func ExampleSet_Values() {
 }
 
 func ExampleSet_ForEach() {
-	s := collections.NewSet([]string{})
-	s.Add("Hello").Add("World")
+	s := collections.NewSet([]string{"Hello", "World"})
 
 	s.ForEach(func(item string) {
 		fmt.Println(item)
@@ -115,8 +155,7 @@ func ExampleSet_ForEach() {
 }
 
 func ExampleSet_Size() {
-	s := collections.NewSet([]string{})
-	s.Add("Hello").Add("World")
+	s := collections.NewSet([]string{"Hello", "World"})
 
 	fmt.Println(s.Size())
 	// Output:
