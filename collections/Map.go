@@ -149,6 +149,23 @@ func (self *Map[K, V]) Delete(key K) bool {
 	return self.deleteAt(idx)
 }
 
+// Removes and returns the key-value pair by the given key.
+func (self *Map[K, V]) Pop(key K) (V, bool) {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
+	idx := self.findIndex(key)
+
+	if idx == -1 {
+		return *new(V), false
+	}
+
+	record := self.records[idx]
+	self.deleteAt(idx)
+
+	return record.Value, true
+}
+
 // Empties the map and resets its size.
 func (self *Map[K, V]) Clear() {
 	self.mut.Lock()

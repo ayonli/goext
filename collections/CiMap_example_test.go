@@ -112,6 +112,21 @@ func ExampleCiMap_Delete() {
 	// false
 }
 
+func ExampleCiMap_Pop() {
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"Foo", "Hello"},
+		{"bar", "World"},
+	})
+
+	fmt.Println(m.Pop("foo"))
+	fmt.Println(m.Has("foo"))
+	fmt.Println(m.Pop("bar1"))
+	// Output:
+	// Hello true
+	// false
+	//  false
+}
+
 func ExampleCiMap_Clear() {
 	m := collections.NewCiMap([]collections.MapEntry[string, string]{
 		{"Foo", "Hello"},

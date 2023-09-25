@@ -106,6 +106,25 @@ func (self *CiMap[K, V]) Delete(key K) bool {
 	return true
 }
 
+// Removes and returns the key-value pair by the given key.
+func (self *CiMap[K, V]) Pop(key K) (V, bool) {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
+	id := strings.ToLower(string(key))
+	idx := self.findIndex(K(id))
+
+	if idx == -1 {
+		return *new(V), false
+	}
+
+	record := self.records[idx]
+	self.deleteAt(idx)
+	self.keys[idx] = ""
+
+	return record.Value, true
+}
+
 func (self *CiMap[K, V]) Clear() {
 	self.mut.Lock()
 	defer self.mut.Unlock()

@@ -156,6 +156,19 @@ func ExampleBiMap_DeleteValue() {
 	// false
 }
 
+func ExampleBiMap_Pop() {
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
+
+	fmt.Println(m.Pop("foo"))
+	fmt.Println(m.Has("foo"))
+	// Output:
+	// Hello true
+	// false
+}
+
 func ExampleBiMap_Clear() {
 	m := collections.NewBiMap([]collections.MapEntry[string, string]{
 		{"foo", "Hello"},

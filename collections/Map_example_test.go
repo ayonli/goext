@@ -112,6 +112,21 @@ func ExampleMap_Delete() {
 	// false
 }
 
+func ExampleMap_Pop() {
+	m := collections.NewMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
+
+	fmt.Println(m.Pop("foo"))
+	fmt.Println(m.Has("foo"))
+	fmt.Println(m.Pop("bar1"))
+	// Output:
+	// Hello true
+	// false
+	//  false
+}
+
 func ExampleMap_Clear() {
 	m := collections.NewMap([]collections.MapEntry[string, string]{
 		{"foo", "Hello"},
