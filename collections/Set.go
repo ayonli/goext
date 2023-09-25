@@ -26,7 +26,7 @@ func NewSet[T comparable](base []T) *Set[T] {
 
 // Adds an item to the set. If the item already exists, the set remains untouched.
 func (self *Set[T]) Add(item T) *Set[T] {
-	self.m.EnsureGet(item, func() int { return self.m.size })
+	self.m.Use(item, func() int { return self.m.size })
 	return self
 }
 

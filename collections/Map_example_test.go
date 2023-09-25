@@ -79,19 +79,35 @@ func ExampleMap_Has() {
 	// false
 }
 
-func ExampleMap_EnsureGet() {
+func ExampleMap_Use() {
 	m := collections.NewMap([]collections.MapEntry[string, string]{
 		{"foo", "Hi"},
 	})
 
-	val1 := m.EnsureGet("foo", func() string { return "Hello" })
-	val2 := m.EnsureGet("bar", func() string { return "World" })
+	val1 := m.Use("foo", func() string { return "Hello" })
+	val2 := m.Use("bar", func() string { return "World" })
 
 	fmt.Println(val1)
 	fmt.Println(val2)
 	// Output:
 	// Hi
 	// World
+}
+
+func ExampleMap_GetAndSet() {
+	m := collections.NewMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
+
+	val1, _ := m.GetAndSet("foo", "Hi")
+	val2, _ := m.Get("foo")
+
+	fmt.Println(val1)
+	fmt.Println(val2)
+	// Output:
+	// Hello
+	// Hi
 }
 
 func ExampleMap_Delete() {

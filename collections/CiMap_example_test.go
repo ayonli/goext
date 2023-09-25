@@ -79,19 +79,35 @@ func ExampleCiMap_Has() {
 	// false
 }
 
-func ExampleCiMap_EnsureGet() {
+func ExampleCiMap_Use() {
 	m := collections.NewCiMap([]collections.MapEntry[string, string]{
 		{"foo", "Hi"},
 	})
 
-	val1 := m.EnsureGet("Foo", func() string { return "Hello" })
-	val2 := m.EnsureGet("Bar", func() string { return "World" })
+	val1 := m.Use("Foo", func() string { return "Hello" })
+	val2 := m.Use("Bar", func() string { return "World" })
 
 	fmt.Println(val1)
 	fmt.Println(val2)
 	// Output:
 	// Hi
 	// World
+}
+
+func ExampleCiMap_GetAndSet() {
+	m := collections.NewCiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
+
+	val1, _ := m.GetAndSet("Foo", "Hi")
+	val2, _ := m.Get("foo")
+
+	fmt.Println(val1)
+	fmt.Println(val2)
+	// Output:
+	// Hello
+	// Hi
 }
 
 func ExampleCiMap_Delete() {

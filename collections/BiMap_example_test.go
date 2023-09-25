@@ -79,19 +79,35 @@ func ExampleBiMap_GetKey() {
 	//  false
 }
 
-func ExampleBiMap_EnsureGet() {
-	m := collections.NewMap([]collections.MapEntry[string, string]{
+func ExampleBiMap_Use() {
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
 		{"foo", "Hi"},
 	})
 
-	val1 := m.EnsureGet("foo", func() string { return "Hello" })
-	val2 := m.EnsureGet("bar", func() string { return "World" })
+	val1 := m.Use("foo", func() string { return "Hello" })
+	val2 := m.Use("bar", func() string { return "World" })
 
 	fmt.Println(val1)
 	fmt.Println(val2)
 	// Output:
 	// Hi
 	// World
+}
+
+func ExampleBiMap_GetAndSet() {
+	m := collections.NewBiMap([]collections.MapEntry[string, string]{
+		{"foo", "Hello"},
+		{"bar", "World"},
+	})
+
+	val1, _ := m.GetAndSet("foo", "Hi")
+	val2, _ := m.Get("foo")
+
+	fmt.Println(val1)
+	fmt.Println(val2)
+	// Output:
+	// Hello
+	// Hi
 }
 
 func ExampleBiMap_Has() {

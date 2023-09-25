@@ -65,11 +65,9 @@ func (self *CiMap[K, V]) Has(key K) bool {
 	return self.Map.Has(K(strings.ToLower(string(key))))
 }
 
-// Retrieves a value by the given key. If the key doesn't exist yet, invokes the `setter` function
-// to set the value and return it.
-//
-// This function is atomic.
-func (self *CiMap[K, V]) EnsureGet(key K, setter func() V) V {
+// Retrieves a value by the given key. If the key doesn't exist yet, invokes the `init` function
+// for setting the value and return it.
+func (self *CiMap[K, V]) Use(key K, init func() V) V {
 	self.mut.Lock()
 	defer self.mut.Unlock()
 
@@ -78,7 +76,7 @@ func (self *CiMap[K, V]) EnsureGet(key K, setter func() V) V {
 	var value V
 
 	if idx == -1 {
-		value = setter()
+		value = init()
 		self.set(key, value)
 	} else {
 		record := self.records[idx]
@@ -86,6 +84,24 @@ func (self *CiMap[K, V]) EnsureGet(key K, setter func() V) V {
 	}
 
 	return value
+}
+
+// Retrieves the previous value by the given key and set a new value.
+func (self *CiMap[K, V]) GetAndSet(key K, value V) (V, bool) {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
+	id := strings.ToLower(string(key))
+	idx := self.findIndex(K(id))
+
+	if idx == -1 {
+		self.set(key, value)
+		return *new(V), false
+	} else {
+		record := self.records[idx]
+		self.set(key, value)
+		return record.Value, true
+	}
 }
 
 // Removes the key-value pair by the given key.

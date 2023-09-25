@@ -87,7 +87,7 @@ func Throttle[A any, R any, Fn func(arg A) (R, error)](
 	if forKey == "" {
 		cache = &throttleCache[R]{key: "", mut: &sync.Mutex{}}
 	} else {
-		cache = (throttleCaches.EnsureGet(forKey, func() any {
+		cache = (throttleCaches.Use(forKey, func() any {
 			return any(&throttleCache[R]{key: forKey, mut: &sync.Mutex{}})
 		})).(*throttleCache[R])
 	}

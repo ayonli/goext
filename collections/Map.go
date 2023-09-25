@@ -97,11 +97,9 @@ func (self *Map[K, V]) Has(key K) bool {
 	return idx != -1
 }
 
-// Retrieves a value by the given key. If the key doesn't exist yet, invokes the `setter` function
-// to set the value and return it.
-//
-// This function is atomic.
-func (self *Map[K, V]) EnsureGet(key K, setter func() V) V {
+// Retrieves a value by the given key. If the key doesn't exist yet, invokes the `init` function
+// for setting the value and return it.
+func (self *Map[K, V]) Use(key K, init func() V) V {
 	self.mut.Lock()
 	defer self.mut.Unlock()
 
@@ -109,7 +107,7 @@ func (self *Map[K, V]) EnsureGet(key K, setter func() V) V {
 	var value V
 
 	if idx == -1 {
-		value = setter()
+		value = init()
 		self.set(key, value)
 	} else {
 		record := self.records[idx]
@@ -117,6 +115,23 @@ func (self *Map[K, V]) EnsureGet(key K, setter func() V) V {
 	}
 
 	return value
+}
+
+// Retrieves the previous value by the given key and set a new value.
+func (self *Map[K, V]) GetAndSet(key K, value V) (V, bool) {
+	self.mut.Lock()
+	defer self.mut.Unlock()
+
+	idx := self.findIndex(key)
+
+	if idx == -1 {
+		self.set(key, value)
+		return *new(V), false
+	} else {
+		record := self.records[idx]
+		self.set(key, value)
+		return record.Value, true
+	}
 }
 
 func (self *Map[K, V]) deleteAt(idx int) bool {
