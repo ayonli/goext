@@ -42,18 +42,21 @@ func ExamplePadStart() {
 	str4 := stringx.PadStart(str1, 15, "Hi")
 	str5 := stringx.PadStart(str1, 15, "Hola")
 	str6 := stringx.PadStart(str1, 12, "**")
+	str7 := stringx.PadStart(str1, 18, "Hola")
 
 	fmt.Printf("%#v\n", str2)
 	fmt.Println(str3)
 	fmt.Println(str4)
 	fmt.Println(str5)
 	fmt.Println(str6)
+	fmt.Println(str7)
 	// Output:
 	// "  Hello, World!"
 	// **Hello, World!
 	// HiHello, World!
 	// HoHello, World!
 	// Hello, World!
+	// HolaHHello, World!
 }
 
 func ExamplePadEnd() {
@@ -63,18 +66,21 @@ func ExamplePadEnd() {
 	str4 := stringx.PadEnd(str1, 15, "Hi")
 	str5 := stringx.PadEnd(str1, 15, "Hola")
 	str6 := stringx.PadEnd(str1, 12, "**")
+	str7 := stringx.PadEnd(str1, 18, "Hola")
 
 	fmt.Printf("%#v\n", str2)
 	fmt.Println(str3)
 	fmt.Println(str4)
 	fmt.Println(str5)
 	fmt.Println(str6)
+	fmt.Println(str7)
 	// Output:
 	// "Hello, World!  "
 	// Hello, World!**
 	// Hello, World!Hi
 	// Hello, World!Ho
 	// Hello, World!
+	// Hello, World!HolaH
 }
 
 func ExampleCapitalize() {

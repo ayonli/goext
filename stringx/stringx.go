@@ -6,6 +6,8 @@ import (
 	"math/rand"
 	"regexp"
 	"strings"
+
+	"github.com/ayonli/goext/slicex"
 )
 
 var wordRegex = regexp.MustCompile(`\w+`)
@@ -44,41 +46,63 @@ func EndsWith(str string, sub string) bool {
 // Pads the given string with another string (multiple times, if needed) until the resulting string
 // reaches the final length. The padding is applied from the start of the string.
 func PadStart(str string, finalLength int, padStr string) string {
-	leftLength := finalLength - len(str)
+	padLength := finalLength - len(str)
 
-	if leftLength <= 0 {
+	if padLength <= 0 {
 		return str
 	}
 
-	if len(padStr) > leftLength {
-		padStr = padStr[0:leftLength]
+	padChars := []byte(padStr)
+
+	if len(padChars) > padLength {
+		padChars = slicex.Slice(padChars, 0, padLength)
 	}
 
-	for len(str) < finalLength {
-		str = padStr + str
+	padCharsLimit := len(padChars) - 1
+	startChars := make([]byte, padLength)
+
+	for i, j := 0, 0; i < padLength; i++ {
+		startChars[i] = padChars[j]
+
+		if j < padCharsLimit {
+			j++
+		} else {
+			j = 0
+		}
 	}
 
-	return str
+	return string(startChars) + str
 }
 
 // Pads the given string with another string (multiple times, if needed) until the resulting string
 // reaches the final length. The padding is applied from the end of the string.
 func PadEnd(str string, finalLength int, padStr string) string {
-	leftLength := finalLength - len(str)
+	padLength := finalLength - len(str)
 
-	if leftLength <= 0 {
+	if padLength <= 0 {
 		return str
 	}
 
-	if len(padStr) > leftLength {
-		padStr = padStr[0:leftLength]
+	padChars := []byte(padStr)
+
+	if len(padChars) > padLength {
+		padChars = slicex.Slice(padChars, 0, padLength)
 	}
 
-	for len(str) < finalLength {
-		str += padStr
+	padCharsLimit := len(padChars) - 1
+	endChars := make([]byte, padLength)
+
+	for i, j := 0, 0; i < padLength; i++ {
+		endChars[i] = padChars[j]
+
+		if j < padCharsLimit {
+			j++
+		} else {
+			j = 0
+		}
 	}
 
-	return str
+	return str + string(endChars)
 }
 
 // Capitalizes the given string, if `all` is true, all words are capitalized, otherwise only the

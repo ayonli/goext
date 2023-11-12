@@ -105,18 +105,21 @@ func ExamplePadStart() {
 	str4 := mbstring.PadStart(str1, 8, "Hi")
 	str5 := mbstring.PadStart(str1, 8, "Hola")
 	str6 := mbstring.PadStart(str1, 5, "**")
+	str7 := mbstring.PadStart(str1, 12, "Hola")
 
 	fmt.Printf("%#v\n", str2)
 	fmt.Println(str3)
 	fmt.Println(str4)
 	fmt.Println(str5)
 	fmt.Println(str6)
+	fmt.Println(str7)
 	// Output:
 	// "  你好，世界！"
 	// **你好，世界！
 	// Hi你好，世界！
 	// Ho你好，世界！
 	// 你好，世界！
+	// HolaHo你好，世界！
 }
 
 func ExamplePadEnd() {
@@ -126,18 +129,21 @@ func ExamplePadEnd() {
 	str4 := mbstring.PadEnd(str1, 8, "Hi")
 	str5 := mbstring.PadEnd(str1, 8, "Hola")
 	str6 := mbstring.PadEnd(str1, 5, "**")
+	str7 := mbstring.PadEnd(str1, 12, "Hola")
 
 	fmt.Printf("%#v\n", str2)
 	fmt.Println(str3)
 	fmt.Println(str4)
 	fmt.Println(str5)
 	fmt.Println(str6)
+	fmt.Println(str7)
 	// Output:
 	// "你好，世界！  "
 	// 你好，世界！**
 	// 你好，世界！Hi
 	// 你好，世界！Ho
 	// 你好，世界！
+	// 你好，世界！HolaHo
 }
 
 func ExampleSlice() {

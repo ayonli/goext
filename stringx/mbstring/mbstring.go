@@ -4,7 +4,6 @@ package mbstring
 import (
 	"math"
 	"slices"
-	"strings"
 	"unicode/utf8"
 
 	"github.com/ayonli/goext/slicex"
@@ -21,8 +20,13 @@ func At(str string, i int) string {
 		return ""
 	}
 
-	char, _ := slicex.At(strings.Split(str, ""), i)
-	return char
+	code, ok := slicex.At([]rune(str), i)
+
+	if ok {
+		return string(code)
+	} else {
+		return ""
+	}
 }
 
 // Returns the index at which a given sub string can be found in the string, or -1 if it is not
@@ -36,8 +40,8 @@ func Index(str string, sub string) int {
 		}
 	}
 
-	chars := strings.Split(str, "")
-	subChars := strings.Split(sub, "")
+	chars := []rune(str)
+	subChars := []rune(sub)
 	length := len(subChars)
 	limit := len(chars)
 
@@ -46,7 +50,7 @@ func Index(str string, sub string) int {
 
 		if end > limit {
 			break
-		} else if strings.Join(chars[i:i+length], "") == sub {
+		} else if slices.Equal(chars[i:i+length], subChars) {
 			return i
 		}
 	}
@@ -65,8 +69,8 @@ func LastIndex(str string, sub string) int {
 		}
 	}
 
-	chars := strings.Split(str, "")
-	subChars := strings.Split(sub, "")
+	chars := []rune(str)
+	subChars := []rune(sub)
 	length := len(subChars)
 	limit := len(chars)
 
@@ -89,41 +93,63 @@ func Length(str string) int {
 // Pads the given string with another string (multiple times, if needed) until the resulting string
 // reaches the final length. The padding is applied from the start of the string.
 func PadStart(str string, finalLength int, padStr string) string {
-	leftLength := finalLength - Length(str)
+	padLength := finalLength - Length(str)
 
-	if leftLength <= 0 {
+	if padLength <= 0 {
 		return str
 	}
 
-	if Length(padStr) > leftLength {
-		padStr = Slice(padStr, 0, leftLength)
+	padChars := []rune(padStr)
+
+	if len(padChars) > padLength {
+		padChars = slicex.Slice(padChars, 0, padLength)
 	}
 
-	for Length(str) < finalLength {
-		str = padStr + str
+	padCharsLimit := len(padChars) - 1
+	startChars := make([]rune, padLength)
+
+	for i, j := 0, 0; i < padLength; i++ {
+		startChars[i] = padChars[j]
+
+		if j < padCharsLimit {
+			j++
+		} else {
+			j = 0
+		}
 	}
 
-	return str
+	return string(startChars) + str
 }
 
 // Pads the given string with another string (multiple times, if needed) until the resulting string
 // reaches the final length. The padding is applied from the end of the string.
 func PadEnd(str string, finalLength int, padStr string) string {
-	leftLength := finalLength - Length(str)
+	padLength := finalLength - Length(str)
 
-	if leftLength <= 0 {
+	if padLength <= 0 {
 		return str
 	}
 
-	if Length(padStr) > leftLength {
-		padStr = Slice(padStr, 0, leftLength)
+	padChars := []rune(padStr)
+
+	if len(padChars) > padLength {
+		padChars = slicex.Slice(padChars, 0, padLength)
 	}
 
-	for Length(str) < finalLength {
-		str += padStr
+	padCharsLimit := len(padChars) - 1
+	endChars := make([]rune, padLength)
+
+	for i, j := 0, 0; i < padLength; i++ {
+		endChars[i] = padChars[j]
+
+		if j < padCharsLimit {
+			j++
+		} else {
+			j = 0
+		}
 	}
 
-	return str
+	return str + string(endChars)
 }
 
 // Returns a section of the string selected from `start` to `end` (excluded).
@@ -132,15 +158,16 @@ func PadEnd(str string, finalLength int, padStr string) string {
 //
 // If `end < 0`, it will be calculated as `Length(str) + end`.
 func Slice(str string, start int, end int) string {
-	chars := strings.Split(str, "")
-	return strings.Join(slicex.Slice(chars, start, end), "")
+	chars := []rune(str)
+	return string(slicex.Slice(chars, start, end))
 }
 
 // Returns a section of the string selected from `start` to `end` (excluded).
 //
 // This function is similar to the `Slice()`, except it doesn't accept negative positions.
 func Substring(str string, start int, end int) string {
-	limit := Length(str)
+	chars := []rune(str)
+	limit := len(chars)
 
 	if start < 0 {
 		start = 0
@@ -158,13 +185,12 @@ func Substring(str string, start int, end int) string {
 		return "" // return an empty string directly
 	}
 
-	chars := strings.Split(str, "")
-	return strings.Join(chars[start:end], "")
+	return string(chars[start:end])
 }
 
 // Breaks the string into smaller chunks according to the given length.
 func Chunk(str string, length int) []string {
-	chars := strings.Split(str, "")
+	chars := []rune(str)
 	limit := len(chars)
 	size := int(math.Ceil(float64(limit) / float64(length)))
 	chunks := make([]string, size)
@@ -178,7 +204,7 @@ func Chunk(str string, length int) []string {
 			end = limit
 		}
 
-		chunks[idx] = strings.Join(chars[offset:end], "")
+		chunks[idx] = string(chars[offset:end])
 		offset += length
 		idx++
 	}
@@ -188,7 +214,7 @@ func Chunk(str string, length int) []string {
 
 // Truncates the given string to the given length (including the ending `...`).
 func Truncate(str string, length int) string {
-	chars := strings.Split(str, "")
+	chars := []rune(str)
 	limit := len(chars)
 
 	if length <= 0 {
@@ -198,7 +224,7 @@ func Truncate(str string, length int) string {
 	} else {
 		length -= 3
 
-		return strings.Join(chars[0:length], "") + "..."
+		return string(chars[0:length]) + "..."
 	}
 }
 
