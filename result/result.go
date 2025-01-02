@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func Wrap[R any](fn func() (value R, err error)) (value R, err error) {
+func Wrap[T any](fn func() (value T, err error)) (value T, err error) {
 	defer func() {
 		if re := recover(); re != nil {
 			if _err, ok := re.(error); ok {
