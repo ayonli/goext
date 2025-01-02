@@ -10,9 +10,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func ExampleWrap() {
+func ExampleTry() {
 	mathAdd := func(input1 string, input2 string) (int, error) {
-		return result.Wrap(func() (int, error) {
+		return result.Try(func() (int, error) {
 			num1 := result.Unwrap(strconv.Atoi(input1))
 			num2 := result.Unwrap(strconv.Atoi(input2))
 			return num1 + num2, nil
@@ -31,7 +31,7 @@ func ExampleWrap() {
 
 func ExampleUnwrap() {
 	mathAdd := func(input1 string, input2 string) (int, error) {
-		return result.Wrap(func() (int, error) {
+		return result.Try(func() (int, error) {
 			num1 := result.Unwrap(strconv.Atoi(input1))
 			num2 := result.Unwrap(strconv.Atoi(input2))
 			return num1 + num2, nil
@@ -52,9 +52,9 @@ func withOtherError() (string, error) {
 	return "", errors.WithStack(errors.New("something went wrong"))
 }
 
-func TestWrap(t *testing.T) {
+func TestTry(t *testing.T) {
 	mathAdd := func(input1 string, input2 string) (int, error) {
-		return result.Wrap(func() (int, error) {
+		return result.Try(func() (int, error) {
 			num1 := result.Unwrap(strconv.Atoi(input1))
 			num2 := result.Unwrap(strconv.Atoi(input2))
 			return num1 + num2, nil
@@ -66,7 +66,7 @@ func TestWrap(t *testing.T) {
 	assert.Equal(t, "strconv.Atoi: parsing \"b\": invalid syntax", err.Error())
 
 	mathAdd2 := func(input1 string, input2 string) (int, error) {
-		return result.Wrap(func() (int, error) {
+		return result.Try(func() (int, error) {
 			num1 := result.Unwrap(strconv.Atoi(input1))
 			num2 := result.Unwrap(strconv.Atoi(input2))
 			result.Unwrap(withOtherError())
