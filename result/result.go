@@ -21,7 +21,7 @@ func Wrap[T any](fn func() (value T, err error)) (value T, err error) {
 	return fn()
 }
 
-func Unwrap[R any](value R, err error) R {
+func Unwrap[T any](value T, err error) T {
 	if err != nil {
 		panic(err)
 	}
